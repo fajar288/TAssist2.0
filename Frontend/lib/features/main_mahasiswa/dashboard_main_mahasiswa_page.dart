@@ -27,6 +27,7 @@ class _DashboardMainMahasiswaPageState
   Map<String, dynamic>? _activeBimbingan;
   List<Map<String, dynamic>> _jadwalList = [];
   List<Map<String, dynamic>> _progresList = [];
+  Map<String, dynamic>? _profileData;
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _DashboardMainMahasiswaPageState
         if (user is Map<String, dynamic>) {
           _studentName = user['nama']?.toString() ?? 'Student';
         }
+        _profileData = profileData['profile'];
       }
 
       final progresRaw = progresPackage['progres'];
@@ -435,8 +437,36 @@ class _DashboardMainMahasiswaPageState
               pageTitle: 'Notifications',
             ),
             const SizedBox(width: 10),
-            GestureDetector(
-              onTap: _logout,
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'edit_profile') {
+                  _navigateToEditProfile();
+                } else if (value == 'logout') {
+                  _logout();
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem<String>(
+                  value: 'edit_profile',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_rounded, size: 20, color: Color(0xFF0D4AA3)),
+                      SizedBox(width: 12),
+                      Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout_rounded, size: 20, color: Colors.red),
+                      SizedBox(width: 12),
+                      Text('Keluar', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.red)),
+                    ],
+                  ),
+                ),
+              ],
               child: Container(
                 width: 66,
                 height: 66,
@@ -468,6 +498,20 @@ class _DashboardMainMahasiswaPageState
         )
       ],
     );
+  }
+
+  Future<void> _navigateToEditProfile() async {
+    if (_profileData == null) return;
+
+    final result = await Navigator.pushNamed(
+      context,
+      TAssistApp.editStudentProfileRoute,
+      arguments: _profileData,
+    );
+
+    if (result == true && mounted) {
+      _loadDashboardData();
+    }
   }
 
   Widget _buildAdvisorCard() {

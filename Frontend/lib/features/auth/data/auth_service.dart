@@ -319,6 +319,65 @@ class AuthService {
     }
   }
 
+  Future<AuthResult> updateMahasiswaProfile({
+    String? topikTa,
+    String? judulTa,
+  }) async {
+    final token = await getToken();
+
+    if (token == null) {
+      return const AuthResult(
+        isSuccess: false,
+        message: 'Token tidak ditemukan. Silakan login ulang.',
+      );
+    }
+
+    try {
+      final response = await http.put(
+        Uri.parse('${ApiConfig.baseUrl}/mahasiswa/profile'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'topik_ta': topikTa?.trim().isEmpty == true ? null : topikTa?.trim(),
+          'judul_ta': judulTa?.trim().isEmpty == true ? null : judulTa?.trim(),
+        }),
+      );
+
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        final responseData = data['data'];
+
+        Map<String, dynamic>? profile;
+
+        if (responseData is Map<String, dynamic> &&
+            responseData['profile'] is Map<String, dynamic>) {
+          profile = Map<String, dynamic>.from(responseData['profile']);
+        }
+
+        return AuthResult(
+          isSuccess: true,
+          message: data['message']?.toString() ?? 'Profil mahasiswa berhasil diperbarui.',
+          role: 'mahasiswa',
+          profile: profile,
+        );
+      }
+
+      return AuthResult(
+        isSuccess: false,
+        message: data['message']?.toString() ?? 'Gagal memperbarui profil mahasiswa.',
+      );
+    } catch (e) {
+      return AuthResult(
+        isSuccess: false,
+        message: 'Gagal terhubung ke server: $e',
+      );
+    }
+  }
+
   Future<void> logout() async {
     final token = await getToken();
 

@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Api\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Mahasiswa\UpdateMahasiswaProfileRequest;
 use App\Models\Mahasiswa;
 use App\Models\Dosen;
 use App\Traits\ApiResponse;
@@ -70,6 +71,55 @@ class MahasiswaController extends Controller
         } catch (\Throwable $e) {
             return $this->errorResponse(
                 'Gagal melengkapi profil: ' . $e->getMessage(),
+                null,
+                500
+            );
+        }
+    }
+
+    // PUT /api/mahasiswa/profile
+    public function updateProfile(UpdateMahasiswaProfileRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user || $user->role !== 'mahasiswa') {
+            return $this->errorResponse('Hanya mahasiswa yang dapat memperbarui profil.', null, 403);
+        }
+
+        $mahasiswa = $user->mahasiswa;
+
+        if (!$mahasiswa) {
+            return $this->errorResponse('Data mahasiswa tidak ditemukan.', null, 404);
+        }
+
+        try {
+            DB::transaction(function () use ($request, $mahasiswa) {
+                $mahasiswaFields = array_filter([
+                    'topik_ta' => $request->topik_ta,
+                    'judul_ta' => $request->judul_ta,
+                ], fn($v) => $v !== null);
+
+                if (!empty($mahasiswaFields)) {
+                    $mahasiswa->update($mahasiswaFields);
+                }
+            });
+
+            $mahasiswa->refresh();
+
+            return $this->successResponse('Profil mahasiswa berhasil diperbarui', [
+                'profile' => [
+                    'mahasiswa_id' => $mahasiswa->mahasiswa_id,
+                    'nim'          => $mahasiswa->nim,
+                    'prodi'        => $mahasiswa->prodi,
+                    'angkatan'     => $mahasiswa->angkatan,
+                    'topik_ta'     => $mahasiswa->topik_ta,
+                    'judul_ta'     => $mahasiswa->judul_ta,
+                ],
+            ]);
+
+        } catch (\Throwable $e) {
+            return $this->errorResponse(
+                'Gagal memperbarui profil: ' . $e->getMessage(),
                 null,
                 500
             );

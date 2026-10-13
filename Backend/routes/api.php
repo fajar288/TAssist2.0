@@ -71,6 +71,9 @@ Route::prefix('v1')->group(function () {
                 // Lengkapi profil mahasiswa setelah Google auto-register
                 Route::post('/complete-profile', [MahasiswaController::class, 'completeProfile']);
 
+                // Update profil mahasiswa (topik_ta, judul_ta)
+                Route::put('/profile', [MahasiswaController::class, 'updateProfile']);
+
                 // Lihat daftar dosen
                 Route::get('/dosen', [MahasiswaController::class, 'daftarDosen']);
 
