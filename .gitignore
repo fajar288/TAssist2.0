@@ -1,0 +1,7 @@
+# Abaikan seluruh folder docs dan isinya
+/Docs/
+
+# Opsional: Abaikan file sistem atau environment jika ada di root
+.DS_Store
+Thumbs.db
+.env
