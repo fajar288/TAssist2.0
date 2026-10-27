@@ -1,0 +1,33 @@
+name: Security - No Shell Functions in App Code
+
+on:
+  pull_request:
+    paths:
+      - 'Backend/app/**'
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'Backend/app/**'
+
+jobs:
+  no-shell-functions:
+    name: Block dangerous shell functions in app/
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for prohibited shell functions
+        run: |
+          PATTERN='proc_open|(?<!\w)exec\s*\(|shell_exec|(?<!\w)system\s*\(|passthru|(?<!\w)popen|pcntl_exec'
+          MATCHES=$(grep -rPn "$PATTERN" Backend/app/ --include="*.php" || true)
+
+          if [ -n "$MATCHES" ]; then
+            echo "::error::Prohibited shell function(s) found in app/ code:"
+            echo "$MATCHES"
+            echo ""
+            echo "These functions are blocked to prevent RCE vulnerabilities."
+            echo "If this is intentional, add the file to the allowlist below."
+            exit 1
+          fi
+
+          echo "✅ No prohibited shell functions found in Backend/app/"
