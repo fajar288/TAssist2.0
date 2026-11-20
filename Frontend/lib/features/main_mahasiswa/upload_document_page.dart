@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../mahasiswa/data/mahasiswa_service.dart';
+import '../anotasi/view/annotation_viewer_page.dart';
 
 class UploadDocumentPage extends StatefulWidget {
   const UploadDocumentPage({super.key});
@@ -194,7 +195,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
       final minute = date.minute.toString().padLeft(2, '0');
 
       return '$day/$month/$year, $hour:$minute';
-    } catch (_) {
+    } catch (e) {
+      debugPrint('UploadDocumentPage: _formatDateTime failed for "$value": $e');
       return value;
     }
   }
@@ -1116,6 +1118,34 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       color: _statusColor(status),
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        final versiId = int.tryParse(version['versi_id']?.toString() ?? '');
+                        if (versiId == null) return;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AnnotationViewerPage(
+                              versiId: versiId,
+                              dokumenId: int.tryParse(version['dokumen_id']?.toString() ?? ''),
+                              documentTitle: 'Versi ${version['nomor_versi'] ?? ''}',
+                              isDosen: false,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.visibility_outlined, size: 16),
+                      label: const Text('Buka Dokumen & Anotasi'),
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                     ),
                   ),
                 ],

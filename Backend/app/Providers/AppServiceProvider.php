@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\AnotasiDokumen;
+use App\Models\VersiDokumen;
+use App\Policies\AnotasiDokumenPolicy;
+use App\Policies\VersiDokumenPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::policy(VersiDokumen::class, VersiDokumenPolicy::class);
+        Gate::policy(AnotasiDokumen::class, AnotasiDokumenPolicy::class);
     }
 }
+

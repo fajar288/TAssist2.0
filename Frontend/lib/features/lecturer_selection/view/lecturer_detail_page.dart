@@ -62,7 +62,8 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
         _requestStatus = latestForThisLecturer?['status']?.toString();
         _isLoadingRequestStatus = false;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('LecturerDetailPage: _loadRequestStatus failed: $e');
       if (!mounted) return;
 
       setState(() {

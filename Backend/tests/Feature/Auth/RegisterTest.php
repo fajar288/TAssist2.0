@@ -55,7 +55,7 @@ it('registers a new dosen account', function () {
         'email'                 => 'test.dosen@tassist.ac.id',
         'password'              => 'password123',
         'password_confirmation' => 'password123',
-        'nid'                   => 'NID999',
+        'nid'                   => '198701019999',
         'bidang_keahlian'       => 'Rekayasa Perangkat Lunak',
         'kuota_bimbingan'       => 4,
         'profil_singkat'        => 'Fokus pada metodologi Agile.',
@@ -67,7 +67,7 @@ it('registers a new dosen account', function () {
         ->assertJsonPath('success', true)
         ->assertJsonPath('message', 'Registrasi dosen berhasil')
         ->assertJsonPath('data.user.role', 'dosen')
-        ->assertJsonPath('data.dosen.nid', 'NID999')
+        ->assertJsonPath('data.dosen.nid', '198701019999')
         ->assertJsonPath('data.dosen.kuota_bimbingan', 4);
 
     $user = User::where('email', 'test.dosen@tassist.ac.id')->first();
@@ -78,7 +78,7 @@ it('registers a new dosen account', function () {
     $dosen = Dosen::where('user_id', $user->user_id)->first();
 
     expect($dosen)->not->toBeNull()
-        ->and($dosen->nid)->toBe('NID999')
+        ->and($dosen->nid)->toBe('198701019999')
         ->and($dosen->kuota_bimbingan)->toBe(4)
         ->and($dosen->bidang_keahlian)->toBe('Rekayasa Perangkat Lunak');
 });

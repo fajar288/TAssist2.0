@@ -53,7 +53,8 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
         _unreadCount = count;
         _isLoading = false;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('NotifikasiBellButton: _loadUnreadCount failed: $e');
       if (!mounted) return;
 
       setState(() {

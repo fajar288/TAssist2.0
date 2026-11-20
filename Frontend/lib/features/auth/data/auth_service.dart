@@ -39,7 +39,8 @@ class AuthService {
     try {
       await _googleInitFuture;
       _isGoogleInitialized = true;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('AuthService: initGoogleSignIn failed: $e');
       _googleInitFuture = null;
       _isGoogleInitialized = false;
       rethrow;
@@ -238,7 +239,8 @@ class AuthService {
 
     try {
       return await _client.get('/profile');
-    } catch (_) {
+    } catch (e) {
+      debugPrint('AuthService: getProfile failed: $e');
       return null;
     }
   }
@@ -372,8 +374,8 @@ class AuthService {
           retryOnUnauthorized: false,
           expireSessionOnUnauthorized: false,
         );
-      } catch (_) {
-        // Kalau server tidak bisa dihubungi, local session tetap dibersihkan.
+      } catch (e) {
+        debugPrint('AuthService: server logout call failed (clearing local session): $e');
       }
     }
 
@@ -387,8 +389,8 @@ class AuthService {
       if (_isGoogleInitialized) {
         await GoogleSignIn.instance.signOut();
       }
-    } catch (_) {
-      // Aman diabaikan kalau user tidak login lewat Google.
+    } catch (e) {
+      debugPrint('AuthService: _signOutGoogleQuietly failed: $e');
     }
   }
 }

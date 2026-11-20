@@ -20,7 +20,7 @@ class RegisterMahasiswaRequest extends FormRequest
             'nama'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'nim'      => 'required|string|unique:mahasiswa,nim',
+            'nim'      => 'required|string|numeric|digits_between:5,20|unique:mahasiswa,nim',
             'prodi'    => 'required|string|max:255',
             'angkatan' => 'required|integer|min:2000|max:' . date('Y'),
             'topik_ta' => 'nullable|string|max:500',

@@ -95,7 +95,8 @@ class _LecturerSelectionDashboardPageState
       setState(() {
         _studentName = name;
       });
-    } catch (_) {
+    } catch (e) {
+      debugPrint('LecturerSelectionDashboardPage: _loadProfile failed: $e');
       if (!mounted) return;
 
       setState(() {

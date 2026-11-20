@@ -221,7 +221,8 @@ class _SchedulePageState extends State<SchedulePage> {
 
     try {
       return DateTime.parse(value);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('SchedulePage: _parseDate failed for "$value": $e');
       return null;
     }
   }

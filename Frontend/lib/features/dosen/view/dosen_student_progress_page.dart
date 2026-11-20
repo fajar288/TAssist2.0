@@ -138,7 +138,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
 
     try {
       return DateTime.parse(value);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('DosenStudentProgressPage: _parseDateTime failed for "$value": $e');
       return null;
     }
   }

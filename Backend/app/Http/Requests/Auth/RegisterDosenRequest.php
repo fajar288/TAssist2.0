@@ -20,7 +20,7 @@ class RegisterDosenRequest extends FormRequest
             'nama'            => 'required|string|max:255',
             'email'           => 'required|email|unique:users,email',
             'password'        => 'required|string|min:8|confirmed',
-            'nid'             => 'required|string|unique:dosen,nid',
+            'nid'             => 'required|string|numeric|digits_between:5,20|unique:dosen,nid',
             'bidang_keahlian' => 'nullable|string|max:255',
             'kuota_bimbingan' => 'required|integer|min:0',
             'profil_singkat'  => 'nullable|string|max:1000',

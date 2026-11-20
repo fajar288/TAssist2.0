@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../app/app.dart';
 import '../data/auth_service.dart';
@@ -186,10 +187,16 @@ class _CompleteStudentProfilePageState
                                   label: 'NIM',
                                   hintText: 'Contoh: 3312301001',
                                   keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
                                   validator: (value) {
                                     final text = value?.trim() ?? '';
                                     if (text.isEmpty) {
                                       return 'NIM wajib diisi';
+                                    }
+                                    if (!RegExp(r'^[0-9]+$').hasMatch(text)) {
+                                      return 'NIM harus berupa angka';
                                     }
                                     if (text.length < 5) {
                                       return 'NIM terlalu pendek';
@@ -340,6 +347,7 @@ class _CompleteStudentProfilePageState
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
     String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,6 +364,7 @@ class _CompleteStudentProfilePageState
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           maxLines: maxLines,
           enabled: !_isSubmitting,
           validator: validator,

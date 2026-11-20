@@ -38,7 +38,7 @@ class MahasiswaController extends Controller
         }
 
         $validated = $request->validate([
-            'nim'      => ['required', 'string', 'max:50', 'unique:mahasiswa,nim'],
+            'nim'      => ['required', 'string', 'numeric', 'digits_between:5,20', 'unique:mahasiswa,nim'],
             'prodi'    => ['required', 'string', 'max:100'],
             'angkatan' => ['required', 'integer', 'min:2000', 'max:' . (date('Y') + 1)],
             'topik_ta' => ['nullable', 'string', 'max:255'],

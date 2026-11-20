@@ -6,6 +6,7 @@ import '../../app/app.dart';
 import '../auth/data/auth_service.dart';
 import '../notifikasi/widgets/notifikasi_bell_button.dart';
 import '../../mahasiswa/data/mahasiswa_service.dart';
+import '../informasi_ta/view/informasi_ta_page.dart';
 
 class DashboardMainMahasiswaPage extends StatefulWidget {
   const DashboardMainMahasiswaPage({super.key});
@@ -52,7 +53,8 @@ class _DashboardMainMahasiswaPageState
 
       try {
         progresPackage = await _mahasiswaService.getProgres(perPage: 5);
-      } catch (_) {
+      } catch (e) {
+        debugPrint('DashboardMainMahasiswaPage: getProgres failed: $e');
         progresPackage = {
           'progres': <Map<String, dynamic>>[],
         };
@@ -195,7 +197,8 @@ class _DashboardMainMahasiswaPageState
 
     try {
       return DateTime.parse(value);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('DashboardMainMahasiswaPage: _parseDate failed for "$value": $e');
       return null;
     }
   }
@@ -333,6 +336,8 @@ class _DashboardMainMahasiswaPageState
               child: Column(
                 children: [
                   _buildHeader(),
+                  const SizedBox(height: 18),
+                  _buildInformasiTACard(),
                   const SizedBox(height: 18),
                   _buildAdvisorCard(),
                   const SizedBox(height: 18),
@@ -512,6 +517,79 @@ class _DashboardMainMahasiswaPageState
     if (result == true && mounted) {
       _loadDashboardData();
     }
+  }
+
+  Widget _buildInformasiTACard() {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const InformasiTAPage()),
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFBFDBFE)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF3B82F6).withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEFF6FF),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.campaign_rounded,
+                color: Color(0xFF2563EB),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 14),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Informasi & Pengumuman TA',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    'Cek jadwal sidang, panduan format & syarat TA',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: Color(0xFF94A3B8),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildAdvisorCard() {

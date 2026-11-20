@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:produk/features/dosen/data/dosen_service.dart';
 import 'package:produk/model/models.dart';
+import '../../anotasi/view/annotation_viewer_page.dart';
 
 class DosenStudentDocumentsPage extends StatefulWidget {
   final StudentModel student;
@@ -138,7 +139,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
       final minute = date.minute.toString().padLeft(2, '0');
 
       return '$day/$month/$year, $hour:$minute';
-    } catch (_) {
+    } catch (e) {
+      debugPrint('DosenStudentDocumentsPage: _formatDateTime failed for "$value": $e');
       return value;
     }
   }
@@ -478,20 +480,50 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
             ...feedback.take(3).map(_buildFeedbackPreview),
           ],
           const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () => _showFeedbackDialog(version),
-              icon: const Icon(Icons.rate_review_rounded, size: 18),
-              label: const Text('Give Feedback'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0D47A1),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(13),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    final versiId = int.tryParse(version['versi_id']?.toString() ?? '');
+                    if (versiId == null) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AnnotationViewerPage(
+                          versiId: versiId,
+                          dokumenId: int.tryParse(version['dokumen_id']?.toString() ?? ''),
+                          documentTitle: 'Versi ${version['nomor_versi'] ?? ''}',
+                          isDosen: true,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.edit_note_rounded, size: 18),
+                  label: const Text('Anotasi PDF'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4338CA),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => _showFeedbackDialog(version),
+                  icon: const Icon(Icons.rate_review_rounded, size: 18),
+                  label: const Text('Feedback'),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

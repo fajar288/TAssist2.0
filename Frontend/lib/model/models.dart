@@ -1,4 +1,5 @@
 // lib/models/models.dart
+import 'package:flutter/foundation.dart';
 import '../theme/app_theme.dart';
 
 export '../theme/app_theme.dart' show RequestStatus;
@@ -66,7 +67,8 @@ class CounselingRequest {
 
     try {
       return DateTime.parse(value);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('CounselingRequest._parseDate failed for "$value": $e');
       return DateTime.now();
     }
   }
@@ -300,7 +302,8 @@ class MeetingRequest {
 
     try {
       return DateTime.parse(value);
-    } catch (_) {
+    } catch (e) {
+      debugPrint('CounselingRequest._parseDate failed for "$value": $e');
       return DateTime.now();
     }
   }

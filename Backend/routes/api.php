@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DokumenFileController;
 use App\Http\Controllers\Api\NotifikasiController;
+use App\Http\Controllers\Api\AnotasiDokumenController;
 
 // Mahasiswa Controllers
 use App\Http\Controllers\Api\Mahasiswa\MahasiswaController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\Mahasiswa\DokumenTAController as MahasiswaDokumenCo
 use App\Http\Controllers\Api\Mahasiswa\JadwalBimbinganController as MahasiswaJadwalController;
 use App\Http\Controllers\Api\Mahasiswa\FeedbackDokumenController as MahasiswaFeedbackController;
 use App\Http\Controllers\Api\Mahasiswa\ProgresTAController as MahasiswaProgresController;
+use App\Http\Controllers\Api\Mahasiswa\InformasiTAController as MahasiswaInformasiTAController;
 
 // Dosen Controllers
 use App\Http\Controllers\Api\Dosen\DosenController;
@@ -69,6 +71,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/dokumen/signed-url/{versi_id}', [DokumenFileController::class, 'signedUrl'])
             ->name('dokumen.signed-url');
 
+        // Ringkasan anotasi lintas versi (T-12)
+        Route::get('/dokumen/{dokumen_id}/anotasi-summary', [AnotasiDokumenController::class, 'summary'])
+            ->name('dokumen.anotasi-summary');
+
         // =============================================================
         // MAHASISWA ROUTES
         // =============================================================
@@ -116,6 +122,17 @@ Route::prefix('v1')->group(function () {
 
                 // Notifikasi mahasiswa
                 Route::get('/notifikasi', [NotifikasiController::class, 'index']);
+
+                // Dokumen Anotasi (T-09, T-10, T-11)
+                Route::get('/dokumen/{versi_id}/anotasi', [AnotasiDokumenController::class, 'indexMahasiswa']);
+                Route::put('/anotasi/{id}/revised',        [AnotasiDokumenController::class, 'markRevised']);
+                Route::post('/anotasi/{id}/reply',         [AnotasiDokumenController::class, 'reply']);
+
+                // Informasi TA Mahasiswa (T-14)
+                Route::prefix('informasi-ta')->group(function () {
+                    Route::get('/',     [MahasiswaInformasiTAController::class, 'index']);
+                    Route::get('/{id}', [MahasiswaInformasiTAController::class, 'show']);
+                });
             });
 
         // =============================================================
@@ -181,6 +198,12 @@ Route::prefix('v1')->group(function () {
 
                 // Notifikasi dosen
                 Route::get('/notifikasi', [NotifikasiController::class, 'index']);
+
+                // Dokumen Anotasi (T-09, T-10, T-11)
+                Route::post('/anotasi',                   [AnotasiDokumenController::class, 'store']);
+                Route::get('/dokumen/{versi_id}/anotasi', [AnotasiDokumenController::class, 'indexDosen']);
+                Route::put('/anotasi/{id}/resolved',      [AnotasiDokumenController::class, 'resolve']);
+                Route::post('/anotasi/{id}/reply',        [AnotasiDokumenController::class, 'reply']);
             });
 
         // =============================================================

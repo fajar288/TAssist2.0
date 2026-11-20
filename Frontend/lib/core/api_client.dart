@@ -289,13 +289,13 @@ class ApiClient {
     // 2. Optional extra cleanup (Google sign-out) + wipe stored session.
     try {
       await onSessionExpired?.call();
-    } catch (_) {
-      // Never block the redirect because of cleanup failures.
+    } catch (e) {
+      debugPrint('ApiClient: onSessionExpired cleanup error: $e');
     }
     try {
       await tokenStore.clearAll();
-    } catch (_) {
-      // Ignore storage failures — the user is redirected regardless.
+    } catch (e) {
+      debugPrint('ApiClient: tokenStore.clearAll error: $e');
     }
 
     // 3. Navigate to login (clearing the entire stack) + snackbar.
@@ -452,7 +452,8 @@ class ApiClient {
       await tokenStore.write(newToken);
 
       return newToken;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('ApiClient: Token refresh request failed: $e');
       return null;
     }
   }
@@ -491,7 +492,8 @@ class ApiClient {
       if (decoded is Map) return Map<String, dynamic>.from(decoded);
 
       return null;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('ApiClient: JSON decode failed: $e');
       return null;
     }
   }

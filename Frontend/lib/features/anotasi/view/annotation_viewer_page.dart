@@ -1,0 +1,845 @@
+// lib/features/anotasi/view/annotation_viewer_page.dart
+
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import '../../../model/annotation_model.dart';
+import '../../../theme/app_theme.dart';
+import '../data/annotation_service.dart';
+
+class AnnotationViewerPage extends StatefulWidget {
+  final int versiId;
+  final int? dokumenId;
+  final String documentTitle;
+  final bool isDosen;
+
+  const AnnotationViewerPage({
+    super.key,
+    required this.versiId,
+    this.dokumenId,
+    required this.documentTitle,
+    required this.isDosen,
+  });
+
+  @override
+  State<AnnotationViewerPage> createState() => _AnnotationViewerPageState();
+}
+
+class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
+  final AnnotationService _service = AnnotationService();
+  final PdfViewerController _pdfController = PdfViewerController();
+
+  String? _signedUrl;
+  bool _isLoadingPdf = true;
+  String? _pdfError;
+
+  List<AnnotationModel> _annotations = [];
+  bool _isLoadingAnnotations = false;
+  int _currentPage = 1;
+  int _pageCount = 1;
+
+  // Dosen annotation creation mode (Decision A3)
+  bool _isAddingAnnotationMode = false;
+  String _statusFilter = 'all';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    await Future.wait([
+      _fetchSignedUrl(),
+      _fetchAnnotations(),
+    ]);
+  }
+
+  Future<void> _fetchSignedUrl() async {
+    setState(() {
+      _isLoadingPdf = true;
+      _pdfError = null;
+    });
+
+    try {
+      final url = await _service.getSignedUrl(widget.versiId);
+      if (!mounted) return;
+      setState(() {
+        _signedUrl = url;
+        _isLoadingPdf = false;
+      });
+    } catch (e) {
+      debugPrint('AnnotationViewerPage: getSignedUrl error: $e');
+      if (!mounted) return;
+      setState(() {
+        _pdfError = 'Gagal memuat dokumen PDF. Pastikan tautan masih berlaku.';
+        _isLoadingPdf = false;
+      });
+    }
+  }
+
+  Future<void> _fetchAnnotations() async {
+    setState(() {
+      _isLoadingAnnotations = true;
+    });
+
+    try {
+      final list = widget.isDosen
+          ? await _service.getAnnotationsForDosen(
+              widget.versiId,
+              status: _statusFilter == 'all' ? null : _statusFilter,
+            )
+          : await _service.getAnnotationsForMahasiswa(
+              widget.versiId,
+              status: _statusFilter == 'all' ? null : _statusFilter,
+            );
+
+      if (!mounted) return;
+      setState(() {
+        _annotations = list;
+        _isLoadingAnnotations = false;
+      });
+    } catch (e) {
+      debugPrint('AnnotationViewerPage: _fetchAnnotations error: $e');
+      if (!mounted) return;
+      setState(() {
+        _isLoadingAnnotations = false;
+      });
+    }
+  }
+
+  List<AnnotationModel> get _currentPageAnnotations {
+    return _annotations.where((a) => a.halaman == _currentPage).toList();
+  }
+
+  void _onPdfTapped(TapUpDetails details, BoxConstraints constraints) {
+    if (!_isAddingAnnotationMode || !widget.isDosen) return;
+
+    final x = (details.localPosition.dx / constraints.maxWidth).clamp(0.0, 1.0);
+    final y = (details.localPosition.dy / constraints.maxHeight).clamp(0.0, 1.0);
+
+    _showCreateAnnotationDialog(x, y);
+  }
+
+  void _showCreateAnnotationDialog(double x, double y) {
+    final kontenController = TextEditingController();
+    String selectedTipe = 'komentar';
+
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: Row(
+                children: [
+                  const Icon(Icons.note_add_rounded, color: AppTheme.primary),
+                  const SizedBox(width: 8),
+                  Text('Anotasi Halaman $_currentPage', style: const TextStyle(fontSize: 18)),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Tipe Anotasi:', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('Komentar'),
+                        selected: selectedTipe == 'komentar',
+                        onSelected: (val) => setDialogState(() => selectedTipe = 'komentar'),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Highlight'),
+                        selected: selectedTipe == 'highlight',
+                        onSelected: (val) => setDialogState(() => selectedTipe = 'highlight'),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Coretan'),
+                        selected: selectedTipe == 'coretan',
+                        onSelected: (val) => setDialogState(() => selectedTipe = 'coretan'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Text('Catatan / Masukan:', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: kontenController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: 'Tuliskan catatan perbaikan untuk mahasiswa...',
+                      hintStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogCtx),
+                  child: const Text('Batal'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final text = kontenController.text.trim();
+                    if (text.isEmpty) return;
+
+                    Navigator.pop(dialogCtx);
+                    setState(() => _isAddingAnnotationMode = false);
+
+                    try {
+                      await _service.createAnnotation(
+                        versiId: widget.versiId,
+                        halaman: _currentPage,
+                        x: x,
+                        y: y,
+                        tipe: selectedTipe,
+                        konten: text,
+                      );
+
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Anotasi berhasil ditambahkan.')),
+                      );
+                      _fetchAnnotations();
+                    } catch (e) {
+                      debugPrint('Error creating annotation: $e');
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Gagal membuat anotasi: $e')),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showAnnotationDetailSheet(AnnotationModel anotasi) {
+    final replyController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            final dateStr = anotasi.createdAt != null
+                ? '${anotasi.createdAt!.day.toString().padLeft(2, '0')}/${anotasi.createdAt!.month.toString().padLeft(2, '0')}/${anotasi.createdAt!.year} ${anotasi.createdAt!.hour.toString().padLeft(2, '0')}:${anotasi.createdAt!.minute.toString().padLeft(2, '0')}'
+                : '-';
+
+            Color statusColor;
+            Color statusBg;
+            String statusLabel;
+            switch (anotasi.status) {
+              case AnnotationStatus.resolved:
+                statusColor = AppTheme.accepted;
+                statusBg = AppTheme.acceptedBg;
+                statusLabel = 'Selesai (Resolved)';
+                break;
+              case AnnotationStatus.revised:
+                statusColor = AppTheme.info;
+                statusBg = AppTheme.infoBg;
+                statusLabel = 'Sudah Direvisi';
+                break;
+              case AnnotationStatus.open:
+              default:
+                statusColor = AppTheme.pending;
+                statusBg = AppTheme.pendingBg;
+                statusLabel = 'Perlu Revisi (Open)';
+                break;
+            }
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.75,
+                ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Sheet Handle
+                    Container(
+                      margin: const EdgeInsets.only(top: 10, bottom: 6),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    // Header
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      anotasi.authorName,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.primaryGhost,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        anotasi.tipe.name.toUpperCase(),
+                                        style: const TextStyle(
+                                          color: AppTheme.primary,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Hal ${anotasi.halaman} • $dateStr',
+                                  style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: statusBg,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: statusColor.withOpacity(0.4)),
+                            ),
+                            child: Text(
+                              statusLabel,
+                              style: TextStyle(
+                                color: statusColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    // Body / Notes
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          anotasi.konten ?? 'Tidak ada catatan teks.',
+                          style: const TextStyle(fontSize: 15, height: 1.4, color: AppTheme.textPrimary),
+                        ),
+                      ),
+                    ),
+                    // Lifecycle Action Button
+                    if (!widget.isDosen && anotasi.status == AnnotationStatus.open)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            icon: const Icon(Icons.check_circle_outline, size: 18),
+                            label: const Text('Tandai Sudah Direvisi'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.info,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            ),
+                            onPressed: () async {
+                              Navigator.pop(sheetContext);
+                              try {
+                                await _service.markRevised(anotasi.anotasiId);
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Anotasi berhasil ditandai sebagai revised.')),
+                                );
+                                _fetchAnnotations();
+                              } catch (e) {
+                                debugPrint('Error marking revised: $e');
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    if (widget.isDosen && anotasi.status != AnnotationStatus.resolved)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            icon: const Icon(Icons.task_alt_rounded, size: 18),
+                            label: const Text('Selesaikan Anotasi (Resolved)'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.accepted,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            ),
+                            onPressed: () async {
+                              Navigator.pop(sheetContext);
+                              try {
+                                await _service.markResolved(anotasi.anotasiId);
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Anotasi berhasil diselesaikan.')),
+                                );
+                                _fetchAnnotations();
+                              } catch (e) {
+                                debugPrint('Error marking resolved: $e');
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    const Divider(height: 16),
+                    // Reply Thread
+                    Expanded(
+                      child: anotasi.replies.isEmpty
+                          ? const Center(
+                              child: Text(
+                                'Belum ada balasan diskusi.',
+                                style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                              ),
+                            )
+                          : ListView.separated(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              itemCount: anotasi.replies.length,
+                              separatorBuilder: (_, __) => const SizedBox(height: 10),
+                              itemBuilder: (context, idx) {
+                                final r = anotasi.replies[idx];
+                                final rDate = r.createdAt != null
+                                    ? '${r.createdAt!.hour.toString().padLeft(2, '0')}:${r.createdAt!.minute.toString().padLeft(2, '0')}'
+                                    : '';
+                                return Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.surfaceVariant,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: AppTheme.cardBorder),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            r.authorName,
+                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                          ),
+                                          const Spacer(),
+                                          Text(rDate, style: const TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(r.konten, style: const TextStyle(fontSize: 13)),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                    // Reply Input
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        border: Border(top: BorderSide(color: AppTheme.cardBorder)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: replyController,
+                              decoration: InputDecoration(
+                                hintText: 'Tulis balasan...',
+                                hintStyle: const TextStyle(fontSize: 13, color: AppTheme.textMuted),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                filled: true,
+                                fillColor: AppTheme.surfaceVariant,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.send_rounded, color: AppTheme.primary),
+                            onPressed: () async {
+                              final text = replyController.text.trim();
+                              if (text.isEmpty) return;
+
+                              replyController.clear();
+                              try {
+                                await _service.reply(
+                                  anotasiId: anotasi.anotasiId,
+                                  konten: text,
+                                  isDosen: widget.isDosen,
+                                );
+                                Navigator.pop(sheetContext);
+                                _fetchAnnotations();
+                              } catch (e) {
+                                debugPrint('Error replying annotation: $e');
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showCrossVersionSummarySheet() async {
+    if (widget.dokumenId == null) return;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return FutureBuilder<Map<String, dynamic>>(
+          future: _service.getCrossVersionSummary(widget.dokumenId!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Container(
+                height: 250,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            if (snapshot.hasError || !snapshot.hasData) {
+              return Container(
+                height: 200,
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: const Center(child: Text('Gagal memuat ringkasan anotasi versi.')),
+              );
+            }
+
+            final data = snapshot.data!;
+            final versions = (data['versi'] as List?) ?? [];
+
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.history_rounded, color: AppTheme.primary),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Ringkasan Anotasi Lintas Versi',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: versions.length,
+                    separatorBuilder: (_, __) => const Divider(height: 16),
+                    itemBuilder: (context, idx) {
+                      final v = versions[idx] as Map;
+                      return Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryGhost,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              'v${v['nomor_versi']}',
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  v['file_name']?.toString() ?? 'Dokumen',
+                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Total: ${v['total']} • Terbuka: ${v['open']} • Direvisi: ${v['revised']} • Selesai: ${v['resolved']}',
+                                  style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      appBar: AppBar(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.documentTitle,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              'Halaman $_currentPage dari $_pageCount',
+              style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.white,
+        foregroundColor: AppTheme.textPrimary,
+        elevation: 0,
+        actions: [
+          // Filter popup
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.filter_list_rounded),
+            tooltip: 'Filter Anotasi',
+            onSelected: (val) {
+              setState(() => _statusFilter = val);
+              _fetchAnnotations();
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: 'all', child: Text('Semua Status')),
+              const PopupMenuItem(value: 'open', child: Text('Hanya Open (Perlu Revisi)')),
+              const PopupMenuItem(value: 'revised', child: Text('Hanya Direvisi')),
+              const PopupMenuItem(value: 'resolved', child: Text('Hanya Selesai')),
+            ],
+          ),
+          // Cross-version summary button (T-12)
+          if (widget.dokumenId != null)
+            IconButton(
+              icon: const Icon(Icons.summarize_outlined),
+              tooltip: 'Ringkasan Lintas Versi',
+              onPressed: _showCrossVersionSummarySheet,
+            ),
+          // Dosen Add Annotation Toggle (T-13, Decision A3)
+          if (widget.isDosen)
+            IconButton(
+              icon: Icon(
+                _isAddingAnnotationMode ? Icons.edit_note : Icons.add_comment_outlined,
+                color: _isAddingAnnotationMode ? Colors.orange : AppTheme.primary,
+              ),
+              tooltip: _isAddingAnnotationMode ? 'Mode Anotasi Aktif (Tap pada PDF)' : 'Tambah Anotasi',
+              onPressed: () {
+                setState(() {
+                  _isAddingAnnotationMode = !_isAddingAnnotationMode;
+                });
+                if (_isAddingAnnotationMode) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Mode Anotasi Aktif: Tap pada area halaman PDF untuk meletakkan anotasi.'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+            ),
+        ],
+      ),
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isLoadingPdf) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_pdfError != null || _signedUrl == null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: AppTheme.declined),
+            const SizedBox(height: 12),
+            Text(_pdfError ?? 'Gagal memuat PDF', style: const TextStyle(color: AppTheme.textSecondary)),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _fetchSignedUrl,
+              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
+              child: const Text('Coba Lagi', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            // PDF Viewer layer
+            SfPdfViewer.network(
+              _signedUrl!,
+              controller: _pdfController,
+              onDocumentLoaded: (details) {
+                setState(() {
+                  _pageCount = details.document.pages.count;
+                });
+              },
+              onPageChanged: (details) {
+                setState(() {
+                  _currentPage = details.newPageNumber;
+                });
+              },
+            ),
+
+            // Mode indicator banner
+            if (_isAddingAnnotationMode && widget.isDosen)
+              Positioned(
+                top: 8,
+                left: 16,
+                right: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade700,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 6, offset: const Offset(0, 2)),
+                    ],
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.touch_app_rounded, color: Colors.white, size: 18),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Mode Tambah Anotasi: Ketuk posisi yang ingin dianotasi di halaman ini.',
+                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            // Annotation overlay layer for current page
+            ..._currentPageAnnotations.map((anotasi) {
+              final posX = (anotasi.x * constraints.maxWidth).clamp(0.0, constraints.maxWidth - 36);
+              final posY = (anotasi.y * constraints.maxHeight).clamp(0.0, constraints.maxHeight - 36);
+
+              Color pinColor;
+              switch (anotasi.status) {
+                case AnnotationStatus.resolved:
+                  pinColor = AppTheme.accepted;
+                  break;
+                case AnnotationStatus.revised:
+                  pinColor = AppTheme.info;
+                  break;
+                case AnnotationStatus.open:
+                default:
+                  pinColor = AppTheme.pending;
+                  break;
+              }
+
+              return Positioned(
+                left: posX,
+                top: posY,
+                child: GestureDetector(
+                  onTap: () => _showAnnotationDetailSheet(anotasi),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: pinColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.comment_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            }),
+
+            // Transparent touch layer when in creation mode
+            if (_isAddingAnnotationMode && widget.isDosen)
+              Positioned.fill(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTapUp: (details) => _onPdfTapped(details, constraints),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
