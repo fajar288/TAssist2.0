@@ -19,10 +19,12 @@ class ProgresTA extends Model
         'status_progress',
         'updated_dosen_id',
         'catatan',
+        'is_override',
     ];
 
     protected $casts = [
         'persentase'  => 'float',
+        'is_override' => 'boolean',
         'updated_at'  => 'datetime',
         'created_at'  => 'datetime',
     ];

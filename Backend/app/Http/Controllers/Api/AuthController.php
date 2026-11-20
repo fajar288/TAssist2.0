@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Google\Client as GoogleClient;
+use Laravel\Sanctum\PersonalAccessToken;
 use Throwable;
 
 class AuthController extends Controller
@@ -279,6 +280,34 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return $this->successResponse('Logout berhasil.');
+    }
+
+    // ==================== REFRESH TOKEN ====================
+
+    /**
+     * Ganti token yang sedang dipakai dengan token baru (masa berlaku sama
+     * seperti login: 1 jam). Dipakai klien saat menerima 401 sebelum
+     * memutuskan untuk logout.
+     */
+    public function refreshToken(Request $request): JsonResponse
+    {
+        $user         = $request->user();
+        $currentToken = $request->user()->currentAccessToken();
+
+        // Hapus token lama (kalau yang dipakai memang token Sanctum).
+        if ($currentToken instanceof PersonalAccessToken) {
+            $currentToken->delete();
+        }
+
+        // Buat token baru dengan expired 1 jam — sama persis dengan login.
+        $expiresAt = now()->addHour();
+        $token     = $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
+
+        return $this->successResponse('Token berhasil diperbarui', [
+            'token'      => $token,
+            'token_type' => 'Bearer',
+            'expires_at' => $expiresAt->format('Y-m-d H:i:s'),
+        ]);
     }
 
     // ==================== PROFILE ====================

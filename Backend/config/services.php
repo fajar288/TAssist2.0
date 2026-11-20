@@ -39,4 +39,12 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
     ],
 
+    // Google AI Studio / Gemini. Consumed by the chatbot (T-31). The key is
+    // per-environment and never committed — see Docs/OPS_BASELINE.md.
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.0-flash'),
+        'daily_request_limit' => env('GEMINI_DAILY_REQUEST_LIMIT'),
+    ],
+
 ];

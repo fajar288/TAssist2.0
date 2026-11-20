@@ -21,12 +21,15 @@ class VersiDokumen extends Model
         'catatan_revisi',
         'uploaded_at',
         'status_versi',
+        'jumlah_anotasi_terbuka',
     ];
 
     protected $casts = [
-        'uploaded_at' => 'datetime',
-        'created_at'  => 'datetime',
-        'updated_at'  => 'datetime',
+        'nomor_versi'            => 'integer',
+        'jumlah_anotasi_terbuka' => 'integer',
+        'uploaded_at'            => 'datetime',
+        'created_at'             => 'datetime',
+        'updated_at'             => 'datetime',
     ];
 
     // ==================== RELASI ====================
@@ -44,5 +47,10 @@ class VersiDokumen extends Model
     public function feedbackDokumen()
     {
         return $this->hasMany(FeedbackDokumen::class, 'versi_id', 'versi_id');
+    }
+
+    public function anotasiDokumen()
+    {
+        return $this->hasMany(AnotasiDokumen::class, 'versi_id', 'versi_id');
     }
 }

@@ -1,45 +1,66 @@
 <?php
+// database/factories/UserFactory.php
 
 namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    protected $model = User::class;
 
     /**
-     * Define the model's default state.
+     * Defaults mirror database/seeders/{Admin,Dosen,Mahasiswa}Seeder.php:
+     * password "password123", status_akun "aktif".
      *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'nama'          => $this->faker->name(),
+            'email'         => $this->faker->unique()->safeEmail(),
+            'password_hash' => Hash::make('password123'),
+            'role'          => 'mahasiswa',
+            'status_akun'   => 'aktif',
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    public function mahasiswa(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+        return $this->state(fn () => ['role' => 'mahasiswa']);
+    }
+
+    public function dosen(): static
+    {
+        return $this->state(fn () => ['role' => 'dosen']);
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn () => ['role' => 'admin']);
+    }
+
+    public function nonaktif(): static
+    {
+        return $this->state(fn () => ['status_akun' => 'nonaktif']);
+    }
+
+    /**
+     * User created through Google login: no local password.
+     */
+    public function google(): static
+    {
+        return $this->state(fn () => [
+            'password_hash'     => null,
+            'google_id'         => $this->faker->unique()->numerify('####################'),
+            'avatar'            => null,
+            'email_verified_at' => now(),
         ]);
     }
 }

@@ -47,6 +47,24 @@ return [
             'report' => false,
         ],
 
+        /*
+         * Private disk for TA documents (T-02, decision C5).
+         *
+         * Documents are no longer reachable through the `public/storage`
+         * symlink: the only way in is a signed URL issued by
+         * App\Services\SignedUrlService (15-minute TTL). `serve => false`
+         * keeps Laravel's built-in local file route from exposing it.
+         * Avatars intentionally stay on the `public` disk.
+         */
+        'dokumen' => [
+            'driver'     => 'local',
+            'root'       => storage_path('app/dokumen'),
+            'visibility' => 'private',
+            'serve'      => false,
+            'throw'      => false,
+            'report'     => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

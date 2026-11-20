@@ -19,12 +19,18 @@ class Bimbingan extends Model
         'dosen_id',
         'tanggal_mulai',
         'status_bimbingan',
+        'tanggal_selesai',
+        'periode_mulai',
+        'periode_selesai',
     ];
 
     protected $casts = [
-        'tanggal_mulai' => 'date',
-        'created_at'    => 'datetime',
-        'updated_at'    => 'datetime',
+        'tanggal_mulai'   => 'date',
+        'tanggal_selesai' => 'date',
+        'periode_mulai'   => 'date',
+        'periode_selesai' => 'date',
+        'created_at'      => 'datetime',
+        'updated_at'      => 'datetime',
     ];
 
     // ==================== RELASI ====================
@@ -70,5 +76,24 @@ class Bimbingan extends Model
     public function isAktif(): bool
     {
         return $this->status_bimbingan === 'aktif';
+    }
+
+    public function isSelesai(): bool
+    {
+        return $this->status_bimbingan === 'selesai';
+    }
+
+    public function isDibatalkan(): bool
+    {
+        return $this->status_bimbingan === 'dibatalkan';
+    }
+
+    /**
+     * A TA period only counts when both bounds are present (decision C1).
+     * A half-filled period is treated as "not set" by the analytics signal.
+     */
+    public function hasPeriode(): bool
+    {
+        return $this->periode_mulai !== null && $this->periode_selesai !== null;
     }
 }

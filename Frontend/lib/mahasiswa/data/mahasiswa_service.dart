@@ -1,97 +1,9 @@
-import 'dart:convert';
-
 import 'package:file_picker/file_picker.dart';
-import 'package:http/http.dart' as http;
 
-import '../../../core/api_config.dart';
-import '../../../core/http_client.dart';
-import '../../features/auth/data/auth_service.dart';
+import '../../../core/api_client.dart';
 
-class MahasiswaService with AuthInterceptorMixin {
-  final AuthService _authService = AuthService();
-
-  Future<Map<String, String>> _headers({bool json = false}) async {
-    final token = await _authService.getToken();
-
-    if (token == null || token.isEmpty) {
-      throw Exception('Token tidak ditemukan. Silakan login ulang.');
-    }
-
-    return {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-      if (json) 'Content-Type': 'application/json',
-    };
-  }
-
-  Uri _uri(String path, [Map<String, dynamic>? query]) {
-    final uri = Uri.parse('${ApiConfig.baseUrl}$path');
-
-    if (query == null || query.isEmpty) {
-      return uri;
-    }
-
-    final cleanQuery = <String, String>{};
-
-    query.forEach((key, value) {
-      if (value != null && value.toString().trim().isNotEmpty) {
-        cleanQuery[key] = value.toString();
-      }
-    });
-
-    return uri.replace(queryParameters: cleanQuery);
-  }
-
-  Map<String, dynamic> _decodeResponse(http.Response response) {
-    dynamic decodedBody;
-
-    try {
-      decodedBody = jsonDecode(response.body);
-    } catch (_) {
-      // Check for 401 before throwing parse errors.
-      checkUnauthorized(response);
-      throw Exception(
-        'Response server tidak valid. Status: ${response.statusCode}',
-      );
-    }
-
-    if (decodedBody is! Map) {
-      throw Exception('Format response server tidak valid.');
-    }
-
-    final decoded = Map<String, dynamic>.from(decodedBody);
-    final success = decoded['success'] == true;
-
-    if (response.statusCode < 200 || response.statusCode >= 300 || !success) {
-      checkUnauthorized(response);
-      throw Exception(_errorMessageFromDecoded(decoded));
-    }
-
-    return decoded;
-  }
-
-  String _errorMessageFromDecoded(Map<String, dynamic> decoded) {
-    final message = decoded['message']?.toString() ?? 'Request gagal.';
-    final errors = decoded['errors'];
-
-    if (errors is Map && errors.isNotEmpty) {
-      final details = <String>[];
-
-      errors.forEach((_, value) {
-        if (value is List) {
-          details.addAll(value.map((item) => item.toString()));
-        } else if (value != null) {
-          details.add(value.toString());
-        }
-      });
-
-      if (details.isNotEmpty) {
-        return '$message\n${details.join('\n')}';
-      }
-    }
-
-    return message;
-  }
+class MahasiswaService {
+  final ApiClient _client = ApiClient.instance;
 
   List<Map<String, dynamic>> _extractList(Map<String, dynamic> decoded) {
     final rootData = decoded['data'];
@@ -112,46 +24,26 @@ class MahasiswaService with AuthInterceptorMixin {
         .toList();
   }
 
-  Future<void> _attachFileToRequest({
-    required http.MultipartRequest request,
-    required PlatformFile file,
-  }) async {
+  ApiFile _filePart(PlatformFile file) {
     if (file.bytes != null) {
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'file',
-          file.bytes!,
-          filename: file.name,
-        ),
-      );
-      return;
+      return ApiFile.fromBytes('file', file.bytes!, file.name);
     }
 
     if (file.path != null && file.path!.isNotEmpty) {
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'file',
-          file.path!,
-          filename: file.name,
-        ),
-      );
-      return;
+      return ApiFile.fromPath('file', file.path!, file.name);
     }
 
-    throw Exception('File tidak valid atau tidak bisa dibaca.');
+    throw const ApiException('File tidak valid atau tidak bisa dibaca.');
   }
 
   Future<List<Map<String, dynamic>>> getBimbingan({
     int perPage = 10,
   }) async {
-    final response = await http.get(
-      _uri('/mahasiswa/bimbingan', {
-        'per_page': perPage,
-      }),
-      headers: await _headers(),
+    final decoded = await _client.get(
+      '/mahasiswa/bimbingan',
+      query: {'per_page': perPage},
     );
 
-    final decoded = _decodeResponse(response);
     return _extractList(decoded);
   }
 
@@ -191,26 +83,19 @@ class MahasiswaService with AuthInterceptorMixin {
       query['ada_kuota'] = adaKuota ? 1 : 0;
     }
 
-    final response = await http.get(
-      _uri('/mahasiswa/dosen', query),
-      headers: await _headers(),
-    );
+    final decoded = await _client.get('/mahasiswa/dosen', query: query);
 
-    final decoded = _decodeResponse(response);
     return _extractList(decoded);
   }
 
   Future<List<Map<String, dynamic>>> getPermohonan({
     int perPage = 20,
   }) async {
-    final response = await http.get(
-      _uri('/mahasiswa/permohonan', {
-        'per_page': perPage,
-      }),
-      headers: await _headers(),
+    final decoded = await _client.get(
+      '/mahasiswa/permohonan',
+      query: {'per_page': perPage},
     );
 
-    final decoded = _decodeResponse(response);
     return _extractList(decoded);
   }
 
@@ -218,16 +103,13 @@ class MahasiswaService with AuthInterceptorMixin {
     required int dosenId,
     required String topikTa,
   }) async {
-    final response = await http.post(
-      _uri('/mahasiswa/permohonan'),
-      headers: await _headers(json: true),
-      body: jsonEncode({
+    final decoded = await _client.post(
+      '/mahasiswa/permohonan',
+      body: {
         'dosen_id': dosenId,
         'topik_ta': topikTa.trim(),
-      }),
+      },
     );
-
-    final decoded = _decodeResponse(response);
 
     final data = decoded['data'];
     if (data is Map<String, dynamic>) {
@@ -240,14 +122,11 @@ class MahasiswaService with AuthInterceptorMixin {
   Future<List<Map<String, dynamic>>> getJadwal({
     int perPage = 20,
   }) async {
-    final response = await http.get(
-      _uri('/mahasiswa/jadwal', {
-        'per_page': perPage,
-      }),
-      headers: await _headers(),
+    final decoded = await _client.get(
+      '/mahasiswa/jadwal',
+      query: {'per_page': perPage},
     );
 
-    final decoded = _decodeResponse(response);
     return _extractList(decoded);
   }
 
@@ -259,20 +138,17 @@ class MahasiswaService with AuthInterceptorMixin {
     required String mode,
     String? catatan,
   }) async {
-    final response = await http.post(
-      _uri('/mahasiswa/jadwal'),
-      headers: await _headers(json: true),
-      body: jsonEncode({
+    final decoded = await _client.post(
+      '/mahasiswa/jadwal',
+      body: {
         'bimbingan_id': bimbinganId,
         'tanggal': tanggal,
         'waktu_mulai': waktuMulai,
         'waktu_selesai': waktuSelesai,
         'mode': mode,
         'catatan': catatan?.trim().isEmpty == true ? null : catatan?.trim(),
-      }),
+      },
     );
-
-    final decoded = _decodeResponse(response);
 
     final data = decoded['data'];
     if (data is Map<String, dynamic>) {
@@ -285,14 +161,11 @@ class MahasiswaService with AuthInterceptorMixin {
   Future<Map<String, dynamic>> getProgres({
     int perPage = 5,
   }) async {
-    final response = await http.get(
-      _uri('/mahasiswa/progres', {
-        'per_page': perPage,
-      }),
-      headers: await _headers(),
+    final decoded = await _client.get(
+      '/mahasiswa/progres',
+      query: {'per_page': perPage},
     );
 
-    final decoded = _decodeResponse(response);
     final rootData = decoded['data'];
 
     if (rootData is! Map<String, dynamic>) {
@@ -329,14 +202,11 @@ class MahasiswaService with AuthInterceptorMixin {
   Future<List<Map<String, dynamic>>> getDokumen({
     int perPage = 20,
   }) async {
-    final response = await http.get(
-      _uri('/mahasiswa/dokumen', {
-        'per_page': perPage,
-      }),
-      headers: await _headers(),
+    final decoded = await _client.get(
+      '/mahasiswa/dokumen',
+      query: {'per_page': perPage},
     );
 
-    final decoded = _decodeResponse(response);
     return _extractList(decoded);
   }
 
@@ -347,32 +217,19 @@ class MahasiswaService with AuthInterceptorMixin {
     String? catatanRevisi,
     required PlatformFile file,
   }) async {
-    final request = http.MultipartRequest(
+    final decoded = await _client.multipart(
       'POST',
-      _uri('/mahasiswa/dokumen'),
+      '/mahasiswa/dokumen',
+      fields: {
+        'jenis_dokumen': jenisDokumen.trim(),
+        'judul_dokumen': judulDokumen.trim(),
+        if (deskripsi != null && deskripsi.trim().isNotEmpty)
+          'deskripsi': deskripsi.trim(),
+        if (catatanRevisi != null && catatanRevisi.trim().isNotEmpty)
+          'catatan_revisi': catatanRevisi.trim(),
+      },
+      files: [_filePart(file)],
     );
-
-    request.headers.addAll(await _headers());
-
-    request.fields['jenis_dokumen'] = jenisDokumen.trim();
-    request.fields['judul_dokumen'] = judulDokumen.trim();
-
-    if (deskripsi != null && deskripsi.trim().isNotEmpty) {
-      request.fields['deskripsi'] = deskripsi.trim();
-    }
-
-    if (catatanRevisi != null && catatanRevisi.trim().isNotEmpty) {
-      request.fields['catatan_revisi'] = catatanRevisi.trim();
-    }
-
-    await _attachFileToRequest(
-      request: request,
-      file: file,
-    );
-
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
-    final decoded = _decodeResponse(response);
 
     final data = decoded['data'];
     if (data is Map<String, dynamic>) {
@@ -386,14 +243,11 @@ class MahasiswaService with AuthInterceptorMixin {
     required int dokumenId,
     int perPage = 20,
   }) async {
-    final response = await http.get(
-      _uri('/mahasiswa/dokumen/$dokumenId/versi', {
-        'per_page': perPage,
-      }),
-      headers: await _headers(),
+    final decoded = await _client.get(
+      '/mahasiswa/dokumen/$dokumenId/versi',
+      query: {'per_page': perPage},
     );
 
-    final decoded = _decodeResponse(response);
     final rootData = decoded['data'];
 
     if (rootData is! Map<String, dynamic>) {
@@ -430,25 +284,15 @@ class MahasiswaService with AuthInterceptorMixin {
     String? catatanRevisi,
     required PlatformFile file,
   }) async {
-    final request = http.MultipartRequest(
+    final decoded = await _client.multipart(
       'POST',
-      _uri('/mahasiswa/dokumen/$dokumenId/versi'),
+      '/mahasiswa/dokumen/$dokumenId/versi',
+      fields: {
+        if (catatanRevisi != null && catatanRevisi.trim().isNotEmpty)
+          'catatan_revisi': catatanRevisi.trim(),
+      },
+      files: [_filePart(file)],
     );
-
-    request.headers.addAll(await _headers());
-
-    if (catatanRevisi != null && catatanRevisi.trim().isNotEmpty) {
-      request.fields['catatan_revisi'] = catatanRevisi.trim();
-    }
-
-    await _attachFileToRequest(
-      request: request,
-      file: file,
-    );
-
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
-    final decoded = _decodeResponse(response);
 
     final data = decoded['data'];
     if (data is Map<String, dynamic>) {

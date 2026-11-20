@@ -10,6 +10,7 @@ use App\Models\Bimbingan;
 use App\Models\DokumenTA;
 use App\Models\VersiDokumen;
 use App\Services\NotifikasiService;
+use App\Services\SignedUrlService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,6 +20,10 @@ use Illuminate\Support\Facades\Storage;
 class DokumenTAController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(private SignedUrlService $signedUrls)
+    {
+    }
 
     public function upload(DokumenTARequest $request): JsonResponse
     {

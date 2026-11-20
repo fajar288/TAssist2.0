@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Response;
 
 // Auth Controllers
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DokumenFileController;
 use App\Http\Controllers\Api\NotifikasiController;
 
 // Mahasiswa Controllers
@@ -20,6 +21,7 @@ use App\Http\Controllers\Api\Mahasiswa\ProgresTAController as MahasiswaProgresCo
 
 // Dosen Controllers
 use App\Http\Controllers\Api\Dosen\DosenController;
+use App\Http\Controllers\Api\Dosen\BimbinganController as DosenBimbinganController;
 use App\Http\Controllers\Api\Dosen\PermohonanBimbinganController as DosenPermohonanController;
 use App\Http\Controllers\Api\Dosen\FeedbackDokumenController as DosenFeedbackController;
 use App\Http\Controllers\Api\Dosen\JadwalBimbinganController as DosenJadwalController;
@@ -50,9 +52,10 @@ Route::prefix('v1')->group(function () {
     // =============================================================
     Route::middleware(['auth:sanctum'])->group(function () {
 
-        // Logout & Profile
-        Route::post('/logout',  [AuthController::class, 'logout']);
-        Route::get('/profile',  [AuthController::class, 'profile']);
+        // Logout, Profile & Token refresh
+        Route::post('/logout',        [AuthController::class, 'logout']);
+        Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
+        Route::get('/profile',        [AuthController::class, 'profile']);
 
         // Notifikasi shared (mahasiswa & dosen)
         Route::prefix('notifikasi')->group(function () {
@@ -60,6 +63,11 @@ Route::prefix('v1')->group(function () {
             Route::put('/{id}/read',    [NotifikasiController::class, 'markAsRead']);
             Route::put('/read-all',     [NotifikasiController::class, 'markAllAsRead']);
         });
+
+        // Dokumen TA — signed URL issuance (T-02).
+        // Any authenticated user may ask; VersiDokumenPolicy decides who gets one.
+        Route::get('/dokumen/signed-url/{versi_id}', [DokumenFileController::class, 'signedUrl'])
+            ->name('dokumen.signed-url');
 
         // =============================================================
         // MAHASISWA ROUTES
@@ -135,6 +143,9 @@ Route::prefix('v1')->group(function () {
                     // dosen melihat dokumen mahasiswa bimbingan
                     Route::get('/{id}/dokumen',  [DosenController::class, 'dokumenMahasiswa']);
                 });
+
+                // Status bimbingan (T-04)
+                Route::put('/bimbingan/{id}/status', [DosenBimbinganController::class, 'updateStatus']);
 
                 // Feedback dokumen
                 Route::prefix('feedback')->group(function () {
@@ -225,10 +236,31 @@ Route::prefix('v1')->group(function () {
             });
     });
 
-    // Endpoint khusus untuk melayani gambar dengan header CORS
-    Route::get('/image/{path}', function ($path) {
-        $fullPath = storage_path('app/public/' . $path);
-        
+    // Dokumen TA — file delivery (T-02).
+    //
+    // Deliberately outside `auth:sanctum`: Flutter Web and the PDF viewer fetch
+    // this URL with no `Authorization` header, so the HMAC signature is the
+    // credential. Authorization is enforced once, at signed-URL issuance
+    // (DokumenFileController::signedUrl), and the 15-minute signature carries
+    // the grant.
+    Route::get('/dokumen/{versi_id}/file', [DokumenFileController::class, 'show'])
+        ->middleware('signed')
+        ->name('dokumen.file');
+
+    // Endpoint khusus untuk melayani gambar avatar dengan header CORS (T-02 / C5)
+    // Direktori dibatasi hanya pada app/public/avatars untuk menutup celah IDOR.
+    Route::get('/avatar/{path}', function ($path) {
+        if (str_contains($path, '..')) {
+            abort(400, 'Invalid path');
+        }
+
+        $clean = ltrim($path, '/');
+        if (!str_starts_with($clean, 'avatars/')) {
+            $clean = 'avatars/' . $clean;
+        }
+
+        $fullPath = storage_path('app/public/' . $clean);
+
         if (!File::exists($fullPath)) {
             abort(404);
         }
@@ -238,6 +270,6 @@ Route::prefix('v1')->group(function () {
 
         return Response::make($file, 200)
             ->header('Content-Type', $type)
-            ->header('Access-Control-Allow-Origin', '*'); // Ini kunci untuk melewati blokir CORS Flutter Web
+            ->header('Access-Control-Allow-Origin', '*');
     })->where('path', '.*');
 });

@@ -1,14 +1,19 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 
+import '../../../core/api_client.dart';
 import '../../../core/api_config.dart';
 
 class AuthService {
+  AuthService() {
+    // On an unrecoverable 401 the ApiClient clears the session itself; this
+    // hook keeps the previous behaviour of also signing out of Google.
+    ApiClient.instance.onSessionExpired = _signOutGoogleQuietly;
+  }
+
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final ApiClient _client = ApiClient.instance;
 
   static bool _isGoogleInitialized = false;
   static Future<void>? _googleInitFuture;
@@ -64,33 +69,32 @@ class AuthService {
     }
 
     try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/login'),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
+      // Login must never carry a bearer token nor trigger a token refresh.
+      final data = await _client.post(
+        '/login',
+        authenticated: false,
+        body: {
           'email': normalizedEmail,
           'password': normalizedPassword,
-        }),
+        },
       );
 
-      final Map<String, dynamic> data = jsonDecode(response.body);
+      final result = _parseAuthResult(data);
 
-      if (response.statusCode == 200 && data['success'] == true) {
-        final result = _parseAuthResult(data);
-
-        if (result.token != null) {
-          await _saveAuthData(result);
-        }
-
-        return result;
+      if (result.token != null) {
+        await _saveAuthData(result);
       }
 
+      return result;
+    } on ApiException catch (e) {
       return AuthResult(
         isSuccess: false,
-        message: data['message']?.toString() ?? 'Email atau password salah.',
+        message: e.message,
+      );
+    } on SessionExpiredException catch (e) {
+      return AuthResult(
+        isSuccess: false,
+        message: e.toString(),
       );
     } catch (e) {
       return AuthResult(
@@ -137,32 +141,30 @@ class AuthService {
 
   Future<AuthResult> loginWithGoogleIdToken(String idToken) async {
     try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/login/google'),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
+      final data = await _client.post(
+        '/login/google',
+        authenticated: false,
+        body: {
           'id_token': idToken,
-        }),
+        },
       );
 
-      final Map<String, dynamic> data = jsonDecode(response.body);
+      final result = _parseAuthResult(data);
 
-      if (response.statusCode == 200 && data['success'] == true) {
-        final result = _parseAuthResult(data);
-
-        if (result.token != null) {
-          await _saveAuthData(result);
-        }
-
-        return result;
+      if (result.token != null) {
+        await _saveAuthData(result);
       }
 
+      return result;
+    } on ApiException catch (e) {
       return AuthResult(
         isSuccess: false,
-        message: data['message']?.toString() ?? 'Login Google gagal.',
+        message: e.message,
+      );
+    } on SessionExpiredException catch (e) {
+      return AuthResult(
+        isSuccess: false,
+        message: e.toString(),
       );
     } catch (e) {
       return AuthResult(
@@ -212,15 +214,17 @@ class AuthService {
   }
 
   Future<void> _saveAuthData(AuthResult result) async {
-    await _storage.write(key: 'token', value: result.token);
+    // The token lives in the shared token store so ApiClient can read it and
+    // persist refreshed tokens.
+    await _client.tokenStore.write(result.token);
     await _storage.write(key: 'role', value: result.role);
     await _storage.write(key: 'user_id', value: result.userId?.toString());
     await _storage.write(key: 'nama', value: result.nama);
     await _storage.write(key: 'email', value: result.email);
   }
 
-  Future<String?> getToken() async {
-    return _storage.read(key: 'token');
+  Future<String?> getToken() {
+    return _client.tokenStore.read();
   }
 
   Future<String?> getRole() async {
@@ -233,19 +237,7 @@ class AuthService {
     if (token == null) return null;
 
     try {
-      final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/profile'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      }
-
-      return null;
+      return await _client.get('/profile');
     } catch (_) {
       return null;
     }
@@ -268,48 +260,42 @@ class AuthService {
     }
 
     try {
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/mahasiswa/complete-profile'),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({
+      final data = await _client.post(
+        '/mahasiswa/complete-profile',
+        body: {
           'nim': nim.trim(),
           'prodi': prodi.trim(),
           'angkatan': angkatan,
           'topik_ta': topikTa?.trim().isEmpty == true ? null : topikTa?.trim(),
           'judul_ta': judulTa?.trim().isEmpty == true ? null : judulTa?.trim(),
-        }),
+        },
       );
 
-      final Map<String, dynamic> data = jsonDecode(response.body);
+      final responseData = data['data'];
 
-      if ((response.statusCode == 200 || response.statusCode == 201) &&
-          data['success'] == true) {
-        final responseData = data['data'];
+      Map<String, dynamic>? profile;
 
-        Map<String, dynamic>? profile;
-
-        if (responseData is Map<String, dynamic> &&
-            responseData['profile'] is Map<String, dynamic>) {
-          profile = Map<String, dynamic>.from(responseData['profile']);
-        }
-
-        return AuthResult(
-          isSuccess: true,
-          message: data['message']?.toString() ??
-              'Profil mahasiswa berhasil dilengkapi.',
-          role: 'mahasiswa',
-          profile: profile,
-        );
+      if (responseData is Map<String, dynamic> &&
+          responseData['profile'] is Map<String, dynamic>) {
+        profile = Map<String, dynamic>.from(responseData['profile']);
       }
 
       return AuthResult(
+        isSuccess: true,
+        message:
+            data['message']?.toString() ?? 'Profil mahasiswa berhasil dilengkapi.',
+        role: 'mahasiswa',
+        profile: profile,
+      );
+    } on ApiException catch (e) {
+      return AuthResult(
         isSuccess: false,
-        message: data['message']?.toString() ??
-            'Gagal melengkapi profil mahasiswa.',
+        message: e.message,
+      );
+    } on SessionExpiredException catch (e) {
+      return AuthResult(
+        isSuccess: false,
+        message: e.toString(),
       );
     } catch (e) {
       return AuthResult(
@@ -333,42 +319,39 @@ class AuthService {
     }
 
     try {
-      final response = await http.put(
-        Uri.parse('${ApiConfig.baseUrl}/mahasiswa/profile'),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({
+      final data = await _client.put(
+        '/mahasiswa/profile',
+        body: {
           'topik_ta': topikTa?.trim().isEmpty == true ? null : topikTa?.trim(),
           'judul_ta': judulTa?.trim().isEmpty == true ? null : judulTa?.trim(),
-        }),
+        },
       );
 
-      final Map<String, dynamic> data = jsonDecode(response.body);
+      final responseData = data['data'];
 
-      if (response.statusCode == 200 && data['success'] == true) {
-        final responseData = data['data'];
+      Map<String, dynamic>? profile;
 
-        Map<String, dynamic>? profile;
-
-        if (responseData is Map<String, dynamic> &&
-            responseData['profile'] is Map<String, dynamic>) {
-          profile = Map<String, dynamic>.from(responseData['profile']);
-        }
-
-        return AuthResult(
-          isSuccess: true,
-          message: data['message']?.toString() ?? 'Profil mahasiswa berhasil diperbarui.',
-          role: 'mahasiswa',
-          profile: profile,
-        );
+      if (responseData is Map<String, dynamic> &&
+          responseData['profile'] is Map<String, dynamic>) {
+        profile = Map<String, dynamic>.from(responseData['profile']);
       }
 
       return AuthResult(
+        isSuccess: true,
+        message: data['message']?.toString() ??
+            'Profil mahasiswa berhasil diperbarui.',
+        role: 'mahasiswa',
+        profile: profile,
+      );
+    } on ApiException catch (e) {
+      return AuthResult(
         isSuccess: false,
-        message: data['message']?.toString() ?? 'Gagal memperbarui profil mahasiswa.',
+        message: e.message,
+      );
+    } on SessionExpiredException catch (e) {
+      return AuthResult(
+        isSuccess: false,
+        message: e.toString(),
       );
     } catch (e) {
       return AuthResult(
@@ -383,18 +366,23 @@ class AuthService {
 
     if (token != null) {
       try {
-        await http.post(
-          Uri.parse('${ApiConfig.baseUrl}/logout'),
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
+        // Best effort only: no refresh, no redirect when the token is stale.
+        await _client.post(
+          '/logout',
+          retryOnUnauthorized: false,
+          expireSessionOnUnauthorized: false,
         );
       } catch (_) {
         // Kalau server tidak bisa dihubungi, local session tetap dibersihkan.
       }
     }
 
+    await _signOutGoogleQuietly();
+
+    await _client.tokenStore.clearAll();
+  }
+
+  Future<void> _signOutGoogleQuietly() async {
     try {
       if (_isGoogleInitialized) {
         await GoogleSignIn.instance.signOut();
@@ -402,8 +390,6 @@ class AuthService {
     } catch (_) {
       // Aman diabaikan kalau user tidak login lewat Google.
     }
-
-    await _storage.deleteAll();
   }
 }
 

@@ -34,8 +34,8 @@ class AvatarHelper {
 
     // Saat ini value pasti dalam kondisi bersih murni (contoh: "avatars/xxx.jpg")
     
-    // 3. Paksa arahkan ke endpoint anti-CORS Laravel
-    value = 'api/v1/image/$value';
+    // 3. Paksa arahkan ke endpoint anti-CORS Laravel khusus avatar (T-02 / C5)
+    value = 'api/v1/avatar/$value';
 
     // 4. Pastikan serverUrl tidak diakhiri slash ganda
     String serverUrl = ApiConfig.serverUrl;
@@ -44,7 +44,7 @@ class AvatarHelper {
     }
 
     // 5. Rakit menjadi URL penuh
-    // Hasil akhir: http://127.0.0.1:8000/api/v1/image/avatars/xxx.jpg
+    // Hasil akhir: http://127.0.0.1:8000/api/v1/avatar/avatars/xxx.jpg
     return '$serverUrl/$value';
   }
 

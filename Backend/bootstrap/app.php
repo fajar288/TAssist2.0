@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    // `withRouting(commands: ...)` only registers routes/console.php, so the
+    // app/Console/Commands directory is NOT auto-discovered here. Register it
+    // explicitly (Laravel 11 way) for `dokumen:pindahkan-ke-privat` (T-02).
+    ->withCommands([__DIR__.'/../app/Console/Commands'])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'role'               => \App\Http\Middleware\RoleMiddleware::class,
@@ -72,5 +77,33 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'Endpoint tidak ditemukan.',
                 ], 404);
             }
+        });
+
+        /*
+         * T-02 — signed document URLs.
+         *
+         * Laravel's ValidateSignature middleware always throws the same
+         * exception with the message "Invalid signature.", so the distinction
+         * between an expired link and a tampered one is made here: a URL whose
+         * HMAC is correct but whose `expires` is in the past is "expired".
+         * Anything else stays a plain 403.
+         */
+        $exceptions->render(function (
+            \Illuminate\Routing\Exceptions\InvalidSignatureException $e,
+            Request $request
+        ) {
+            $signatureIsCorrect = URL::hasCorrectSignature($request);
+            $expired = $signatureIsCorrect && ! URL::signatureHasNotExpired($request);
+
+            $message = $expired ? 'Link has expired' : 'Invalid signature.';
+
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 403);
+            }
+
+            return response($message, 403);
         });
     })->create();
