@@ -6,6 +6,7 @@ import 'package:produk/widgets/student_info_card.dart';
 import 'package:produk/widgets/student_menu_title.dart';
 import 'package:produk/features/dosen/view/dosen_student_documents_page.dart';
 import 'package:produk/features/dosen/view/dosen_student_progress_page.dart';
+import '../features/berita_acara/view/berita_acara_management_page.dart';
 
 class StudentDetailPage extends StatefulWidget {
   final StudentModel student;
@@ -104,6 +105,24 @@ class _StudentDetailPageState extends State<StudentDetailPage>
       context,
       MaterialPageRoute(
         builder: (_) => DosenStudentProgressPage(student: student),
+      ),
+    );
+  }
+
+  void _openBeritaAcaraPage() {
+    final bimbinganId = student.bimbinganIdAsInt;
+    if (bimbinganId == null) {
+      _showSnackBar(context, 'ID bimbingan tidak valid.');
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BeritaAcaraManagementPage(
+          bimbinganId: bimbinganId,
+          studentName: student.name,
+          judulTa: student.thesisTitle,
+        ),
       ),
     );
   }
@@ -491,6 +510,13 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           icon: Icons.folder_rounded,
           iconColor: const Color(0xFFF59E0B),
           onTap: _openDocumentsPage,
+        ),
+        StudentMenuTile(
+          title: 'Berita Acara',
+          subtitle: 'Generate & approve supervision minutes',
+          icon: Icons.assignment_turned_in_rounded,
+          iconColor: const Color(0xFF4338CA),
+          onTap: _openBeritaAcaraPage,
         ),
       ],
     );

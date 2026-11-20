@@ -71,6 +71,11 @@ class Bimbingan extends Model
                     ->latest('updated_at');
     }
 
+    public function beritaAcara()
+    {
+        return $this->hasMany(BeritaAcara::class, 'bimbingan_id', 'bimbingan_id');
+    }
+
     // ==================== HELPER ====================
 
     public function isAktif(): bool

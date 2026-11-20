@@ -16,9 +16,14 @@ class Dosen extends Model
     protected $fillable = [
         'user_id',
         'nid',
+        'pin',
         'bidang_keahlian',
         'kuota_bimbingan',
         'profil_singkat',
+    ];
+
+    protected $hidden = [
+        'pin',
     ];
 
     protected $casts = [
@@ -60,7 +65,33 @@ class Dosen extends Model
         return $this->hasMany(ProgresTA::class, 'updated_dosen_id', 'dosen_id');
     }
 
+    public function beritaAcara()
+    {
+        return $this->hasManyThrough(
+            BeritaAcara::class,
+            Bimbingan::class,
+            'dosen_id',
+            'bimbingan_id',
+            'dosen_id',
+            'bimbingan_id'
+        );
+    }
+
     // ==================== HELPER ====================
+
+    public function verifyPin(string $pin): bool
+    {
+        if (!empty($this->pin)) {
+            return \Illuminate\Support\Facades\Hash::check($pin, $this->pin) || $this->pin === $pin;
+        }
+
+        // Fallback: verifikasi dengan password akun dosen
+        if ($this->user && !empty($this->user->password_hash)) {
+            return \Illuminate\Support\Facades\Hash::check($pin, $this->user->password_hash);
+        }
+
+        return false;
+    }
 
     public function sisaKuota(): int
     {

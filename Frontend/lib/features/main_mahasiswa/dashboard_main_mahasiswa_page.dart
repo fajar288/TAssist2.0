@@ -7,6 +7,8 @@ import '../auth/data/auth_service.dart';
 import '../notifikasi/widgets/notifikasi_bell_button.dart';
 import '../../mahasiswa/data/mahasiswa_service.dart';
 import '../informasi_ta/view/informasi_ta_page.dart';
+import '../berita_acara/view/berita_acara_list_page.dart';
+import '../../theme/app_theme.dart';
 
 class DashboardMainMahasiswaPage extends StatefulWidget {
   const DashboardMainMahasiswaPage({super.key});
@@ -338,6 +340,8 @@ class _DashboardMainMahasiswaPageState
                   _buildHeader(),
                   const SizedBox(height: 18),
                   _buildInformasiTACard(),
+                  const SizedBox(height: 12),
+                  _buildBeritaAcaraCard(),
                   const SizedBox(height: 18),
                   _buildAdvisorCard(),
                   const SizedBox(height: 18),
@@ -573,6 +577,90 @@ class _DashboardMainMahasiswaPageState
                   SizedBox(height: 2),
                   Text(
                     'Cek jadwal sidang, panduan format & syarat TA',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: Color(0xFF94A3B8),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBeritaAcaraCard() {
+    final bimbinganId = _activeBimbingan?['bimbingan_id'] is int
+        ? _activeBimbingan!['bimbingan_id'] as int
+        : int.tryParse(_activeBimbingan?['bimbingan_id']?.toString() ?? '');
+
+    if (bimbinganId == null) return const SizedBox.shrink();
+
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BeritaAcaraListPage(
+              bimbinganId: bimbinganId,
+              studentName: _studentName,
+            ),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppTheme.cardBorder),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGhost,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.assignment_turned_in_rounded,
+                color: AppTheme.primary,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 14),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Berita Acara Bimbingan',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    'Lihat dan unduh Berita Acara yang disahkan dosen',
                     style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF64748B),

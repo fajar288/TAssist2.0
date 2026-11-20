@@ -153,6 +153,10 @@ Route::prefix('dosen')->name('dosen.')->group(function () {
     });
 });
 
+// Public Verification Route (T-19, F-BA-03)
+Route::get('/verifikasi/{token}', [\App\Http\Controllers\Web\VerifikasiController::class, 'verify'])
+    ->name('berita-acara.verifikasi');
+
 // Redirect root ke dashboard sesuai session
 Route::get('/', function () {
     if (session()->has('admin_user')) {

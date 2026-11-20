@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DokumenFileController;
 use App\Http\Controllers\Api\NotifikasiController;
 use App\Http\Controllers\Api\AnotasiDokumenController;
+use App\Http\Controllers\Api\BeritaAcaraController;
 
 // Mahasiswa Controllers
 use App\Http\Controllers\Api\Mahasiswa\MahasiswaController;
@@ -133,6 +134,9 @@ Route::prefix('v1')->group(function () {
                     Route::get('/',     [MahasiswaInformasiTAController::class, 'index']);
                     Route::get('/{id}', [MahasiswaInformasiTAController::class, 'show']);
                 });
+
+                // Berita Acara Mahasiswa (T-20, F-BA-04)
+                Route::get('/bimbingan/{id}/berita-acara', [BeritaAcaraController::class, 'listMahasiswa']);
             });
 
         // =============================================================
@@ -204,6 +208,11 @@ Route::prefix('v1')->group(function () {
                 Route::get('/dokumen/{versi_id}/anotasi', [AnotasiDokumenController::class, 'indexDosen']);
                 Route::put('/anotasi/{id}/resolved',      [AnotasiDokumenController::class, 'resolve']);
                 Route::post('/anotasi/{id}/reply',        [AnotasiDokumenController::class, 'reply']);
+
+                // Berita Acara Dosen (T-17, T-18, T-20)
+                Route::post('/bimbingan/{id}/berita-acara', [BeritaAcaraController::class, 'generate']);
+                Route::put('/berita-acara/{id}/approve',   [BeritaAcaraController::class, 'approve']);
+                Route::get('/bimbingan/{id}/berita-acara',  [BeritaAcaraController::class, 'listDosen']);
             });
 
         // =============================================================
@@ -257,7 +266,15 @@ Route::prefix('v1')->group(function () {
                 Route::get('/dokumen',    [AdminMonitoringController::class, 'dokumen']);
                 Route::get('/progres',    [AdminMonitoringController::class, 'progres']);
             });
+
+        // Berita Acara download endpoint (T-20)
+        Route::get('/berita-acara/{id}/download', [BeritaAcaraController::class, 'download']);
     });
+
+    // Berita Acara — file delivery via signed URL (T-20).
+    Route::get('/berita-acara/{id}/file', [BeritaAcaraController::class, 'showFile'])
+        ->middleware('signed')
+        ->name('berita-acara.file');
 
     // Dokumen TA — file delivery (T-02).
     //

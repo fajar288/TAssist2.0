@@ -51,14 +51,14 @@ it('casts anotasi_dokumen model attributes appropriately', function () {
 });
 
 it('rolls back and re-migrates the annotation migration cleanly', function () {
-    // Rollback last migration
-    Artisan::call('migrate:rollback', ['--step' => 1]);
+    $migration = require database_path('migrations/2026_11_20_000002_create_anotasi_dokumen_table.php');
+
+    $migration->down();
 
     expect(Schema::hasTable('anotasi_dokumen'))->toBeFalse()
         ->and(Schema::hasColumn('versi_dokumen', 'jumlah_anotasi_terbuka'))->toBeFalse();
 
-    // Re-migrate
-    Artisan::call('migrate');
+    $migration->up();
 
     expect(Schema::hasTable('anotasi_dokumen'))->toBeTrue()
         ->and(Schema::hasColumn('versi_dokumen', 'jumlah_anotasi_terbuka'))->toBeTrue();

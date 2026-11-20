@@ -53,12 +53,41 @@ class SignedUrlService
         return $this->buildUrl($versiId, $this->expiry());
     }
 
+    /**
+     * Full payload for `GET /api/v1/berita-acara/{id}/download` (T-20).
+     *
+     * @return array{url: string, expires_at: string}
+     */
+    public function forBeritaAcara(int $beritaAcaraId): array
+    {
+        $expiresAt = $this->expiry();
+
+        return [
+            'url'        => $this->buildBeritaAcaraUrl($beritaAcaraId, $expiresAt),
+            'expires_at' => $expiresAt->toIso8601String(),
+        ];
+    }
+
+    public function beritaAcaraFileUrl(int $beritaAcaraId): string
+    {
+        return $this->buildBeritaAcaraUrl($beritaAcaraId, $this->expiry());
+    }
+
     private function buildUrl(int $versiId, Carbon $expiresAt): string
     {
         return URL::temporarySignedRoute(
             'dokumen.file',
             $expiresAt,
             ['versi_id' => $versiId]
+        );
+    }
+
+    private function buildBeritaAcaraUrl(int $beritaAcaraId, Carbon $expiresAt): string
+    {
+        return URL::temporarySignedRoute(
+            'berita-acara.file',
+            $expiresAt,
+            ['id' => $beritaAcaraId]
         );
     }
 }
