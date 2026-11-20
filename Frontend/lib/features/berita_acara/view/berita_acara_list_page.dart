@@ -97,7 +97,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
               child: Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.bottom(16),
+                margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: AppTheme.cardBorder,
                   borderRadius: BorderRadius.circular(2),

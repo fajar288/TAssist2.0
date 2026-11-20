@@ -121,7 +121,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
         builder: (_) => BeritaAcaraManagementPage(
           bimbinganId: bimbinganId,
           studentName: student.name,
-          judulTa: student.thesisTitle,
+          judulTa: student.judulTa ?? student.topikTa ?? '-',
         ),
       ),
     );
