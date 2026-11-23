@@ -13,6 +13,8 @@ use App\Http\Controllers\Web\Admin\MonitoringController;
 use App\Http\Controllers\Web\Admin\SupervisorQuotaController;
 use App\Http\Controllers\Web\Admin\AnalyticsController as AdminAnalyticsWebController;
 use App\Http\Controllers\Web\Admin\RiskConfigController as AdminRiskConfigWebController;
+use App\Http\Controllers\Web\Admin\BasisPengetahuanWebController;
+use App\Http\Controllers\Web\Admin\ChatbotAnalyticsWebController;
 
 // Dosen Controllers
 use App\Http\Controllers\Web\Dosen\AuthController as DosenAuthController;
@@ -102,6 +104,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('/konfigurasi/{id}',  [AdminRiskConfigWebController::class, 'update'])->name('update');
             Route::post('/hitung-ulang',     [AdminRiskConfigWebController::class, 'recalculate'])->name('recalculate');
         });
+
+        // Basis Pengetahuan TA (T-29)
+        Route::resource('basis-pengetahuan', BasisPengetahuanWebController::class);
+
+        // Analitik Chatbot (T-36)
+        Route::get('/chatbot-analytics', [ChatbotAnalyticsWebController::class, 'index'])->name('chatbot-analytics.index');
     });
 });
 

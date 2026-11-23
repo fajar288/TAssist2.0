@@ -11,6 +11,7 @@
         "google/apiclient": "^2.19",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.3",
+        "sastrawi/sastrawi": "^1.2",
         "simplesoftwareio/simple-qrcode": "*"
     },
     "require-dev": {

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\TransientToken;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckTokenExpiry
@@ -16,7 +17,7 @@ class CheckTokenExpiry
         if ($user) {
             $token = $user->currentAccessToken();
 
-            if ($token && $token->expires_at && $token->expires_at->isPast()) {
+            if ($token && !($token instanceof TransientToken) && isset($token->expires_at) && $token->expires_at && $token->expires_at->isPast()) {
                 $token->delete();
 
                 return response()->json([

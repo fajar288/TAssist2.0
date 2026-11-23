@@ -3,6 +3,8 @@ import '../core/http_client.dart';
 import '../features/auth/view/login_page.dart';
 import '../features/auth/view/complete_student_profile_page.dart';
 import '../features/auth/view/edit_student_profile_page.dart';
+import '../features/chatbot/view/chatbot_conversation_list_page.dart';
+import '../features/chatbot/view/chatbot_page.dart';
 import '../features/loglearning/view/learning_placeholder_page.dart';
 import '../features/dosen/view/dashboard_dosen_page.dart';
 import '../features/main_mahasiswa/main_mahasiswa_page.dart';
@@ -20,6 +22,8 @@ class TAssistApp extends StatelessWidget {
   static const String learningRoute       = '/learning';
   static const String completeStudentProfileRoute = '/complete-student-profile';
   static const String editStudentProfileRoute     = '/edit-student-profile';
+  static const String chatbotRoute        = '/chatbot';
+  static const String chatbotHistoryRoute = '/chatbot-history';
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,8 @@ class TAssistApp extends StatelessWidget {
         editStudentProfileRoute: (_) => const EditStudentProfilePage(
           initialProfile: {},
         ),
+        chatbotRoute:        (_) => const ChatbotPage(),
+        chatbotHistoryRoute: (_) => const ChatbotConversationListPage(),
       },
     );
   }
