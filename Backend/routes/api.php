@@ -36,6 +36,9 @@ use App\Http\Controllers\Api\Admin\AdminMahasiswaController;
 use App\Http\Controllers\Api\Admin\AdminDosenController;
 use App\Http\Controllers\Api\Admin\InformasiTAController;
 use App\Http\Controllers\Api\Admin\AdminMonitoringController;
+use App\Http\Controllers\Api\Admin\RisikoKonfigurasiController;
+use App\Http\Controllers\Api\Admin\AdminAnalyticsController;
+use App\Http\Controllers\Api\Dosen\DosenAnalyticsController;
 
 // =============================================================
 // PUBLIC ROUTES — Tidak butuh autentikasi
@@ -213,6 +216,9 @@ Route::prefix('v1')->group(function () {
                 Route::post('/bimbingan/{id}/berita-acara', [BeritaAcaraController::class, 'generate']);
                 Route::put('/berita-acara/{id}/approve',   [BeritaAcaraController::class, 'approve']);
                 Route::get('/bimbingan/{id}/berita-acara',  [BeritaAcaraController::class, 'listDosen']);
+
+                // Analitik Risiko Dosen (T-26, F-ANL-04)
+                Route::get('/analytics/risk', [DosenAnalyticsController::class, 'risk']);
             });
 
         // =============================================================
@@ -224,6 +230,22 @@ Route::prefix('v1')->group(function () {
 
                 // Dashboard statistik
                 Route::get('/dashboard', [AdminMonitoringController::class, 'dashboard']);
+
+                // Konfigurasi Risiko (T-21, F-ANL-01)
+                Route::prefix('risiko')->group(function () {
+                    Route::get('/konfigurasi',       [RisikoKonfigurasiController::class, 'index']);
+                    Route::put('/konfigurasi/{id}',  [RisikoKonfigurasiController::class, 'update']);
+                    Route::post('/hitung-ulang',     [RisikoKonfigurasiController::class, 'recalculate']);
+                });
+
+                // Analitik Admin (T-24, T-25, F-ANL-03)
+                Route::prefix('analytics')->group(function () {
+                    Route::get('/risk-distribution', [AdminAnalyticsController::class, 'riskDistribution']);
+                    Route::get('/revision-cycle',    [AdminAnalyticsController::class, 'revisionCycle']);
+                    Route::get('/supervision-funnel',[AdminAnalyticsController::class, 'supervisionFunnel']);
+                    Route::get('/at-risk',           [AdminAnalyticsController::class, 'atRisk']);
+                    Route::get('/risk-trend/{bimbingan_id}', [AdminAnalyticsController::class, 'riskTrend']);
+                });
 
                 // Manajemen Mahasiswa
                 Route::prefix('mahasiswa')->group(function () {

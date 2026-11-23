@@ -11,6 +11,8 @@ use App\Http\Controllers\Web\Admin\DosenController;
 use App\Http\Controllers\Web\Admin\InformasiTAController;
 use App\Http\Controllers\Web\Admin\MonitoringController;
 use App\Http\Controllers\Web\Admin\SupervisorQuotaController;
+use App\Http\Controllers\Web\Admin\AnalyticsController as AdminAnalyticsWebController;
+use App\Http\Controllers\Web\Admin\RiskConfigController as AdminRiskConfigWebController;
 
 // Dosen Controllers
 use App\Http\Controllers\Web\Dosen\AuthController as DosenAuthController;
@@ -87,6 +89,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/jadwal',     [MonitoringController::class, 'jadwal'])->name('jadwal');
             Route::get('/dokumen',    [MonitoringController::class, 'dokumen'])->name('dokumen');
             Route::get('/progres',    [MonitoringController::class, 'progres'])->name('progres');
+        });
+
+        // Analitik & Risiko (T-77)
+        Route::prefix('analytics')->name('analytics.')->group(function () {
+            Route::get('/',           [AdminAnalyticsWebController::class, 'index'])->name('index');
+            Route::get('/trend/{id}', [AdminAnalyticsWebController::class, 'trend'])->name('trend');
+        });
+
+        Route::prefix('risiko')->name('risiko.')->group(function () {
+            Route::get('/konfigurasi',       [AdminRiskConfigWebController::class, 'index'])->name('index');
+            Route::put('/konfigurasi/{id}',  [AdminRiskConfigWebController::class, 'update'])->name('update');
+            Route::post('/hitung-ulang',     [AdminRiskConfigWebController::class, 'recalculate'])->name('recalculate');
         });
     });
 });

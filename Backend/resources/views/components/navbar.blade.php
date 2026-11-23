@@ -1,8 +1,8 @@
 <header class="h-20 border-b theme-border theme-bg-card px-6 md:px-8 flex items-center justify-between">
     <!-- Left -->
     <div>
-        <h1 class="theme-text-main text-2xl font-bold leading-tight">{{$pageTitle ?? 'Dashboard'}}</h1>
-        <p class="text-sm theme-text-muted mt-1">Welcome back, Administrator!</p>
+        <h1 class="theme-text-main text-2xl font-bold leading-tight">@hasSection('page-title')@yield('page-title')@else{{$pageTitle ?? 'Dashboard'}}@endif</h1>
+        <p class="text-sm theme-text-muted mt-1">@hasSection('page-subtitle')@yield('page-subtitle')@else Welcome back, Administrator! @endif</p>
     </div>
 
     <!-- Right -->
