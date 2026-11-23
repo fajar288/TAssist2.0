@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             DosenSeeder::class,
             MahasiswaSeeder::class,
+            RisikoKonfigurasiSeeder::class,
         ]);
     }
 }
