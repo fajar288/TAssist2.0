@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasMany(VersiDokumen::class, 'uploader_user_id', 'user_id');
     }
 
+    public function chatbotPercakapan()
+    {
+        return $this->hasMany(ChatbotPercakapan::class, 'user_id', 'user_id');
+    }
+
     // ==================== HELPER ====================
 
     public function isMahasiswa(): bool

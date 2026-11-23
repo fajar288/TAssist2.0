@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\DokumenFileController;
 use App\Http\Controllers\Api\NotifikasiController;
 use App\Http\Controllers\Api\AnotasiDokumenController;
 use App\Http\Controllers\Api\BeritaAcaraController;
+use App\Http\Controllers\Api\ChatbotController;
 
 // Mahasiswa Controllers
 use App\Http\Controllers\Api\Mahasiswa\MahasiswaController;
@@ -38,6 +39,8 @@ use App\Http\Controllers\Api\Admin\InformasiTAController;
 use App\Http\Controllers\Api\Admin\AdminMonitoringController;
 use App\Http\Controllers\Api\Admin\RisikoKonfigurasiController;
 use App\Http\Controllers\Api\Admin\AdminAnalyticsController;
+use App\Http\Controllers\Api\Admin\BasisPengetahuanController;
+use App\Http\Controllers\Api\Admin\ChatbotAnalyticsController;
 use App\Http\Controllers\Api\Dosen\DosenAnalyticsController;
 
 // =============================================================
@@ -78,6 +81,15 @@ Route::prefix('v1')->group(function () {
         // Ringkasan anotasi lintas versi (T-12)
         Route::get('/dokumen/{dokumen_id}/anotasi-summary', [AnotasiDokumenController::class, 'summary'])
             ->name('dokumen.anotasi-summary');
+
+        // Chatbot TA Assistant (T-31, T-33, T-34, T-35)
+        Route::prefix('chatbot')->group(function () {
+            Route::post('/pesan', [ChatbotController::class, 'sendMessage'])
+                ->middleware('throttle:chatbot');
+            Route::get('/percakapan', [ChatbotController::class, 'listConversations']);
+            Route::get('/percakapan/{id}', [ChatbotController::class, 'getConversation']);
+            Route::delete('/percakapan/{id}', [ChatbotController::class, 'deleteConversation']);
+        });
 
         // =============================================================
         // MAHASISWA ROUTES
@@ -245,6 +257,15 @@ Route::prefix('v1')->group(function () {
                     Route::get('/supervision-funnel',[AdminAnalyticsController::class, 'supervisionFunnel']);
                     Route::get('/at-risk',           [AdminAnalyticsController::class, 'atRisk']);
                     Route::get('/risk-trend/{bimbingan_id}', [AdminAnalyticsController::class, 'riskTrend']);
+                });
+
+                // Basis Pengetahuan TA (T-29, F-BOT-01)
+                Route::apiResource('basis-pengetahuan', BasisPengetahuanController::class);
+
+                // Chatbot Analytics Admin (T-36, F-BOT-05)
+                Route::prefix('chatbot/analytics')->group(function () {
+                    Route::get('/top-questions', [ChatbotAnalyticsController::class, 'topQuestions']);
+                    Route::get('/unanswered',    [ChatbotAnalyticsController::class, 'unanswered']);
                 });
 
                 // Manajemen Mahasiswa

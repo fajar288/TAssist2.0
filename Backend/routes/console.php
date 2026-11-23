@@ -40,7 +40,7 @@ Schedule::command('risk:score')->dailyAt('01:00')->withoutOverlapping();
 Schedule::command('nudge:idle-supervisions')->dailyAt('08:00')->withoutOverlapping();
 
 // T-33 — chatbot conversation retention/cleanup (Wave 4).
-// Schedule::command('chatbot:prune-conversations')->weekly()->withoutOverlapping();
+Schedule::command('chatbot:purge-retention')->dailyAt('02:00')->withoutOverlapping();
 
 // T-43 — meeting reminders via FCM (Wave 5).
 // Schedule::command('reminders:meetings')->everyFifteenMinutes()->withoutOverlapping();
