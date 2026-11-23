@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:produk/features/analytics/data/analytics_service.dart';
+import 'package:produk/features/analytics/model/risk_snapshot_model.dart';
 import 'package:produk/features/dosen/data/dosen_service.dart';
 import 'package:produk/model/models.dart';
 import 'package:produk/widgets/custom_bottom_nav.dart';
@@ -18,9 +20,11 @@ class _StudentListPageState extends State<StudentListPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   final DosenService _dosenService = DosenService();
+  final AnalyticsService _analyticsService = AnalyticsService();
 
   List<StudentModel> _allStudents = [];
   List<StudentModel> _filteredStudents = [];
+  final Map<String, RiskSnapshotModel> _riskMap = {};
 
   String _selectedFilter = 'All';
   bool _isLoading = true;
@@ -72,6 +76,15 @@ class _StudentListPageState extends State<StudentListPage>
       final students = rows
           .map((item) => StudentModel.fromBimbinganJson(item))
           .toList();
+
+      try {
+        final riskItems = await _analyticsService.getDosenRiskIndicators();
+        for (final item in riskItems) {
+          _riskMap[item.bimbinganId.toString()] = item.risiko;
+        }
+      } catch (_) {
+        // Fallback jika belum ada kalkulasi risiko atau offline
+      }
 
       if (!mounted) return;
 
@@ -169,6 +182,7 @@ class _StudentListPageState extends State<StudentListPage>
                                     ),
                                     child: StudentCard(
                                       student: student,
+                                      risk: _riskMap[student.id],
                                       onTap: () => _navigateToDetail(
                                         context,
                                         student,
