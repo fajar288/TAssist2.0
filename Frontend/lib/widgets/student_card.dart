@@ -3,16 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:produk/data/dummy_data.dart';
 import 'package:produk/model/models.dart';
-
+import '../features/analytics/model/risk_snapshot_model.dart';
+import '../features/analytics/widgets/risk_badge_widget.dart';
 
 class StudentCard extends StatelessWidget {
   final StudentModel student;
   final VoidCallback onTap;
+  final RiskSnapshotModel? risk;
 
   const StudentCard({
     super.key,
     required this.student,
     required this.onTap,
+    this.risk,
   });
 
   Color _statusColor(BuildContext context) {
@@ -119,7 +122,15 @@ class StudentCard extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            _buildStatusBadge(statusColor),
+                            if (risk != null)
+                              RiskBadgeWidget(
+                                risk: risk!,
+                                studentName: student.name,
+                                nim: student.nim,
+                                compact: true,
+                              )
+                            else
+                              _buildStatusBadge(statusColor),
                           ],
                         ),
                         const SizedBox(height: 3),

@@ -171,7 +171,7 @@ class BeritaAcaraController extends Controller
      * Serves Berita Acara PDF binary via signed URL (T-20, F-DOC-06).
      * GET /api/v1/berita-acara/{id}/file
      */
-    public function showFile(Request $request, int|string $id): BinaryFileResponse
+    public function showFile(Request $request, int|string $id)
     {
         $ba = BeritaAcara::findOrFail($id);
 
@@ -179,15 +179,13 @@ class BeritaAcaraController extends Controller
             abort(404, 'File Berita Acara tidak ditemukan pada media penyimpanan.');
         }
 
-        $fullPath = Storage::path($ba->file_path);
         $fileName = basename($ba->file_path);
 
-        return response()->file($fullPath, [
-            'Content-Type'        => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
-            'Access-Control-Allow-Origin' => '*',
+        return Storage::response($ba->file_path, $fileName, [
+            'Content-Type'                 => 'application/pdf',
+            'Access-Control-Allow-Origin'  => '*',
             'Access-Control-Allow-Methods' => 'GET, OPTIONS',
             'Access-Control-Allow-Headers' => '*',
-        ]);
+        ], 'inline');
     }
 }

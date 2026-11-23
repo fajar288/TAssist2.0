@@ -22,6 +22,7 @@ class Bimbingan extends Model
         'tanggal_selesai',
         'periode_mulai',
         'periode_selesai',
+        'last_nudge_at',
     ];
 
     protected $casts = [
@@ -29,6 +30,7 @@ class Bimbingan extends Model
         'tanggal_selesai' => 'date',
         'periode_mulai'   => 'date',
         'periode_selesai' => 'date',
+        'last_nudge_at'   => 'datetime',
         'created_at'      => 'datetime',
         'updated_at'      => 'datetime',
     ];
@@ -74,6 +76,17 @@ class Bimbingan extends Model
     public function beritaAcara()
     {
         return $this->hasMany(BeritaAcara::class, 'bimbingan_id', 'bimbingan_id');
+    }
+
+    public function risikoSnapshot()
+    {
+        return $this->hasMany(RisikoSnapshot::class, 'bimbingan_id', 'bimbingan_id');
+    }
+
+    public function latestRisikoSnapshot()
+    {
+        return $this->hasOne(RisikoSnapshot::class, 'bimbingan_id', 'bimbingan_id')
+            ->latestOfMany('tanggal_hitung');
     }
 
     // ==================== HELPER ====================
