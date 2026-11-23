@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:produk/features/dosen/data/dosen_service.dart';
 
+import '../app/app.dart';
 import '../features/notifikasi/widgets/notifikasi_bell_button.dart';
 import '../features/dosen/view/dosen_edit_profile_page.dart';
 import '../model/models.dart';
@@ -348,6 +349,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Row(
                     children: [
+                      IconButton(
+                        tooltip: 'Asisten TA',
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.white24,
+                          foregroundColor: Colors.white,
+                          shape: const CircleBorder(
+                            side: BorderSide(color: Colors.white38),
+                          ),
+                          minimumSize: const Size(38, 38),
+                          fixedSize: const Size(38, 38),
+                          padding: EdgeInsets.zero,
+                        ),
+                        icon: const Icon(Icons.smart_toy_rounded, size: 20),
+                        onPressed: () {
+                          Navigator.pushNamed(context, TAssistApp.chatbotRoute);
+                        },
+                      ),
+                      const SizedBox(width: 8),
                       const NotifikasiBellButton(
                         size: 38,
                         iconColor: Colors.white,

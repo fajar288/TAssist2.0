@@ -1,0 +1,568 @@
+// lib/features/chatbot/view/chatbot_page.dart
+
+import 'package:flutter/material.dart';
+import '../../../model/chatbot_model.dart';
+import '../../../theme/app_theme.dart';
+import '../data/chatbot_service.dart';
+import '../widget/chat_bubble_widget.dart';
+import '../widget/typing_indicator_widget.dart';
+import 'chatbot_conversation_list_page.dart';
+
+class ChatbotPage extends StatefulWidget {
+  final int? initialConversationId;
+  final String? initialTitle;
+  final ChatbotService? service;
+
+  const ChatbotPage({
+    super.key,
+    this.initialConversationId,
+    this.initialTitle,
+    this.service,
+  });
+
+  @override
+  State<ChatbotPage> createState() => _ChatbotPageState();
+}
+
+class _ChatbotPageState extends State<ChatbotPage> {
+  late final ChatbotService _service;
+  final TextEditingController _textController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
+
+  int? _conversationId;
+  String _title = 'Asisten TA Virtual';
+
+  bool _isLoadingHistory = false;
+  bool _isSending = false;
+  String? _rateLimitError;
+  String? _circuitBreakerError;
+  String? _generalError;
+
+  final List<ChatbotPesanModel> _messages = [];
+
+  static const List<String> _suggestedPrompts = [
+    'Apa syarat pendaftaran sidang TA?',
+    'Bagaimana alur revisi dokumen bimbingan?',
+    'Berapa batas waktu pengerjaan Tugas Akhir?',
+    'Siapa dosen pembimbing saya dan progres saya?',
+    'Format dokumen apa yang didukung untuk bimbingan?',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _service = widget.service ?? ChatbotService();
+    _conversationId = widget.initialConversationId;
+    if (widget.initialTitle != null && widget.initialTitle!.isNotEmpty) {
+      _title = widget.initialTitle!;
+    }
+
+    if (_conversationId != null) {
+      _loadConversationHistory(_conversationId!);
+    }
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadConversationHistory(int id) async {
+    setState(() {
+      _isLoadingHistory = true;
+      _generalError = null;
+    });
+
+    try {
+      final messages = await _service.getConversationMessages(id);
+      if (mounted) {
+        setState(() {
+          _messages.clear();
+          _messages.addAll(messages);
+          _isLoadingHistory = false;
+        });
+        _scrollToBottom();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _generalError = 'Gagal memuat riwayat: ${e.toString().replaceFirst("Exception: ", "")}';
+          _isLoadingHistory = false;
+        });
+      }
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  Future<void> _sendMessage([String? presetText]) async {
+    final text = (presetText ?? _textController.text).trim();
+    if (text.isEmpty || _isSending) return;
+
+    if (presetText == null) {
+      _textController.clear();
+    }
+
+    // Clear previous temporary errors
+    setState(() {
+      _rateLimitError = null;
+      _circuitBreakerError = null;
+      _generalError = null;
+      _isSending = true;
+
+      // Optimistic user message insertion
+      _messages.add(
+        ChatbotPesanModel(
+          id: DateTime.now().millisecondsSinceEpoch,
+          role: 'user',
+          pesan: text,
+          createdAt: DateTime.now(),
+        ),
+      );
+    });
+    _scrollToBottom();
+
+    try {
+      final result = await _service.sendMessage(text, percakapanId: _conversationId);
+
+      if (!mounted) return;
+
+      final newConvId = result['percakapan_id'] as int?;
+      final newTitle = result['judul_percakapan'] as String?;
+      final assistantMsg = result['pesan_asisten'] as ChatbotPesanModel?;
+
+      setState(() {
+        if (newConvId != null && newConvId > 0) {
+          _conversationId = newConvId;
+        }
+        if (newTitle != null && newTitle.isNotEmpty) {
+          _title = newTitle;
+        }
+        if (assistantMsg != null) {
+          _messages.add(assistantMsg);
+        }
+        _isSending = false;
+      });
+      _scrollToBottom();
+    } catch (e) {
+      if (!mounted) return;
+
+      final errStr = e.toString().replaceFirst('Exception: ', '');
+
+      setState(() {
+        _isSending = false;
+        if (errStr.contains('429') || errStr.toLowerCase().contains('kuota') || errStr.toLowerCase().contains('limit')) {
+          _rateLimitError = 'Batas pesan harian tercapai (maksimum 50 pesan/hari). Kuota akan diperbarui besok.';
+        } else if (errStr.contains('503') || errStr.toLowerCase().contains('beban') || errStr.toLowerCase().contains('kapasitas')) {
+          _circuitBreakerError = 'Layanan Asisten TA sedang dalam beban puncak sistem. Silakan coba kembali dalam beberapa saat.';
+        } else {
+          _generalError = errStr;
+        }
+      });
+      _scrollToBottom();
+    }
+  }
+
+  void _resetToNewChat() {
+    setState(() {
+      _conversationId = null;
+      _title = 'Asisten TA Virtual';
+      _messages.clear();
+      _rateLimitError = null;
+      _circuitBreakerError = null;
+      _generalError = null;
+    });
+  }
+
+  void _openHistory() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChatbotConversationListPage(service: _service),
+      ),
+    );
+
+    // Refresh if needed
+    if (_conversationId != null) {
+      _loadConversationHistory(_conversationId!);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.textPrimary, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGhost,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.smart_toy_rounded, color: AppTheme.primary, size: 22),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: const BoxDecoration(
+                          color: AppTheme.accepted,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      const Text(
+                        'Asisten Resmi TA • RAG Aktif',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppTheme.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_comment_outlined, color: AppTheme.primary),
+            tooltip: 'Percakapan Baru',
+            onPressed: _resetToNewChat,
+          ),
+          IconButton(
+            icon: const Icon(Icons.history_rounded, color: AppTheme.textPrimary),
+            tooltip: 'Riwayat Percakapan',
+            onPressed: _openHistory,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          if (_rateLimitError != null) _buildRateLimitBanner(),
+          if (_circuitBreakerError != null) _buildCircuitBreakerBanner(),
+          if (_generalError != null) _buildGeneralErrorBanner(),
+          Expanded(child: _buildChatArea()),
+          _buildSuggestedChipsBar(),
+          _buildInputBar(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRateLimitBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      color: AppTheme.pendingBg,
+      child: Row(
+        children: [
+          const Icon(Icons.speed_rounded, color: AppTheme.pending, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _rateLimitError!,
+              style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.textMuted),
+            onPressed: () => setState(() => _rateLimitError = null),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCircuitBreakerBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      color: AppTheme.declinedBg,
+      child: Row(
+        children: [
+          const Icon(Icons.cloud_off_rounded, color: AppTheme.declined, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _circuitBreakerError!,
+              style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.textMuted),
+            onPressed: () => setState(() => _circuitBreakerError = null),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGeneralErrorBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: AppTheme.warningBg,
+      child: Row(
+        children: [
+          const Icon(Icons.warning_amber_rounded, color: AppTheme.warning, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _generalError!,
+              style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close_rounded, size: 16, color: AppTheme.textMuted),
+            onPressed: () => setState(() => _generalError = null),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChatArea() {
+    if (_isLoadingHistory) {
+      return const Center(child: CircularProgressIndicator(color: AppTheme.primary));
+    }
+
+    if (_messages.isEmpty && !_isSending) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppTheme.cardBorder),
+                boxShadow: const [
+                  BoxShadow(color: Color(0x06000000), blurRadius: 10, offset: Offset(0, 4)),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryGhost,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Icon(Icons.school_rounded, color: AppTheme.primary, size: 36),
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Halo! Saya Asisten Tugas Akhir',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Tanyakan apa saja seputar alur Tugas Akhir, format penulisan, jadwal sidang, atau panduan bimbingan Anda.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 28),
+            Row(
+              children: const [
+                Icon(Icons.lightbulb_outline_rounded, color: AppTheme.primary, size: 18),
+                SizedBox(width: 8),
+                Text(
+                  'Saran Pertanyaan:',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimary),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ..._suggestedPrompts.map(
+              (prompt) => Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: InkWell(
+                  onTap: () => _sendMessage(prompt),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppTheme.cardBorder),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.chat_bubble_outline_rounded, size: 16, color: AppTheme.primary),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            prompt,
+                            style: const TextStyle(fontSize: 13, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppTheme.textMuted),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      controller: _scrollController,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      itemCount: _messages.length + (_isSending ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == _messages.length && _isSending) {
+          return const Padding(
+            padding: EdgeInsets.only(top: 8, bottom: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TypingIndicatorWidget(),
+            ),
+          );
+        }
+
+        final msg = _messages[index];
+        return ChatBubbleWidget(message: msg);
+      },
+    );
+  }
+
+  Widget _buildSuggestedChipsBar() {
+    if (_messages.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      height: 42,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: _suggestedPrompts.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final p = _suggestedPrompts[index];
+          return ActionChip(
+            backgroundColor: Colors.white,
+            side: const BorderSide(color: AppTheme.cardBorder),
+            label: Text(
+              p,
+              style: const TextStyle(fontSize: 11, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+            ),
+            onPressed: _isSending ? null : () => _sendMessage(p),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildInputBar() {
+    return Container(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          top: BorderSide(color: AppTheme.cardBorder),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: AppTheme.cardBorder),
+                ),
+                child: TextField(
+                  controller: _textController,
+                  focusNode: _focusNode,
+                  enabled: !_isSending,
+                  minLines: 1,
+                  maxLines: 4,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _sendMessage(),
+                  style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary),
+                  decoration: const InputDecoration(
+                    hintText: 'Tanyakan sesuatu tentang Tugas Akhir...',
+                    hintStyle: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              decoration: const BoxDecoration(
+                color: AppTheme.primary,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: _isSending
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      )
+                    : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                tooltip: 'Kirim',
+                onPressed: _isSending ? null : () => _sendMessage(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

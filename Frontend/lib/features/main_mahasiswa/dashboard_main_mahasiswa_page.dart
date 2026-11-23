@@ -342,6 +342,8 @@ class _DashboardMainMahasiswaPageState
                   _buildInformasiTACard(),
                   const SizedBox(height: 12),
                   _buildBeritaAcaraCard(),
+                  const SizedBox(height: 12),
+                  _buildChatbotCard(),
                   const SizedBox(height: 18),
                   _buildAdvisorCard(),
                   const SizedBox(height: 18),
@@ -438,6 +440,22 @@ class _DashboardMainMahasiswaPageState
         ),
         Row(
           children: [
+            IconButton(
+              tooltip: 'Asisten TA',
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF0D4AA3),
+                shape: const CircleBorder(),
+                minimumSize: const Size(38, 38),
+                fixedSize: const Size(38, 38),
+                padding: EdgeInsets.zero,
+              ),
+              icon: const Icon(Icons.smart_toy_rounded, size: 20),
+              onPressed: () {
+                Navigator.pushNamed(context, TAssistApp.chatbotRoute);
+              },
+            ),
+            const SizedBox(width: 8),
             const NotifikasiBellButton(
               size: 38,
               iconColor: Color(0xFF0D4AA3),
@@ -661,6 +679,76 @@ class _DashboardMainMahasiswaPageState
                   SizedBox(height: 2),
                   Text(
                     'Lihat dan unduh Berita Acara yang disahkan dosen',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: Color(0xFF94A3B8),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatbotCard() {
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, TAssistApp.chatbotRoute);
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppTheme.cardBorder),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGhost,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.smart_toy_rounded,
+                color: AppTheme.primary,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 14),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Asisten TA Virtual (AI)',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    'Tanya alur, syarat sidang, format berkas, & panduan TA',
                     style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF64748B),

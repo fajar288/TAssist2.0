@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:produk/app/app.dart';
+import 'package:produk/theme/app_theme.dart';
 import 'package:produk/screen/home_screen.dart';
 import 'package:produk/widgets/custom_bottom_nav.dart';
 import 'package:produk/screen/schedule_list_screen.dart';
@@ -28,6 +30,19 @@ class _DashboardDosenPageState extends State<DashboardDosenPage> {
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 76.0),
+        child: FloatingActionButton(
+          backgroundColor: AppTheme.primary,
+          foregroundColor: Colors.white,
+          elevation: 4,
+          tooltip: 'Asisten TA',
+          child: const Icon(Icons.smart_toy_rounded, size: 28),
+          onPressed: () {
+            Navigator.pushNamed(context, TAssistApp.chatbotRoute);
+          },
+        ),
       ),
       bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
