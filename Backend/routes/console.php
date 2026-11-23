@@ -34,10 +34,10 @@ Schedule::command('queue:prune-failed --hours=168')->weekly();
 */
 
 // T-22 — nightly risk scoring snapshot (Wave 3).
-// Schedule::command('risk:score')->dailyAt('01:00')->withoutOverlapping();
+Schedule::command('risk:score')->dailyAt('01:00')->withoutOverlapping();
 
 // T-27 — idle-supervision nudge, suppressed inside `periode_libur` windows (Wave 3).
-// Schedule::command('nudge:idle-supervisions')->dailyAt('08:00')->withoutOverlapping();
+Schedule::command('nudge:idle-supervisions')->dailyAt('08:00')->withoutOverlapping();
 
 // T-33 — chatbot conversation retention/cleanup (Wave 4).
 // Schedule::command('chatbot:prune-conversations')->weekly()->withoutOverlapping();
