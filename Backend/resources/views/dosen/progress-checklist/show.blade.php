@@ -259,8 +259,8 @@
                     </div>
 
                     <label class="flex items-center gap-2 text-sm theme-text-main font-bold">
-                        <input type="hidden" name="tgl_selesai" value="0">
-                        <input type="checkbox" name="tgl_selesai" value="1">
+                        <input type="hidden" name="is_selesai" value="0">
+                        <input type="checkbox" name="is_selesai" value="1">
                         Tandai langsung sebagai selesai
                     </label>
 
@@ -304,12 +304,12 @@
                                         </label>
 
                                         <label class="flex items-center gap-2 px-4 py-3 rounded-2xl border tassist-secondary-btn text-sm font-bold">
-                                            <input type="hidden" name="tgl_selesai" value="0">
+                                            <input type="hidden" name="is_selesai" value="0">
                                             <input
                                                 type="checkbox"
-                                                name="tgl_selesai"
+                                                name="is_selesai"
                                                 value="1"
-                                                {{ $checklist->tgl_selesai ? 'checked' : '' }}
+                                                {{ $checklist->is_selesai ? 'checked' : '' }}
                                             >
                                             Selesai
                                         </label>
@@ -328,7 +328,7 @@
                                     >{{ $checklist->catatan }}</textarea>
                                 </div>
 
-                                @if($checklist->tgl_selesai)
+                                @if($checklist->is_selesai)
                                     <p class="text-xs theme-text-muted">
                                         Selesai pada:
                                         {{ optional($checklist->tanggal_selesai)->format('d M Y') ?? '-' }}
@@ -443,7 +443,7 @@
 
                             <p class="text-xs theme-text-muted mt-3">
                                 Checklist:
-                                {{ $progress->checklistProgress->where('tgl_selesai', true)->count() }}/{{ $progress->checklistProgress->count() }}
+                                {{ $progress->checklistProgress->where('is_selesai', true)->count() }}/{{ $progress->checklistProgress->count() }}
                                 selesai
                             </p>
                         </div>

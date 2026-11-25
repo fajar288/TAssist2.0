@@ -73,6 +73,26 @@ class SignedUrlService
         return $this->buildBeritaAcaraUrl($beritaAcaraId, $this->expiry());
     }
 
+    /**
+     * Full payload for `GET /api/v1/permohonan/{id}/proposal-url` (T-38).
+     *
+     * @return array{url: string, expires_at: string}
+     */
+    public function forProposal(int $permohonanId): array
+    {
+        $expiresAt = $this->expiry();
+
+        return [
+            'url'        => $this->buildProposalUrl($permohonanId, $expiresAt),
+            'expires_at' => $expiresAt->toIso8601String(),
+        ];
+    }
+
+    public function proposalFileUrl(int $permohonanId): string
+    {
+        return $this->buildProposalUrl($permohonanId, $this->expiry());
+    }
+
     private function buildUrl(int $versiId, Carbon $expiresAt): string
     {
         return URL::temporarySignedRoute(
@@ -88,6 +108,15 @@ class SignedUrlService
             'berita-acara.file',
             $expiresAt,
             ['id' => $beritaAcaraId]
+        );
+    }
+
+    private function buildProposalUrl(int $permohonanId, Carbon $expiresAt): string
+    {
+        return URL::temporarySignedRoute(
+            'permohonan.proposal-file',
+            $expiresAt,
+            ['id' => $permohonanId]
         );
     }
 }

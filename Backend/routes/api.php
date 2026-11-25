@@ -7,11 +7,14 @@ use Illuminate\Support\Facades\Response;
 
 // Auth Controllers
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BimbinganExportController;
+use App\Http\Controllers\Api\DeviceTokenController;
 use App\Http\Controllers\Api\DokumenFileController;
 use App\Http\Controllers\Api\NotifikasiController;
 use App\Http\Controllers\Api\AnotasiDokumenController;
 use App\Http\Controllers\Api\BeritaAcaraController;
 use App\Http\Controllers\Api\ChatbotController;
+use App\Http\Controllers\Api\ProposalFileController;
 
 // Mahasiswa Controllers
 use App\Http\Controllers\Api\Mahasiswa\MahasiswaController;
@@ -22,6 +25,7 @@ use App\Http\Controllers\Api\Mahasiswa\JadwalBimbinganController as MahasiswaJad
 use App\Http\Controllers\Api\Mahasiswa\FeedbackDokumenController as MahasiswaFeedbackController;
 use App\Http\Controllers\Api\Mahasiswa\ProgresTAController as MahasiswaProgresController;
 use App\Http\Controllers\Api\Mahasiswa\InformasiTAController as MahasiswaInformasiTAController;
+use App\Http\Controllers\Api\Mahasiswa\KetersediaanController as MahasiswaKetersediaanController;
 
 // Dosen Controllers
 use App\Http\Controllers\Api\Dosen\DosenController;
@@ -31,6 +35,7 @@ use App\Http\Controllers\Api\Dosen\FeedbackDokumenController as DosenFeedbackCon
 use App\Http\Controllers\Api\Dosen\JadwalBimbinganController as DosenJadwalController;
 use App\Http\Controllers\Api\Dosen\ProgresTAController as DosenProgresController;
 use App\Http\Controllers\Api\Dosen\ChecklistProgressController;
+use App\Http\Controllers\Api\Dosen\KetersediaanController as DosenKetersediaanController;
 
 // Admin Controllers
 use App\Http\Controllers\Api\Admin\AdminMahasiswaController;
@@ -78,6 +83,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/dokumen/signed-url/{versi_id}', [DokumenFileController::class, 'signedUrl'])
             ->name('dokumen.signed-url');
 
+        // Proposal attachment — signed URL issuance (T-38).
+        Route::get('/permohonan/{id}/proposal-url', [ProposalFileController::class, 'signedUrl'])
+            ->name('permohonan.proposal-url');
+
+        // FCM Device Tokens (T-42, F-NOT-04).
+        Route::post('/device-token', [DeviceTokenController::class, 'store']);
+        Route::delete('/device-token', [DeviceTokenController::class, 'destroy']);
+
         // Ringkasan anotasi lintas versi (T-12)
         Route::get('/dokumen/{dokumen_id}/anotasi-summary', [AnotasiDokumenController::class, 'summary'])
             ->name('dokumen.anotasi-summary');
@@ -104,8 +117,9 @@ Route::prefix('v1')->group(function () {
                 // Update profil mahasiswa (topik_ta, judul_ta)
                 Route::put('/profile', [MahasiswaController::class, 'updateProfile']);
 
-                // Lihat daftar dosen
+                // Lihat daftar dosen & ketersediaan (T-39)
                 Route::get('/dosen', [MahasiswaController::class, 'daftarDosen']);
+                Route::get('/dosen/{id}/ketersediaan', [MahasiswaKetersediaanController::class, 'index']);
 
                 // Permohonan bimbingan
                 Route::prefix('permohonan')->group(function () {
@@ -113,8 +127,9 @@ Route::prefix('v1')->group(function () {
                     Route::get('/',   [MahasiswaPermohonanController::class, 'daftarPermohonan']);
                 });
 
-                // Bimbingan
+                // Bimbingan & export riwayat (T-41)
                 Route::get('/bimbingan', [MahasiswaBimbinganController::class, 'index']);
+                Route::get('/bimbingan/{id}/export', [BimbinganExportController::class, 'export']);
 
                 // Dokumen TA
                 Route::prefix('dokumen')->group(function () {
@@ -180,8 +195,17 @@ Route::prefix('v1')->group(function () {
                     Route::get('/{id}/dokumen',  [DosenController::class, 'dokumenMahasiswa']);
                 });
 
-                // Status bimbingan (T-04)
+                // Status bimbingan (T-04) & export riwayat (T-41)
                 Route::put('/bimbingan/{id}/status', [DosenBimbinganController::class, 'updateStatus']);
+                Route::get('/bimbingan/{id}/export', [BimbinganExportController::class, 'export']);
+
+                // Slot ketersediaan dosen (T-39)
+                Route::prefix('ketersediaan')->group(function () {
+                    Route::get('/',        [DosenKetersediaanController::class, 'index']);
+                    Route::post('/',       [DosenKetersediaanController::class, 'store']);
+                    Route::put('/{id}',    [DosenKetersediaanController::class, 'update']);
+                    Route::delete('/{id}', [DosenKetersediaanController::class, 'destroy']);
+                });
 
                 // Feedback dokumen
                 Route::prefix('feedback')->group(function () {
@@ -329,6 +353,11 @@ Route::prefix('v1')->group(function () {
     Route::get('/dokumen/{versi_id}/file', [DokumenFileController::class, 'show'])
         ->middleware('signed')
         ->name('dokumen.file');
+
+    // Proposal attachment — file delivery via signed URL (T-38).
+    Route::get('/permohonan/{id}/proposal-file', [ProposalFileController::class, 'show'])
+        ->middleware('signed')
+        ->name('permohonan.proposal-file');
 
     // Endpoint khusus untuk melayani gambar avatar dengan header CORS (T-02 / C5)
     // Direktori dibatasi hanya pada app/public/avatars untuk menutup celah IDOR.

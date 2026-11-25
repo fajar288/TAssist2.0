@@ -148,8 +148,8 @@ it('rolls the T-80 migration back to the previous schema and forward again', fun
     expect(Schema::hasColumns('bimbingan', ['tanggal_selesai', 'periode_mulai', 'periode_selesai']))->toBeFalse()
         ->and(Schema::hasColumn('progres_ta', 'is_override'))->toBeFalse()
         ->and(Schema::hasTable('periode_libur'))->toBeFalse()
-        // Untouched tables stay untouched.
-        ->and(Schema::hasColumns('checklist_progress', ['progress_id', 'tgl_selesai']))->toBeTrue();
+        // Untouched by T-80; T-40/T-44 later renames tgl_selesai -> is_selesai and adds bobot.
+        ->and(Schema::hasColumns('checklist_progress', ['progress_id', 'is_selesai', 'bobot']))->toBeTrue();
 
     expect(collect(Schema::getIndexes('bimbingan'))->pluck('name')->all())
         ->not->toContain('bimbingan_tanggal_selesai_index');

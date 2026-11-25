@@ -15,8 +15,8 @@ class ChecklistProgressFactory extends Factory
     protected $model = ChecklistProgress::class;
 
     /**
-     * `tgl_selesai` is the (misnamed) boolean "done" flag; `tanggal_selesai`
-     * is the real completion date. See T-44 for the planned rename.
+     * `is_selesai` is the boolean "done" flag (renamed from `tgl_selesai` in T-44);
+     * `tanggal_selesai` is the real completion date.
      *
      * @return array<string, mixed>
      */
@@ -25,9 +25,10 @@ class ChecklistProgressFactory extends Factory
         return [
             'progress_id'     => ProgresTA::factory(),
             'nama_item'       => 'Menyusun Bab 1 (Pendahuluan)',
-            'tgl_selesai'     => false,
+            'is_selesai'      => false,
             'tanggal_selesai' => null,
             'catatan'         => null,
+            'bobot'           => 1.0,
         ];
     }
 
@@ -39,7 +40,7 @@ class ChecklistProgressFactory extends Factory
     public function selesai(): static
     {
         return $this->state(fn () => [
-            'tgl_selesai'     => true,
+            'is_selesai'      => true,
             'tanggal_selesai' => now()->toDateString(),
         ]);
     }

@@ -8,6 +8,7 @@ use App\Http\Requests\Mahasiswa\PermohonanBimbinganRequest;
 use App\Models\Dosen;
 use App\Models\PermohonanBimbingan;
 use App\Services\NotifikasiService;
+use App\Services\SignedUrlService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,10 @@ use Illuminate\Http\Request;
 class PermohonanBimbinganController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(private SignedUrlService $signedUrls)
+    {
+    }
 
     // POST /api/mahasiswa/permohonan
     public function ajukan(PermohonanBimbinganRequest $request): JsonResponse
@@ -52,10 +57,22 @@ class PermohonanBimbinganController extends Controller
             );
         }
 
+        $fileProposalPath = null;
+        if ($request->hasFile('file_proposal')) {
+            $file = $request->file('file_proposal');
+            $safeName = time() . '_' . $user->user_id . '_' . preg_replace('/[^A-Za-z0-9._-]/', '_', $file->getClientOriginalName());
+            $fileProposalPath = $file->storeAs(
+                'proposals/' . $mahasiswa->mahasiswa_id,
+                $safeName,
+                'dokumen'
+            );
+        }
+
         $permohonan = PermohonanBimbingan::create([
             'mahasiswa_id'     => $mahasiswa->mahasiswa_id,
             'dosen_id'         => $dosen->dosen_id,
             'topik_ta'         => $request->topik_ta,
+            'file_proposal'    => $fileProposalPath,
             'tanggal_pengajuan'=> now()->toDateString(),
             'status'           => 'menunggu',
         ]);
@@ -77,6 +94,10 @@ class PermohonanBimbinganController extends Controller
                 'nama'     => $dosen->user->nama,
             ],
             'topik_ta'          => $permohonan->topik_ta,
+            'file_proposal'     => $permohonan->file_proposal ? basename($permohonan->file_proposal) : null,
+            'proposal_url'      => $permohonan->file_proposal
+                ? $this->signedUrls->proposalFileUrl($permohonan->permohonan_id)
+                : null,
             'tanggal_pengajuan' => $permohonan->tanggal_pengajuan->format('Y-m-d'),
             'status'            => $permohonan->status,
         ], 201);
@@ -105,6 +126,10 @@ class PermohonanBimbinganController extends Controller
                     'bidang_keahlian' => $p->dosen->bidang_keahlian,
                 ],
                 'topik_ta'          => $p->topik_ta,
+                'file_proposal'     => $p->file_proposal ? basename($p->file_proposal) : null,
+                'proposal_url'      => $p->file_proposal
+                    ? $this->signedUrls->proposalFileUrl($p->permohonan_id)
+                    : null,
                 'tanggal_pengajuan' => $p->tanggal_pengajuan->format('Y-m-d'),
                 'status'            => $p->status,
                 'catatan_respons'   => $p->catatan_respons,

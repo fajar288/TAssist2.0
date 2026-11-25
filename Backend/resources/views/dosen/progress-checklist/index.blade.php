@@ -111,7 +111,7 @@
                     $progressValue = $progress ? (float) $progress->persentase : 0;
                     $checklist = $progress ? $progress->checklistProgress : collect();
                     $totalChecklist = $checklist->count();
-                    $selesaiChecklist = $checklist->where('tgl_selesai', true)->count();
+                    $selesaiChecklist = $checklist->where('is_selesai', true)->count();
                     $taTitle = $mahasiswa?->judul_ta ?: ($item->permohonan?->topik_ta ?: $mahasiswa?->topik_ta);
                 @endphp
 

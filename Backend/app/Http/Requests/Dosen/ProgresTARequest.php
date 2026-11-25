@@ -17,20 +17,22 @@ class ProgresTARequest extends FormRequest
     public function rules(): array
     {
         return [
-            'persentase'      => 'required|numeric|min:0|max:100',
+            'persentase'      => 'nullable|required_if:is_override,true,1|numeric|min:0|max:100',
             'status_progress' => 'required|string|max:100',
-            'catatan'         => 'nullable|string|max:1000',
+            'is_override'     => 'sometimes|boolean',
+            'catatan'         => 'nullable|required_if:is_override,true,1|string|max:1000',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'persentase.required'      => 'Persentase wajib diisi.',
+            'persentase.required_if'   => 'Persentase wajib diisi saat override manual diaktifkan.',
             'persentase.numeric'       => 'Persentase harus berupa angka.',
             'persentase.min'           => 'Persentase minimal 0.',
             'persentase.max'           => 'Persentase maksimal 100.',
             'status_progress.required' => 'Status progress wajib diisi.',
+            'catatan.required_if'      => 'Alasan override pada catatan wajib diisi saat override diaktifkan.',
         ];
     }
 

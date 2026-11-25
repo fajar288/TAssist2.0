@@ -43,4 +43,4 @@ Schedule::command('nudge:idle-supervisions')->dailyAt('08:00')->withoutOverlappi
 Schedule::command('chatbot:purge-retention')->dailyAt('02:00')->withoutOverlapping();
 
 // T-43 — meeting reminders via FCM (Wave 5).
-// Schedule::command('reminders:meetings')->everyFifteenMinutes()->withoutOverlapping();
+Schedule::command('reminders:meetings')->everyFifteenMinutes()->withoutOverlapping();

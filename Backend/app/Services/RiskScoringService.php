@@ -199,7 +199,7 @@ class RiskScoringService
 
         $count = ChecklistProgress::whereIn('progress_id', $progressIds)
             ->where(function ($q) {
-                $q->where('tgl_selesai', false)->orWhereNull('tgl_selesai');
+                $q->where('is_selesai', false)->orWhereNull('is_selesai');
             })
             ->count();
 

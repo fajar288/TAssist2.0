@@ -38,12 +38,13 @@ class ProgresTAController extends Controller
 
         $data = $progres->through(function ($p) {
             $totalChecklist   = $p->checklistProgress->count();
-            $selesaiChecklist = $p->checklistProgress->where('tgl_selesai', true)->count();
+            $selesaiChecklist = $p->checklistProgress->where('is_selesai', true)->count();
 
             return [
                 'progress_id'     => $p->progress_id,
                 'persentase'      => $p->persentase,
                 'status_progress' => $p->status_progress,
+                'is_override'     => (bool) $p->is_override,
                 'catatan'         => $p->catatan,
                 'updated_at'      => $p->updated_at->format('Y-m-d H:i:s'),
                 'updated_oleh'    => $p->updatedDosen ? [
@@ -57,7 +58,8 @@ class ProgresTAController extends Controller
                 'checklist'       => $p->checklistProgress->map(fn($c) => [
                     'checklist_id'    => $c->checklist_id,
                     'nama_item'       => $c->nama_item,
-                    'tgl_selesai'     => $c->tgl_selesai,
+                    'is_selesai'      => (bool) $c->is_selesai,
+                    'bobot'           => (float) ($c->bobot ?? 1.0),
                     'tanggal_selesai' => $c->tanggal_selesai?->format('Y-m-d'),
                     'catatan'         => $c->catatan,
                 ]),

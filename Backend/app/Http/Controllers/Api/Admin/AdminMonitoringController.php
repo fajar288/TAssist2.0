@@ -205,7 +205,7 @@ class AdminMonitoringController extends Controller
 
         $data = $progres->through(function ($p) {
             $totalChecklist   = $p->checklistProgress->count();
-            $selesaiChecklist = $p->checklistProgress->where('tgl_selesai', true)->count();
+            $selesaiChecklist = $p->checklistProgress->where('is_selesai', true)->count();
 
             return [
                 'progress_id'     => $p->progress_id,

@@ -8,6 +8,7 @@ use App\Models\Bimbingan;
 use App\Models\PermohonanBimbingan;
 use App\Models\ProgresTA;
 use App\Services\NotifikasiService;
+use App\Services\SignedUrlService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\DB;
 class PermohonanBimbinganController extends Controller
 {
     use ApiResponse;
+
+    public function __construct(private SignedUrlService $signedUrls)
+    {
+    }
 
     // GET /api/dosen/permohonan
     public function index(Request $request): JsonResponse
@@ -38,6 +43,10 @@ class PermohonanBimbinganController extends Controller
         $data = $permohonan->through(fn($p) => [
             'permohonan_id'     => $p->permohonan_id,
             'topik_ta'          => $p->topik_ta,
+            'file_proposal'     => $p->file_proposal ? basename($p->file_proposal) : null,
+            'proposal_url'      => $p->file_proposal
+                ? $this->signedUrls->proposalFileUrl($p->permohonan_id)
+                : null,
             'tanggal_pengajuan' => $p->tanggal_pengajuan->format('Y-m-d'),
             'status'            => $p->status,
             'catatan_respons'   => $p->catatan_respons,
