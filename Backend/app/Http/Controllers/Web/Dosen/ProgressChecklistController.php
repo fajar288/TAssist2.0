@@ -112,14 +112,14 @@ class ProgressChecklistController extends Controller
 
         $latestChecklist = $latestProgress
             ? $latestProgress->checklistProgress
-                ->sortBy('tgl_selesai')
+                ->sortBy('is_selesai')
                 ->sortByDesc('created_at')
                 ->values()
             : collect();
 
         $checklistSummary = [
             'total' => $latestChecklist->count(),
-            'selesai' => $latestChecklist->where('tgl_selesai', true)->count(),
+            'selesai' => $latestChecklist->where('is_selesai', true)->count(),
         ];
 
         return view('dosen.progress-checklist.show', compact(
@@ -189,9 +189,11 @@ class ProgressChecklistController extends Controller
     {
         $request->validate([
             'nama_item'       => 'required|string|max:255',
+            'is_selesai'      => 'nullable|boolean',
             'tgl_selesai'     => 'nullable|boolean',
             'tanggal_selesai' => 'nullable|date',
             'catatan'         => 'nullable|string|max:500',
+            'bobot'           => 'nullable|numeric|min:0.1|max:100',
         ], [
             'nama_item.required' => 'Nama item checklist wajib diisi.',
             'nama_item.max'      => 'Nama item checklist maksimal 255 karakter.',
@@ -226,17 +228,26 @@ class ProgressChecklistController extends Controller
             ]);
         }
 
-        $isDone = $request->boolean('tgl_selesai');
+        $isDone = $request->has('is_selesai')
+            ? $request->boolean('is_selesai')
+            : $request->boolean('tgl_selesai');
 
-        $checklist = ChecklistProgress::create([
-            'progress_id'     => $latestProgress->progress_id,
-            'nama_item'       => $request->nama_item,
-            'tgl_selesai'     => $isDone,
-            'tanggal_selesai' => $isDone
-                ? ($request->tanggal_selesai ?? now()->toDateString())
-                : null,
-            'catatan'         => $request->catatan,
-        ]);
+        $checklist = DB::transaction(function () use ($request, $latestProgress, $isDone) {
+            $checklist = ChecklistProgress::create([
+                'progress_id'     => $latestProgress->progress_id,
+                'nama_item'       => $request->nama_item,
+                'is_selesai'      => $isDone,
+                'tanggal_selesai' => $isDone
+                    ? ($request->tanggal_selesai ?? now()->toDateString())
+                    : null,
+                'catatan'         => $request->catatan,
+                'bobot'           => $request->filled('bobot') ? (float) $request->bobot : 1.0,
+            ]);
+
+            app(\App\Services\ProgresCalculatorService::class)->recalculate($latestProgress);
+
+            return $checklist;
+        });
 
         NotifikasiService::kirim(
             userId   : $bimbingan->mahasiswa->user_id,
@@ -256,9 +267,11 @@ class ProgressChecklistController extends Controller
     {
         $request->validate([
             'nama_item'       => 'required|string|max:255',
+            'is_selesai'      => 'nullable|boolean',
             'tgl_selesai'     => 'nullable|boolean',
             'tanggal_selesai' => 'nullable|date',
             'catatan'         => 'nullable|string|max:500',
+            'bobot'           => 'nullable|numeric|min:0.1|max:100',
         ], [
             'nama_item.required' => 'Nama item checklist wajib diisi.',
             'nama_item.max'      => 'Nama item checklist maksimal 255 karakter.',
@@ -277,21 +290,28 @@ class ProgressChecklistController extends Controller
             return back()->with('error', 'Checklist tidak ditemukan atau bukan milik bimbingan Anda.');
         }
 
-        $wasDone = (bool) $checklist->tgl_selesai;
-        $isDone = $request->boolean('tgl_selesai');
+        $wasDone = (bool) $checklist->is_selesai;
+        $isDone = $request->has('is_selesai')
+            ? $request->boolean('is_selesai')
+            : $request->boolean('tgl_selesai');
 
-        $checklist->update([
-            'nama_item'       => $request->nama_item,
-            'tgl_selesai'     => $isDone,
-            'tanggal_selesai' => $isDone
-                ? ($request->tanggal_selesai ?? $checklist->tanggal_selesai ?? now()->toDateString())
-                : null,
-            'catatan'         => $request->catatan,
-        ]);
+        DB::transaction(function () use ($request, $checklist, $isDone) {
+            $checklist->update([
+                'nama_item'       => $request->nama_item,
+                'is_selesai'      => $isDone,
+                'tanggal_selesai' => $isDone
+                    ? ($request->tanggal_selesai ?? $checklist->tanggal_selesai ?? now()->toDateString())
+                    : null,
+                'catatan'         => $request->catatan,
+                'bobot'           => $request->filled('bobot') ? (float) $request->bobot : $checklist->bobot,
+            ]);
 
-        $checklist->refresh();
+            $checklist->refresh();
 
-        if (!$wasDone && $checklist->tgl_selesai) {
+            app(\App\Services\ProgresCalculatorService::class)->recalculate($checklist->progresTA);
+        });
+
+        if (!$wasDone && $checklist->is_selesai) {
             $mahasiswaUserId = $checklist->progresTA->bimbingan->mahasiswa->user_id;
 
             NotifikasiService::kirim(
@@ -325,8 +345,12 @@ class ProgressChecklistController extends Controller
 
         $bimbinganId = $checklist->progresTA->bimbingan_id;
         $namaItem = $checklist->nama_item;
+        $progres = $checklist->progresTA;
 
-        $checklist->delete();
+        DB::transaction(function () use ($checklist, $progres) {
+            $checklist->delete();
+            app(\App\Services\ProgresCalculatorService::class)->recalculate($progres);
+        });
 
         return redirect()
             ->route('dosen.progress-checklist.show', $bimbinganId)

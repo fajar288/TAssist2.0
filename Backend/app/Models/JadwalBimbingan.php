@@ -22,12 +22,16 @@ class JadwalBimbingan extends Model
         'mode',
         'status_konfirmasi',
         'catatan',
+        'reminder_24h_sent_at',
+        'reminder_1h_sent_at',
     ];
 
     protected $casts = [
-        'tanggal'    => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'tanggal'              => 'date',
+        'reminder_24h_sent_at' => 'datetime',
+        'reminder_1h_sent_at'  => 'datetime',
+        'created_at'           => 'datetime',
+        'updated_at'           => 'datetime',
     ];
 
     // ==================== RELASI ====================

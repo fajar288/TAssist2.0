@@ -165,7 +165,7 @@
                             @forelse($latestChecklist as $checklist)
                                 <div class="flex items-start gap-3 p-4 rounded-2xl border tassist-mini-card">
                                     <div class="mt-0.5">
-                                        @if($checklist->tgl_selesai)
+                                        @if($checklist->is_selesai)
                                             ✅
                                         @else
                                             ⏳

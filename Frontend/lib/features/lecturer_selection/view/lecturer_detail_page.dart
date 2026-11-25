@@ -1,5 +1,7 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/api_client.dart';
 import '../../../mahasiswa/data/mahasiswa_service.dart';
 import '../../main_mahasiswa/navbar_mahasiswa.dart';
 import 'lecturers_page.dart';
@@ -73,7 +75,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
   }
 
   Future<void> _showRequestDialog() async {
-    final topikTa = await showDialog<String>(
+    final result = await showDialog<_ProposalRequestResult>(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) {
@@ -85,14 +87,20 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
 
     if (!mounted) return;
 
-    if (topikTa == null || topikTa.trim().isEmpty) {
+    if (result == null || result.topikTa.trim().isEmpty) {
       return;
     }
 
-    await _submitRequest(topikTa.trim());
+    await _submitRequest(
+      result.topikTa.trim(),
+      proposalFile: result.proposalFile,
+    );
   }
 
-  Future<void> _submitRequest(String topikTa) async {
+  Future<void> _submitRequest(
+    String topikTa, {
+    ApiFile? proposalFile,
+  }) async {
     setState(() {
       _isSubmitting = true;
     });
@@ -101,6 +109,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
       await _mahasiswaService.ajukanPermohonan(
         dosenId: int.parse(lecturer.id),
         topikTa: topikTa,
+        proposalFile: proposalFile,
       );
 
       if (!mounted) return;
@@ -533,6 +542,16 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
   }
 }
 
+class _ProposalRequestResult {
+  final String topikTa;
+  final ApiFile? proposalFile;
+
+  const _ProposalRequestResult({
+    required this.topikTa,
+    this.proposalFile,
+  });
+}
+
 class _RequestCounselingDialog extends StatefulWidget {
   final String lecturerName;
 
@@ -550,6 +569,7 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
 
   late final TextEditingController _topicController;
   late final FocusNode _topicFocusNode;
+  ApiFile? _pickedProposal;
 
   @override
   void initState() {
@@ -565,10 +585,39 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
     super.dispose();
   }
 
+  Future<void> _pickProposalPdf() async {
+    final result = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: const ['pdf'],
+      withData: true,
+    );
+
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.first;
+    final ApiFile? apiFile;
+    if (file.bytes != null) {
+      apiFile = ApiFile.fromBytes('file_proposal', file.bytes!, file.name);
+    } else if (file.path != null) {
+      apiFile = ApiFile.fromPath('file_proposal', file.path!, file.name);
+    } else {
+      apiFile = null;
+    }
+
+    if (apiFile != null && mounted) {
+      setState(() => _pickedProposal = apiFile);
+    }
+  }
+
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    Navigator.of(context).pop(_topicController.text.trim());
+    Navigator.of(context).pop(
+      _ProposalRequestResult(
+        topikTa: _topicController.text.trim(),
+        proposalFile: _pickedProposal,
+      ),
+    );
   }
 
   @override
@@ -703,6 +752,25 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
 
                   return null;
                 },
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: _pickProposalPdf,
+                icon: const Icon(Icons.attach_file_rounded, size: 18),
+                label: Text(
+                  _pickedProposal != null
+                      ? 'Proposal: ${_pickedProposal!.filename}'
+                      : 'Lampirkan Proposal PDF (Opsional)',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 44),
+                  foregroundColor: const Color(0xFF0D4AA3),
+                  side: const BorderSide(color: Color(0xFFD1D5DB)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
               ),
               const SizedBox(height: 18),
               Row(

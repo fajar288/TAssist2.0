@@ -18,9 +18,11 @@ class ChecklistProgressRequest extends FormRequest
     {
         return [
             'nama_item'       => 'required|string|max:255',
-            'tgl_selesai'     => 'sometimes|boolean',
+            'is_selesai'      => 'sometimes|boolean',
+            'tgl_selesai'     => 'sometimes|boolean', // Temporary alias during T-44 transition
             'tanggal_selesai' => 'nullable|date',
             'catatan'         => 'nullable|string|max:500',
+            'bobot'           => 'sometimes|numeric|min:0.1|max:100',
         ];
     }
 
@@ -28,6 +30,9 @@ class ChecklistProgressRequest extends FormRequest
     {
         return [
             'nama_item.required' => 'Nama item checklist wajib diisi.',
+            'bobot.numeric'      => 'Bobot harus berupa angka.',
+            'bobot.min'          => 'Bobot minimal 0.1.',
+            'bobot.max'          => 'Bobot maksimal 100.',
         ];
     }
 

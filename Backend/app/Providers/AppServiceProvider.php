@@ -3,8 +3,14 @@
 namespace App\Providers;
 
 use App\Models\AnotasiDokumen;
+use App\Models\Bimbingan;
+use App\Models\DosenKetersediaan;
+use App\Models\PermohonanBimbingan;
 use App\Models\VersiDokumen;
 use App\Policies\AnotasiDokumenPolicy;
+use App\Policies\BimbinganPolicy;
+use App\Policies\DosenKetersediaanPolicy;
+use App\Policies\PermohonanBimbinganPolicy;
 use App\Policies\VersiDokumenPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -29,6 +35,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(VersiDokumen::class, VersiDokumenPolicy::class);
         Gate::policy(AnotasiDokumen::class, AnotasiDokumenPolicy::class);
+        Gate::policy(PermohonanBimbingan::class, PermohonanBimbinganPolicy::class);
+        Gate::policy(DosenKetersediaan::class, DosenKetersediaanPolicy::class);
+        Gate::policy(Bimbingan::class, BimbinganPolicy::class);
 
         // T-34 (F-BOT-04): Per-user daily rate limit (50 messages/day)
         RateLimiter::for('chatbot', function (Request $request) {

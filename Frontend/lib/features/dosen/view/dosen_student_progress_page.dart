@@ -534,7 +534,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 ),
               ),
               Text(
-                '${checklist.where((item) => _isDone(item['tgl_selesai'])).length}/${checklist.length}',
+                '${checklist.where((item) => _isDone(item['is_selesai'] ?? item['tgl_selesai'])).length}/${checklist.length}',
                 style: const TextStyle(
                   color: _navBlue,
                   fontWeight: FontWeight.w800,
@@ -564,7 +564,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     final id = _checklistId(item);
     final title = item['nama_item']?.toString() ?? 'Checklist item';
     final note = item['catatan']?.toString();
-    final done = _isDone(item['tgl_selesai']);
+    final done = _isDone(item['is_selesai'] ?? item['tgl_selesai']);
+    final bobot = double.tryParse(item['bobot']?.toString() ?? '') ?? 1.0;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -587,14 +588,36 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: const Color(0xFF1E293B),
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
-                    decoration: done ? TextDecoration.lineThrough : null,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: const Color(0xFF1E293B),
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w700,
+                          decoration: done ? TextDecoration.lineThrough : null,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEEF2FF),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Bobot ${bobot.toStringAsFixed(bobot.truncateToDouble() == bobot ? 0 : 1)}',
+                        style: const TextStyle(
+                          color: _navBlue,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 if (note != null && note.trim().isNotEmpty) ...[
                   const SizedBox(height: 3),
@@ -749,6 +772,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     final catatanController = TextEditingController(
       text: latest?['catatan']?.toString() ?? '',
     );
+    bool isOverride = _isDone(latest?['is_override']);
 
     final result = await showModalBottomSheet<bool>(
       context: context,
@@ -758,69 +782,97 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            18,
-            16,
-            18,
-            MediaQuery.of(context).viewInsets.bottom + 18,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _sheetHandle(),
-              const SizedBox(height: 16),
-              const Text(
-                'Update Progress',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(
+                18,
+                16,
+                18,
+                MediaQuery.of(context).viewInsets.bottom + 18,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _sheetHandle(),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Update Progress',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      value: isOverride,
+                      activeThumbColor: _navBlue,
+                      title: const Text(
+                        'Override Manual Persentase',
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                      ),
+                      subtitle: const Text(
+                        'Nonaktifkan untuk menghitung otomatis dari bobot checklist',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      onChanged: (val) => setSheetState(() => isOverride = val),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: percentController,
+                      enabled: isOverride || _latestChecklist.isEmpty,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: isOverride || _latestChecklist.isEmpty
+                            ? 'Persentase'
+                            : 'Persentase (dihitung otomatis dari checklist)',
+                        suffixText: '%',
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: statusController,
+                      decoration: const InputDecoration(
+                        labelText: 'Status Progress',
+                        hintText: 'Contoh: Bab 2 selesai',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: catatanController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: isOverride
+                            ? 'Alasan Override (Wajib diisi)'
+                            : 'Catatan',
+                        hintText: isOverride
+                            ? 'Jelaskan alasan override manual...'
+                            : 'Tambahkan catatan untuk mahasiswa...',
+                        border: const OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _navBlue,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        child: const Text('Save Progress'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: percentController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Persentase',
-                  suffixText: '%',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: statusController,
-                decoration: const InputDecoration(
-                  labelText: 'Status Progress',
-                  hintText: 'Contoh: Bab 2 selesai',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: catatanController,
-                maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: 'Catatan',
-                  hintText: 'Tambahkan catatan untuk mahasiswa...',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _navBlue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  child: const Text('Save Progress'),
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -840,7 +892,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     statusController.dispose();
     catatanController.dispose();
 
-    if (percent == null || percent < 0 || percent > 100) {
+    if ((isOverride || _latestChecklist.isEmpty) &&
+        (percent == null || percent < 0 || percent > 100)) {
       _showError('Persentase harus berupa angka 0 sampai 100.');
       return;
     }
@@ -850,16 +903,23 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       return;
     }
 
+    if (isOverride && catatan.isEmpty) {
+      _showError('Alasan pada catatan wajib diisi saat override manual aktif.');
+      return;
+    }
+
     await _submitProgress(
-      percent: percent,
+      percent: isOverride || _latestChecklist.isEmpty ? percent : null,
       status: status,
+      isOverride: isOverride,
       catatan: catatan,
     );
   }
 
   Future<void> _submitProgress({
-    required double percent,
+    double? percent,
     required String status,
+    required bool isOverride,
     required String catatan,
   }) async {
     final bimbinganId = student.bimbinganIdAsInt;
@@ -876,6 +936,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         bimbinganId: bimbinganId,
         persentase: percent,
         statusProgress: status,
+        isOverride: isOverride,
         catatan: catatan,
       );
 
@@ -899,11 +960,14 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     final titleController = TextEditingController(
       text: existing?['nama_item']?.toString() ?? '',
     );
+    final bobotController = TextEditingController(
+      text: existing?['bobot']?.toString() ?? '1.0',
+    );
     final catatanController = TextEditingController(
       text: existing?['catatan']?.toString() ?? '',
     );
 
-    bool done = _isDone(existing?['tgl_selesai']);
+    bool done = _isDone(existing?['is_selesai'] ?? existing?['tgl_selesai']);
 
     final result = await showModalBottomSheet<bool>(
       context: context,
@@ -940,6 +1004,16 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     decoration: const InputDecoration(
                       labelText: 'Nama Item',
                       hintText: 'Contoh: Revisi Bab 2',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: bobotController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(
+                      labelText: 'Bobot (default 1.0)',
+                      hintText: 'Contoh: 2.0',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -987,18 +1061,26 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
 
     if (result != true || !mounted) {
       titleController.dispose();
+      bobotController.dispose();
       catatanController.dispose();
       return;
     }
 
     final title = titleController.text.trim();
+    final bobot = double.tryParse(bobotController.text.trim()) ?? 1.0;
     final catatan = catatanController.text.trim();
 
     titleController.dispose();
+    bobotController.dispose();
     catatanController.dispose();
 
     if (title.isEmpty) {
       _showError('Nama item checklist wajib diisi.');
+      return;
+    }
+
+    if (bobot < 0.1 || bobot > 100) {
+      _showError('Bobot harus antara 0.1 dan 100.');
       return;
     }
 
@@ -1007,12 +1089,14 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         existing: existing,
         namaItem: title,
         done: done,
+        bobot: bobot,
         catatan: catatan,
       );
     } else {
       await _submitAddChecklist(
         namaItem: title,
         done: done,
+        bobot: bobot,
         catatan: catatan,
       );
     }
@@ -1063,6 +1147,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
   Future<void> _submitAddChecklist({
     required String namaItem,
     required bool done,
+    required double bobot,
     required String catatan,
   }) async {
     setState(() => _isSubmitting = true);
@@ -1073,7 +1158,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       await _dosenService.tambahChecklistProgress(
         progressId: progressId,
         namaItem: namaItem,
-        tglSelesai: done,
+        isSelesai: done,
+        bobot: bobot,
         tanggalSelesai: done
             ? DateTime.now().toIso8601String().split('T').first
             : null,
@@ -1096,6 +1182,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     required Map<String, dynamic> existing,
     required String namaItem,
     required bool done,
+    required double bobot,
     required String catatan,
   }) async {
     final id = _checklistId(existing);
@@ -1111,7 +1198,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       await _dosenService.updateChecklistProgress(
         checklistId: id,
         namaItem: namaItem,
-        tglSelesai: done,
+        isSelesai: done,
+        bobot: bobot,
         tanggalSelesai: done
             ? DateTime.now().toIso8601String().split('T').first
             : null,
@@ -1153,7 +1241,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       await _dosenService.updateChecklistProgress(
         checklistId: id,
         namaItem: title,
-        tglSelesai: done,
+        isSelesai: done,
+        bobot: double.tryParse(item['bobot']?.toString() ?? ''),
         tanggalSelesai: done
             ? DateTime.now().toIso8601String().split('T').first
             : null,

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/api_client.dart';
 import '../../../core/api_config.dart';
+import '../../../core/fcm_service.dart';
 
 class AuthService {
   AuthService() {
@@ -84,6 +87,7 @@ class AuthService {
 
       if (result.token != null) {
         await _saveAuthData(result);
+        unawaited(FcmService.instance.registerCurrentDevice());
       }
 
       return result;
@@ -154,6 +158,7 @@ class AuthService {
 
       if (result.token != null) {
         await _saveAuthData(result);
+        unawaited(FcmService.instance.registerCurrentDevice());
       }
 
       return result;
@@ -367,6 +372,7 @@ class AuthService {
     final token = await getToken();
 
     if (token != null) {
+      await FcmService.instance.deregisterCurrentDevice();
       try {
         // Best effort only: no refresh, no redirect when the token is stale.
         await _client.post(

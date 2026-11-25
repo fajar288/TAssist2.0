@@ -81,7 +81,7 @@ it('derives document, feedback and schedule ownership from the supervision', fun
         ->and($jadwal->status_konfirmasi)->toBe('menunggu')
         ->and($progres->updated_dosen_id)->toBe($bimbingan->dosen_id)
         ->and($progres->persentase)->toBe(0.0)
-        ->and($checklist->tgl_selesai)->toBeFalse()
+        ->and($checklist->is_selesai)->toBeFalse()
         ->and($checklist->progress_id)->toBe($progres->progress_id);
 });
 

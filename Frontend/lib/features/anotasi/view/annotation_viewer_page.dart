@@ -1,11 +1,16 @@
 // lib/features/anotasi/view/annotation_viewer_page.dart
 
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../../../model/annotation_model.dart';
 import '../../../theme/app_theme.dart';
 import '../data/annotation_service.dart';
+import '../data/offline_annotation_cache.dart';
 
 class AnnotationViewerPage extends StatefulWidget {
   final int versiId;
@@ -27,13 +32,17 @@ class AnnotationViewerPage extends StatefulWidget {
 
 class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
   final AnnotationService _service = AnnotationService();
+  final OfflineAnnotationCache _offlineCache = OfflineAnnotationCache.instance;
   final PdfViewerController _pdfController = PdfViewerController();
 
   String? _signedUrl;
+  String? _cachedPdfPath;
+  bool _isOfflineMode = false;
   bool _isLoadingPdf = true;
   String? _pdfError;
 
   List<AnnotationModel> _annotations = [];
+  List<AnnotationModel> _offlineDrafts = [];
   bool _isLoadingAnnotations = false;
   int _currentPage = 1;
   int _pageCount = 1;
@@ -53,6 +62,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
       _fetchSignedUrl(),
       _fetchAnnotations(),
     ]);
+    await _syncOfflineDraftsIfOnline();
   }
 
   Future<void> _fetchSignedUrl() async {
@@ -66,15 +76,28 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
       if (!mounted) return;
       setState(() {
         _signedUrl = url;
+        _isOfflineMode = false;
         _isLoadingPdf = false;
       });
+      // Cache PDF in the background for offline reading (T-45)
+      unawaited(_offlineCache.cachePdfFromUrl(widget.versiId, url));
     } catch (e) {
       debugPrint('AnnotationViewerPage: getSignedUrl error: $e');
+      final cachedPath = await _offlineCache.getCachedPdfPath(widget.versiId);
       if (!mounted) return;
-      setState(() {
-        _pdfError = 'Gagal memuat dokumen PDF. Pastikan tautan masih berlaku.';
-        _isLoadingPdf = false;
-      });
+      if (cachedPath != null) {
+        setState(() {
+          _cachedPdfPath = cachedPath;
+          _isOfflineMode = true;
+          _pdfError = null;
+          _isLoadingPdf = false;
+        });
+      } else {
+        setState(() {
+          _pdfError = 'Gagal memuat dokumen PDF. Pastikan tautan masih berlaku.';
+          _isLoadingPdf = false;
+        });
+      }
     }
   }
 
@@ -94,22 +117,68 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
               status: _statusFilter == 'all' ? null : _statusFilter,
             );
 
+      if (_statusFilter == 'all') {
+        unawaited(_offlineCache.saveServerAnnotations(widget.versiId, list));
+      }
+      final drafts = await _offlineCache.getPendingDraftModels(widget.versiId);
+
       if (!mounted) return;
       setState(() {
         _annotations = list;
+        _offlineDrafts = drafts;
         _isLoadingAnnotations = false;
       });
     } catch (e) {
       debugPrint('AnnotationViewerPage: _fetchAnnotations error: $e');
+      final cached = await _offlineCache.getCachedAnnotations(widget.versiId);
+      final drafts = await _offlineCache.getPendingDraftModels(widget.versiId);
       if (!mounted) return;
       setState(() {
+        _annotations = cached;
+        _offlineDrafts = drafts;
+        _isOfflineMode = true;
         _isLoadingAnnotations = false;
       });
     }
   }
 
+  Future<void> _syncOfflineDraftsIfOnline() async {
+    if (_isOfflineMode || kIsWeb) return;
+    final drafts = await _offlineCache.getPendingDraftModels(widget.versiId);
+    if (drafts.isEmpty) return;
+
+    try {
+      final result = await _offlineCache.syncDraftsAndCheckConflicts(
+        versiId: widget.versiId,
+        service: _service,
+        isDosen: widget.isDosen,
+      );
+      if (!mounted) return;
+      await _fetchAnnotations();
+      if (!mounted) return;
+
+      if (result.syncedCount > 0 || result.newFromOthersCount > 0) {
+        final parts = <String>[];
+        if (result.syncedCount > 0) {
+          parts.add('${result.syncedCount} draft offline disinkronkan');
+        }
+        if (result.newFromOthersCount > 0) {
+          parts.add('${result.newFromOthersCount} new annotations from others since your last sync');
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(parts.join(' • '))),
+        );
+      }
+    } catch (e) {
+      debugPrint('AnnotationViewerPage: syncOfflineDraftsIfOnline skipped: $e');
+    }
+  }
+
   List<AnnotationModel> get _currentPageAnnotations {
-    return _annotations.where((a) => a.halaman == _currentPage).toList();
+    return [
+      ..._annotations.where((a) => a.halaman == _currentPage),
+      ..._offlineDrafts.where((a) => a.halaman == _currentPage),
+    ];
   }
 
   void _onPdfTapped(TapUpDetails details, BoxConstraints constraints) {
@@ -193,6 +262,26 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                     setState(() => _isAddingAnnotationMode = false);
 
                     try {
+                      if (_isOfflineMode && !kIsWeb) {
+                        await _offlineCache.saveDraftAnnotation(
+                          versiId: widget.versiId,
+                          halaman: _currentPage,
+                          x: x,
+                          y: y,
+                          tipe: selectedTipe,
+                          konten: text,
+                        );
+                        final drafts = await _offlineCache.getPendingDraftModels(widget.versiId);
+                        if (!mounted) return;
+                        setState(() => _offlineDrafts = drafts);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Draft anotasi disimpan offline — akan disinkronkan saat online.'),
+                          ),
+                        );
+                        return;
+                      }
+
                       await _service.createAnnotation(
                         versiId: widget.versiId,
                         halaman: _currentPage,
@@ -209,10 +298,31 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                       _fetchAnnotations();
                     } catch (e) {
                       debugPrint('Error creating annotation: $e');
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Gagal membuat anotasi: $e')),
-                      );
+                      if (!kIsWeb) {
+                        await _offlineCache.saveDraftAnnotation(
+                          versiId: widget.versiId,
+                          halaman: _currentPage,
+                          x: x,
+                          y: y,
+                          tipe: selectedTipe,
+                          konten: text,
+                        );
+                        final drafts = await _offlineCache.getPendingDraftModels(widget.versiId);
+                        if (!mounted) return;
+                        setState(() {
+                          _isOfflineMode = true;
+                          _offlineDrafts = drafts;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Koneksi terputus: anotasi disimpan sebagai draft offline.'),
+                          ),
+                        );
+                      } else if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Gagal membuat anotasi: $e')),
+                        );
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -657,6 +767,12 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
         foregroundColor: AppTheme.textPrimary,
         elevation: 0,
         actions: [
+          if (_offlineDrafts.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.cloud_upload_outlined, color: Colors.orange),
+              tooltip: 'Sinkronkan Draft Offline (${_offlineDrafts.length})',
+              onPressed: _syncOfflineDraftsIfOnline,
+            ),
           // Filter popup
           PopupMenuButton<String>(
             icon: const Icon(Icons.filter_list_rounded),
@@ -712,7 +828,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (_pdfError != null || _signedUrl == null) {
+    if (_pdfError != null || (_signedUrl == null && _cachedPdfPath == null)) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -722,7 +838,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
             Text(_pdfError ?? 'Gagal memuat PDF', style: const TextStyle(color: AppTheme.textSecondary)),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _fetchSignedUrl,
+              onPressed: _loadInitialData,
               style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
               child: const Text('Coba Lagi', style: TextStyle(color: Colors.white)),
             ),
@@ -735,21 +851,64 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
       builder: (context, constraints) {
         return Stack(
           children: [
-            // PDF Viewer layer
-            SfPdfViewer.network(
-              _signedUrl!,
-              controller: _pdfController,
-              onDocumentLoaded: (details) {
-                setState(() {
-                  _pageCount = details.document.pages.count;
-                });
-              },
-              onPageChanged: (details) {
-                setState(() {
-                  _currentPage = details.newPageNumber;
-                });
-              },
-            ),
+            // PDF Viewer layer (online signed URL or offline cached file)
+            if (_isOfflineMode && _cachedPdfPath != null && !kIsWeb)
+              SfPdfViewer.file(
+                File(_cachedPdfPath!),
+                controller: _pdfController,
+                onDocumentLoaded: (details) {
+                  setState(() {
+                    _pageCount = details.document.pages.count;
+                  });
+                },
+                onPageChanged: (details) {
+                  setState(() {
+                    _currentPage = details.newPageNumber;
+                  });
+                },
+              )
+            else
+              SfPdfViewer.network(
+                _signedUrl!,
+                controller: _pdfController,
+                onDocumentLoaded: (details) {
+                  setState(() {
+                    _pageCount = details.document.pages.count;
+                  });
+                },
+                onPageChanged: (details) {
+                  setState(() {
+                    _currentPage = details.newPageNumber;
+                  });
+                },
+              ),
+
+            // Offline cache banner (F-DOC-08)
+            if (_isOfflineMode)
+              Positioned(
+                top: 8,
+                left: 16,
+                right: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.indigo.shade700,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.offline_pin_rounded, color: Colors.white, size: 18),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Viewing cached version — annotations will sync when online',
+                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
 
             // Mode indicator banner
             if (_isAddingAnnotationMode && widget.isDosen)

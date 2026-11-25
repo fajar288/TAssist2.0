@@ -17,6 +17,7 @@ class PermohonanBimbingan extends Model
         'mahasiswa_id',
         'dosen_id',
         'topik_ta',
+        'file_proposal',
         'tanggal_pengajuan',
         'status',
         'catatan_respons',

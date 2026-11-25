@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:produk/features/dosen/data/dosen_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../model/models.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_request_card.dart';
@@ -317,7 +318,63 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                 .fadeIn(duration: 400.ms, delay: 200.ms)
                 .slideY(begin: 0.1, end: 0),
 
-          const SizedBox(height: 28),
+          const SizedBox(height: 16),
+
+          // Proposal PDF Card (T-38)
+          if (widget.request.proposalUrl != null &&
+              widget.request.proposalUrl!.isNotEmpty) ...[
+            Container(
+              decoration: AppTheme.cardDecoration(),
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryGhost,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.picture_as_pdf_rounded,
+                      color: AppTheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _sectionLabel('Proposal Attachment'),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.request.fileProposal ?? 'proposal.pdf',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            color: AppTheme.textSecondary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () async {
+                      final uri = Uri.parse(widget.request.proposalUrl!);
+                      if (await canLaunchUrl(uri)) {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    icon: const Icon(Icons.download_rounded, size: 18),
+                    label: const Text('Buka'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+
+          const SizedBox(height: 12),
 
           // Action Buttons
           if (isActionable) ...[

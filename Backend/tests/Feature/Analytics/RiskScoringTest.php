@@ -65,7 +65,7 @@ it('calculates a high risk score for a delayed supervision (F-ANL-02 AC 1)', fun
 
     ChecklistProgress::factory()->create([
         'progress_id' => $progres->progress_id,
-        'tgl_selesai' => false,
+        'is_selesai'  => false,
     ]);
 
     $service = app(RiskScoringService::class);

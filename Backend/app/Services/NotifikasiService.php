@@ -3,12 +3,13 @@
 
 namespace App\Services;
 
+use App\Jobs\SendFcmNotificationJob;
 use App\Models\Notifikasi;
 
 class NotifikasiService
 {
     /**
-     * Kirim notifikasi ke satu user.
+     * Kirim notifikasi ke satu user (in-app + queued FCM push).
      */
     public static function kirim(
         int $userId,
@@ -18,7 +19,7 @@ class NotifikasiService
         ?string $refTabel = null,
         ?int $refId = null
     ): Notifikasi {
-        return Notifikasi::create([
+        $notifikasi = Notifikasi::create([
             'user_id'         => $userId,
             'tipe_notifikasi' => $tipe,
             'judul'           => $judul,
@@ -27,6 +28,15 @@ class NotifikasiService
             'ref_id'          => $refId,
             'is_read'         => false,
         ]);
+
+        SendFcmNotificationJob::dispatch($userId, $judul, $pesan, [
+            'notifikasi_id'   => (string) $notifikasi->notifikasi_id,
+            'tipe_notifikasi' => $tipe,
+            'ref_tabel'       => (string) ($refTabel ?? ''),
+            'ref_id'          => (string) ($refId ?? ''),
+        ]);
+
+        return $notifikasi;
     }
 
     /**

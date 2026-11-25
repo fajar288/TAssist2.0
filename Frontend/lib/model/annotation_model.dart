@@ -46,6 +46,16 @@ class AnnotationReplyModel {
           : null,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'anotasi_id': anotasiId,
+        'parent_id': parentId,
+        'user_id': userId,
+        'author_name': authorName,
+        'author_role': authorRole,
+        'konten': konten,
+        'created_at': createdAt?.toIso8601String(),
+      };
 }
 
 class AnnotationModel {
@@ -67,6 +77,7 @@ class AnnotationModel {
   final String authorName;
   final String authorRole;
   final List<AnnotationReplyModel> replies;
+  final bool isLocalDraft;
 
   const AnnotationModel({
     required this.anotasiId,
@@ -87,6 +98,7 @@ class AnnotationModel {
     this.authorName = 'Dosen',
     this.authorRole = 'dosen',
     this.replies = const [],
+    this.isLocalDraft = false,
   });
 
   static AnnotationType _parseType(String? val) {
@@ -156,8 +168,33 @@ class AnnotationModel {
       authorName: json['dosen']?['user']?['nama']?.toString() ??
           json['user']?['nama']?.toString() ??
           'Dosen Pembimbing',
-      authorRole: json['user']?['role']?.toString() ?? 'dosen',
+      authorRole: json['user']?['role']?.toString() ??
+          json['author_role']?.toString() ??
+          'dosen',
       replies: parsedReplies,
+      isLocalDraft: json['is_local_draft'] == true,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'anotasi_id': anotasiId,
+        'versi_id': versiId,
+        'dosen_id': dosenId,
+        'user_id': userId,
+        'parent_id': parentId,
+        'halaman': halaman,
+        'x': x,
+        'y': y,
+        'lebar': lebar,
+        'tinggi': tinggi,
+        'tipe': tipe.name,
+        'konten': konten,
+        'data_coretan': dataCoretan,
+        'status': status.name,
+        'created_at': createdAt?.toIso8601String(),
+        'author_name': authorName,
+        'author_role': authorRole,
+        'replies': replies.map((r) => r.toJson()).toList(),
+        'is_local_draft': isLocalDraft,
+      };
 }

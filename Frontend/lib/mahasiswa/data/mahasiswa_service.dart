@@ -102,18 +102,52 @@ class MahasiswaService {
   Future<Map<String, dynamic>> ajukanPermohonan({
     required int dosenId,
     required String topikTa,
+    ApiFile? proposalFile,
   }) async {
-    final decoded = await _client.post(
-      '/mahasiswa/permohonan',
-      body: {
-        'dosen_id': dosenId,
-        'topik_ta': topikTa.trim(),
-      },
+    final Map<String, dynamic> decoded;
+    if (proposalFile != null) {
+      decoded = await _client.multipart(
+        'POST',
+        '/mahasiswa/permohonan',
+        fields: {
+          'dosen_id': dosenId.toString(),
+          'topik_ta': topikTa.trim(),
+        },
+        files: [proposalFile],
+      );
+    } else {
+      decoded = await _client.post(
+        '/mahasiswa/permohonan',
+        body: {
+          'dosen_id': dosenId,
+          'topik_ta': topikTa.trim(),
+        },
+      );
+    }
+
+    final data = decoded['data'];
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+
+    return {};
+  }
+
+  Future<Map<String, dynamic>> getDosenKetersediaan(
+    int dosenId, {
+    String? tanggal,
+  }) async {
+    final decoded = await _client.get(
+      '/mahasiswa/dosen/$dosenId/ketersediaan',
+      query: tanggal != null ? {'tanggal': tanggal} : null,
     );
 
     final data = decoded['data'];
     if (data is Map<String, dynamic>) {
       return data;
+    }
+    if (data is Map) {
+      return Map<String, dynamic>.from(data);
     }
 
     return {};

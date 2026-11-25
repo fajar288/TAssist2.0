@@ -87,6 +87,27 @@
                         </div>
                     </div>
 
+                    @if($permohonan->file_proposal)
+                        <div class="rounded-2xl border tassist-mini-card p-5 flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-wide theme-text-muted font-black">
+                                    Lampiran Proposal (PDF)
+                                </p>
+                                <p class="mt-2 theme-text-main font-bold">
+                                    {{ basename($permohonan->file_proposal) }}
+                                </p>
+                            </div>
+                            <a
+                                href="{{ app(\App\Services\SignedUrlService::class)->proposalFileUrl($permohonan->permohonan_id) }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="px-4 py-2 rounded-xl text-xs font-black theme-badge-primary"
+                            >
+                                Unduh Proposal
+                            </a>
+                        </div>
+                    @endif
+
                     @if($permohonan->catatan_respons)
                         <div class="rounded-2xl border tassist-mini-card p-5">
                             <p class="text-xs uppercase tracking-wide theme-text-muted font-black">

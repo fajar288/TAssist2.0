@@ -16,13 +16,15 @@ class ChecklistProgress extends Model
     protected $fillable = [
         'progress_id',
         'nama_item',
-        'tgl_selesai',
+        'is_selesai',
         'tanggal_selesai',
         'catatan',
+        'bobot',
     ];
 
     protected $casts = [
-        'tgl_selesai'     => 'boolean',
+        'is_selesai'      => 'boolean',
+        'bobot'           => 'float',
         'tanggal_selesai' => 'date',
         'created_at'      => 'datetime',
         'updated_at'      => 'datetime',

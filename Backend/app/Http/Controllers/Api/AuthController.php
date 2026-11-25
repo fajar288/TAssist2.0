@@ -276,8 +276,15 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
+        $user = $request->user();
+
+        // Nonaktifkan semua device token FCM milik user saat logout (T-42 / F-NOT-04)
+        \App\Models\DeviceToken::where('user_id', $user->user_id)
+            ->where('is_active', true)
+            ->update(['is_active' => false]);
+
         // Hapus token aktif saat ini
-        $request->user()->currentAccessToken()->delete();
+        $user->currentAccessToken()?->delete();
 
         return $this->successResponse('Logout berhasil.');
     }
