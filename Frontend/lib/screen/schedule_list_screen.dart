@@ -8,6 +8,7 @@ import '../model/models.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav.dart';
 import '../widgets/custom_meeting_card.dart';
+import '../features/dosen/view/availability_management_page.dart';
 import 'meeting_detail_screen.dart';
 
 class ScheduleListScreen extends StatefulWidget {
@@ -187,20 +188,31 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.2),
-                    width: 1,
+              IconButton(
+                tooltip: 'Atur Ketersediaan',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AvailabilityManagementPage(),
+                    ),
+                  );
+                },
+                icon: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1,
+                    ),
                   ),
-                ),
-                child: const Icon(
-                  Icons.calendar_today_rounded,
-                  color: Colors.white,
-                  size: 22,
+                  child: const Icon(
+                    Icons.event_available_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
                 ),
               ),
             ],

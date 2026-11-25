@@ -29,6 +29,9 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Map<String, dynamic>? _activeBimbingan;
   List<Map<String, dynamic>> _scheduleList = [];
+  List<Map<String, dynamic>> _weeklyAvailability = [];
+  List<Map<String, dynamic>> _exceptionAvailability = [];
+  List<Map<String, dynamic>>? _effectiveSlotsForDate;
 
   DateTime? _selectedDate;
 
@@ -75,11 +78,35 @@ class _SchedulePageState extends State<SchedulePage> {
       final activeBimbingan = await _mahasiswaService.getActiveBimbingan();
       final schedules = await _mahasiswaService.getJadwal(perPage: 30);
 
+      List<Map<String, dynamic>> weeklyAvail = [];
+      List<Map<String, dynamic>> exceptionAvail = [];
+      final dosenRaw = activeBimbingan?['dosen'];
+      final dosenId = dosenRaw is Map
+          ? int.tryParse(dosenRaw['dosen_id']?.toString() ?? '')
+          : null;
+      if (dosenId != null) {
+        try {
+          final avail = await _mahasiswaService.getDosenKetersediaan(dosenId);
+          final rawW = avail['mingguan'];
+          final rawK = avail['khusus'];
+          if (rawW is List) {
+            weeklyAvail = rawW.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+          }
+          if (rawK is List) {
+            exceptionAvail = rawK.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+          }
+        } catch (e) {
+          debugPrint('SchedulePage: getDosenKetersediaan failed: $e');
+        }
+      }
+
       if (!mounted) return;
 
       setState(() {
         _activeBimbingan = activeBimbingan;
         _scheduleList = schedules;
+        _weeklyAvailability = weeklyAvail;
+        _exceptionAvailability = exceptionAvail;
         _isLoading = false;
       });
     } catch (e) {
@@ -122,7 +149,52 @@ class _SchedulePageState extends State<SchedulePage> {
 
     setState(() {
       _selectedDate = picked;
+      _effectiveSlotsForDate = null;
     });
+
+    final dosenId = int.tryParse(_advisor?['dosen_id']?.toString() ?? '');
+    if (dosenId != null) {
+      try {
+        final avail = await _mahasiswaService.getDosenKetersediaan(
+          dosenId,
+          tanggal: _formatDateForApi(picked),
+        );
+        final rawEffective = avail['slot_efektif'];
+        if (mounted && rawEffective is List) {
+          setState(() {
+            _effectiveSlotsForDate = rawEffective
+                .whereType<Map>()
+                .map((e) => Map<String, dynamic>.from(e))
+                .toList();
+          });
+        }
+      } catch (e) {
+        debugPrint('SchedulePage: getDosenKetersediaan(tanggal) failed: $e');
+      }
+    }
+  }
+
+  bool get _hasPublishedAvailability =>
+      _weeklyAvailability.isNotEmpty || _exceptionAvailability.isNotEmpty;
+
+  bool get _isOutsidePublishedAvailability {
+    if (!_hasPublishedAvailability || _selectedDate == null) return false;
+    final slots = _effectiveSlotsForDate;
+    if (slots == null) return false;
+    if (slots.isEmpty) return true;
+
+    final startStr = _formatTimeForApi(_startHour, _startMinute);
+    final endStr = _formatTimeForApi(_endHour, _endMinute);
+    if (startStr.compareTo(endStr) >= 0) return false;
+
+    for (final s in slots) {
+      final sStart = s['waktu_mulai']?.toString() ?? '';
+      final sEnd = s['waktu_selesai']?.toString() ?? '';
+      if (startStr.compareTo(sStart) >= 0 && endStr.compareTo(sEnd) <= 0) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Future<void> _submitSchedule() async {
@@ -384,6 +456,68 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
+  Widget _buildAvailabilityHintCard() {
+    final slotsToShow = _selectedDate != null && _effectiveSlotsForDate != null
+        ? _effectiveSlotsForDate!
+        : _weeklyAvailability.where((s) => s['is_available'] != false).toList();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEEF2FF),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFC7D2FE)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _selectedDate != null
+                ? 'Ketersediaan Dosen pada ${_formatDateForApi(_selectedDate!)}:'
+                : 'Slot Ketersediaan Rutin Dosen:',
+            style: const TextStyle(
+              color: Color(0xFF312E81),
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          if (slotsToShow.isEmpty)
+            const Text(
+              'Tidak ada slot tersedia pada tanggal ini.',
+              style: TextStyle(color: Color(0xFF475569), fontSize: 12),
+            )
+          else
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: slotsToShow.map((s) {
+                final day = s['hari']?.toString() ?? s['tanggal']?.toString() ?? '';
+                final range = '${s['waktu_mulai']} - ${s['waktu_selesai']}';
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFA5B4FC)),
+                  ),
+                  child: Text(
+                    _selectedDate != null ? range : '$day $range',
+                    style: const TextStyle(
+                      color: Color(0xFF3730A3),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildHeader() {
     final advisorName = _advisor?['nama']?.toString() ?? 'lecturer';
 
@@ -479,6 +613,38 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
             const SizedBox(height: 10),
             _buildTimePicker(),
+            if (_hasPublishedAvailability) ...[
+              const SizedBox(height: 14),
+              _buildAvailabilityHintCard(),
+            ],
+            if (_isOutsidePublishedAvailability) ...[
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFEF3C7),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFF59E0B)),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.info_outline_rounded, color: Color(0xFFB45309), size: 18),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Di luar ketersediaan yang dipublikasikan dosen. Anda tetap dapat mengajukan jadwal ini.',
+                        style: TextStyle(
+                          color: Color(0xFF92400E),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             const SizedBox(height: 20),
             const Text(
               'Selected Lecturer',

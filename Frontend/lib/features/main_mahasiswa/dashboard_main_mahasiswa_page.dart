@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../app/app.dart';
+import '../../core/export_helper.dart';
 import '../auth/data/auth_service.dart';
 import '../notifikasi/widgets/notifikasi_bell_button.dart';
 import '../../mahasiswa/data/mahasiswa_service.dart';
@@ -283,7 +284,7 @@ class _DashboardMainMahasiswaPageState
   }
 
   bool _isChecklistDone(Map<String, dynamic> item) {
-    final raw = item['tgl_selesai'];
+    final raw = item['is_selesai'] ?? item['tgl_selesai'];
 
     if (raw is bool) return raw;
     if (raw is int) return raw == 1;
@@ -342,6 +343,8 @@ class _DashboardMainMahasiswaPageState
                   _buildInformasiTACard(),
                   const SizedBox(height: 12),
                   _buildBeritaAcaraCard(),
+                  const SizedBox(height: 12),
+                  _buildExportHistoryCard(),
                   const SizedBox(height: 12),
                   _buildChatbotCard(),
                   const SizedBox(height: 18),
@@ -694,6 +697,78 @@ class _DashboardMainMahasiswaPageState
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildExportHistoryCard() {
+    final bimbinganId = _activeBimbingan?['bimbingan_id'] is int
+        ? _activeBimbingan!['bimbingan_id'] as int
+        : int.tryParse(_activeBimbingan?['bimbingan_id']?.toString() ?? '');
+
+    if (bimbinganId == null) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.cardBorder),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGhost,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.file_download_outlined,
+              color: AppTheme.primary,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Ekspor Riwayat Bimbingan',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+                Text(
+                  'Unduh ringkasan jadwal, dokumen & progres',
+                  style: TextStyle(fontSize: 11.5, color: Color(0xFF64748B)),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () => ExportHelper.exportBimbinganHistory(
+              context,
+              rolePrefix: 'mahasiswa',
+              bimbinganId: bimbinganId,
+              format: 'pdf',
+            ),
+            child: const Text('PDF'),
+          ),
+          TextButton(
+            onPressed: () => ExportHelper.exportBimbinganHistory(
+              context,
+              rolePrefix: 'mahasiswa',
+              bimbinganId: bimbinganId,
+              format: 'excel',
+            ),
+            child: const Text('Excel'),
+          ),
+        ],
       ),
     );
   }

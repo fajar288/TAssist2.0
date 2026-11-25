@@ -1,6 +1,7 @@
 // lib/features/dosen/view/student_detail_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:produk/core/export_helper.dart';
 import 'package:produk/model/models.dart';
 import 'package:produk/widgets/student_info_card.dart';
 import 'package:produk/widgets/student_menu_title.dart';
@@ -517,6 +518,55 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           icon: Icons.assignment_turned_in_rounded,
           iconColor: const Color(0xFF4338CA),
           onTap: _openBeritaAcaraPage,
+        ),
+        StudentMenuTile(
+          title: 'Export Riwayat (PDF / Excel)',
+          subtitle: 'Download meetings, versions & progress summary',
+          icon: Icons.file_download_outlined,
+          iconColor: const Color(0xFF0EA5E9),
+          onTap: () {
+            final bimbinganId = student.bimbinganIdAsInt;
+            if (bimbinganId == null) {
+              _showSnackBar(context, 'ID bimbingan tidak valid.');
+              return;
+            }
+            showModalBottomSheet<void>(
+              context: context,
+              builder: (ctx) => SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.picture_as_pdf_rounded),
+                      title: const Text('Export PDF'),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        ExportHelper.exportBimbinganHistory(
+                          context,
+                          rolePrefix: 'dosen',
+                          bimbinganId: bimbinganId,
+                          format: 'pdf',
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.table_view_rounded),
+                      title: const Text('Export Excel (.xlsx)'),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        ExportHelper.exportBimbinganHistory(
+                          context,
+                          rolePrefix: 'dosen',
+                          bimbinganId: bimbinganId,
+                          format: 'excel',
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ],
     );

@@ -100,15 +100,17 @@ class DosenService {
 
   Future<Map<String, dynamic>> updateProgresTA({
     required int bimbinganId,
-    required double persentase,
+    double? persentase,
     required String statusProgress,
+    bool? isOverride,
     String? catatan,
   }) {
     return _client.put(
       '/dosen/progres/$bimbinganId',
       body: {
-        'persentase': persentase,
+        if (persentase != null) 'persentase': persentase,
         'status_progress': statusProgress.trim(),
+        if (isOverride != null) 'is_override': isOverride,
         if (catatan != null && catatan.trim().isNotEmpty)
           'catatan': catatan.trim(),
       },
@@ -118,7 +120,8 @@ class DosenService {
   Future<Map<String, dynamic>> tambahChecklistProgress({
     required int progressId,
     required String namaItem,
-    bool tglSelesai = false,
+    bool isSelesai = false,
+    double bobot = 1.0,
     String? tanggalSelesai,
     String? catatan,
   }) {
@@ -126,7 +129,8 @@ class DosenService {
       '/dosen/progres/$progressId/checklist',
       body: {
         'nama_item': namaItem.trim(),
-        'tgl_selesai': tglSelesai,
+        'is_selesai': isSelesai,
+        'bobot': bobot,
         if (tanggalSelesai != null && tanggalSelesai.trim().isNotEmpty)
           'tanggal_selesai': tanggalSelesai.trim(),
         if (catatan != null && catatan.trim().isNotEmpty)
@@ -138,7 +142,8 @@ class DosenService {
   Future<Map<String, dynamic>> updateChecklistProgress({
     required int checklistId,
     required String namaItem,
-    required bool tglSelesai,
+    required bool isSelesai,
+    double? bobot,
     String? tanggalSelesai,
     String? catatan,
   }) {
@@ -146,7 +151,8 @@ class DosenService {
       '/dosen/checklist/$checklistId',
       body: {
         'nama_item': namaItem.trim(),
-        'tgl_selesai': tglSelesai,
+        'is_selesai': isSelesai,
+        if (bobot != null) 'bobot': bobot,
         if (tanggalSelesai != null && tanggalSelesai.trim().isNotEmpty)
           'tanggal_selesai': tanggalSelesai.trim(),
         if (catatan != null && catatan.trim().isNotEmpty)
@@ -157,6 +163,66 @@ class DosenService {
 
   Future<Map<String, dynamic>> hapusChecklistProgress(int checklistId) {
     return _client.delete('/dosen/checklist/$checklistId');
+  }
+
+  Future<List<Map<String, dynamic>>> getKetersediaan() async {
+    final decoded = await _client.get('/dosen/ketersediaan');
+    final data = decoded['data'];
+    if (data is List) {
+      return data.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+    }
+    return [];
+  }
+
+  Future<Map<String, dynamic>> createKetersediaan({
+    required String tipe,
+    String? hari,
+    String? tanggal,
+    required String waktuMulai,
+    required String waktuSelesai,
+    bool isAvailable = true,
+    String? catatan,
+  }) {
+    return _client.post(
+      '/dosen/ketersediaan',
+      body: {
+        'tipe': tipe,
+        if (hari != null) 'hari': hari,
+        if (tanggal != null) 'tanggal': tanggal,
+        'waktu_mulai': waktuMulai,
+        'waktu_selesai': waktuSelesai,
+        'is_available': isAvailable,
+        if (catatan != null && catatan.trim().isNotEmpty) 'catatan': catatan.trim(),
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> updateKetersediaan({
+    required int ketersediaanId,
+    String? tipe,
+    String? hari,
+    String? tanggal,
+    String? waktuMulai,
+    String? waktuSelesai,
+    bool? isAvailable,
+    String? catatan,
+  }) {
+    return _client.put(
+      '/dosen/ketersediaan/$ketersediaanId',
+      body: {
+        if (tipe != null) 'tipe': tipe,
+        if (hari != null) 'hari': hari,
+        if (tanggal != null) 'tanggal': tanggal,
+        if (waktuMulai != null) 'waktu_mulai': waktuMulai,
+        if (waktuSelesai != null) 'waktu_selesai': waktuSelesai,
+        if (isAvailable != null) 'is_available': isAvailable,
+        if (catatan != null) 'catatan': catatan.trim(),
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> deleteKetersediaan(int ketersediaanId) {
+    return _client.delete('/dosen/ketersediaan/$ketersediaanId');
   }
 
   Future<Map<String, dynamic>> getDokumenMahasiswa({

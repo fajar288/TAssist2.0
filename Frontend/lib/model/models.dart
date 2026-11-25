@@ -13,6 +13,8 @@ class CounselingRequest {
   final RequestStatus status;
   final DateTime requestDate;
   final String message;
+  final String? fileProposal;
+  final String? proposalUrl;
 
   const CounselingRequest({
     required this.id,
@@ -23,6 +25,8 @@ class CounselingRequest {
     required this.status,
     required this.requestDate,
     this.message = '',
+    this.fileProposal,
+    this.proposalUrl,
   });
 
   factory CounselingRequest.fromPermohonanJson(Map<String, dynamic> json) {
@@ -42,6 +46,8 @@ class CounselingRequest {
       status: _statusFromBackend(json['status']?.toString()),
       requestDate: _parseDate(json['tanggal_pengajuan']?.toString()),
       message: json['topik_ta']?.toString() ?? '',
+      fileProposal: json['file_proposal']?.toString(),
+      proposalUrl: json['proposal_url']?.toString(),
     );
   }
 
