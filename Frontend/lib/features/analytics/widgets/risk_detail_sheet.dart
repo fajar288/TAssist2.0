@@ -114,7 +114,7 @@ class RiskDetailSheet extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.between,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       'Skor Indeks Risiko',
@@ -234,7 +234,7 @@ class RiskDetailSheet extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: isHigh ? Colors.amber.shade100 : Colors.slate.shade200,
+                                color: isHigh ? Colors.amber.shade100 : AppTheme.cardBorder,
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
@@ -242,7 +242,7 @@ class RiskDetailSheet extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: isHigh ? Colors.amber.shade900 : Colors.slate.shade700,
+                                  color: isHigh ? Colors.amber.shade900 : AppTheme.textSecondary,
                                 ),
                               ),
                             ),
