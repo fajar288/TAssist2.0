@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 
 import '../../../core/api_client.dart';
+import '../../../model/lecturer_recommendation_model.dart';
 
 class MahasiswaService {
   final ApiClient _client = ApiClient.instance;
@@ -86,6 +87,40 @@ class MahasiswaService {
     final decoded = await _client.get('/mahasiswa/dosen', query: query);
 
     return _extractList(decoded);
+  }
+
+  Future<LecturerRecommendationResponse> getRekomendasiDosen({
+    required String topik,
+    int? limit,
+  }) async {
+    final query = <String, dynamic>{
+      'topik': topik.trim(),
+      if (limit != null) 'limit': limit,
+    };
+
+    final decoded = await _client.get(
+      '/mahasiswa/dosen/rekomendasi',
+      query: query,
+    );
+
+    final data = decoded['data'];
+    if (data is Map<String, dynamic>) {
+      return LecturerRecommendationResponse.fromJson(data);
+    }
+    if (data is Map) {
+      return LecturerRecommendationResponse.fromJson(
+        Map<String, dynamic>.from(data),
+      );
+    }
+
+    return LecturerRecommendationResponse(
+      topik: topik.trim(),
+      kataKunciStemmed: const [],
+      isTopikSingkat: false,
+      totalKandidat: 0,
+      totalDosenDikecualikanKuotaHabis: 0,
+      rekomendasi: const [],
+    );
   }
 
   Future<List<Map<String, dynamic>>> getPermohonan({

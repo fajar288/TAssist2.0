@@ -5,6 +5,8 @@ import '../../../app/app.dart';
 import '../../auth/data/auth_service.dart';
 import '../../notifikasi/widgets/notifikasi_bell_button.dart';
 import '../../../mahasiswa/data/mahasiswa_service.dart';
+import '../../../theme/app_theme.dart';
+import 'lecturer_recommendation_page.dart';
 import 'lecturers_page.dart';
 
 class LecturerSelectionDashboardPage extends StatefulWidget {
@@ -414,7 +416,72 @@ class _LecturerSelectionDashboardPageState
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
+          InkWell(
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const LecturerRecommendationPage(),
+                ),
+              );
+              if (!mounted) return;
+              _loadPermohonan();
+            },
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGhost,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppTheme.infoBorder),
+              ),
+              child: const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundColor: AppTheme.primary,
+                    child: Icon(
+                      Icons.auto_awesome_rounded,
+                      color: AppTheme.surface,
+                      size: 18,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Rekomendasi Dosen by Topik TA',
+                          style: TextStyle(
+                            color: AppTheme.textPrimary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Cocokkan rencana topik TA dengan keahlian & kuota dosen',
+                          style: TextStyle(
+                            color: AppTheme.textSecondary,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                    color: AppTheme.primary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           for (int i = 0; i < categories.length; i++) ...[
             _LecturerBannerCard(
               title: categories[i].title,
