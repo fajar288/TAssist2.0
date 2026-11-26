@@ -12,6 +12,7 @@ use App\Services\NotifikasiService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InformasiTAController extends Controller
 {
@@ -133,12 +134,14 @@ class InformasiTAController extends Controller
         $informasi = InformasiTA::findOrFail($id);
         $judul = $informasi->judul;
 
-        // Hapus notifikasi yang berhubungan dengan informasi TA ini
-        Notifikasi::where('ref_tabel', 'informasi_ta')
-            ->where('ref_id', $informasi->info_id)
-            ->delete();
+        DB::transaction(function () use ($informasi) {
+            // Hapus notifikasi yang berhubungan dengan informasi TA ini
+            Notifikasi::where('ref_tabel', 'informasi_ta')
+                ->where('ref_id', $informasi->info_id)
+                ->delete();
 
-        $informasi->delete();
+            $informasi->delete();
+        });
 
         return $this->successResponse("Informasi TA \"{$judul}\" berhasil dihapus.");
     }

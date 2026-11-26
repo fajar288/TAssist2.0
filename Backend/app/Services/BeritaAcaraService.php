@@ -218,32 +218,34 @@ class BeritaAcaraService
         }
 
         $snapshot = $this->buildSnapshot($bimbingan, $periodeMulai, $periodeSelesai);
-
         $year = Carbon::parse($periodeSelesai)->year;
-        $nomor = $this->generateNomor($year);
         $token = Str::random(40);
 
-        $ba = new BeritaAcara([
-            'bimbingan_id'       => $bimbingan->bimbingan_id,
-            'nomor'              => $nomor,
-            'periode_mulai'      => $periodeMulai,
-            'periode_selesai'    => $periodeSelesai,
-            'data_snapshot'      => $snapshot,
-            'file_path'          => 'pending',
-            'file_hash'          => str_repeat('0', 64),
-            'token_verifikasi'   => $token,
-            'status_persetujuan' => 'draft',
-        ]);
+        return DB::transaction(function () use ($bimbingan, $year, $periodeMulai, $periodeSelesai, $snapshot, $token) {
+            $nomor = $this->generateNomor($year);
 
-        $ba->save();
+            $ba = new BeritaAcara([
+                'bimbingan_id'       => $bimbingan->bimbingan_id,
+                'nomor'              => $nomor,
+                'periode_mulai'      => $periodeMulai,
+                'periode_selesai'    => $periodeSelesai,
+                'data_snapshot'      => $snapshot,
+                'file_path'          => 'pending',
+                'file_hash'          => str_repeat('0', 64),
+                'token_verifikasi'   => $token,
+                'status_persetujuan' => 'draft',
+            ]);
 
-        // Render PDF initial draft
-        $renderResult = $this->renderAndStorePdf($ba);
-        $ba->file_path = $renderResult['file_path'];
-        $ba->file_hash = $renderResult['file_hash'];
-        $ba->save();
+            $ba->save();
 
-        return $ba;
+            // Render PDF initial draft
+            $renderResult = $this->renderAndStorePdf($ba);
+            $ba->file_path = $renderResult['file_path'];
+            $ba->file_hash = $renderResult['file_hash'];
+            $ba->save();
+
+            return $ba;
+        });
     }
 
     /**
