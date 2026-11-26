@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tassist/features/dosen/data/dosen_service.dart';
 import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_empty_state_widget.dart';
+import 'package:tassist/widgets/app_error_widget.dart';
+import 'package:tassist/widgets/app_skeleton_loader.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 
 class DosenStudentProgressPage extends StatefulWidget {
   final StudentModel student;
@@ -24,10 +29,6 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
 
   Map<String, dynamic>? _data;
   List<Map<String, dynamic>> _progressList = [];
-
-  static const Color _navBlue = Color(0xFF0D4AA3);
-  static const Color _navBlueDark = Color(0xFF082E6B);
-  static const Color _navBlueLight = Color(0xFF1A65C8);
 
   StudentModel get student => widget.student;
 
@@ -189,7 +190,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: AppTheme.background,
       body: RefreshIndicator(
         onRefresh: _loadProgress,
         child: CustomScrollView(
@@ -197,14 +198,18 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
           slivers: [
             _buildAppBar(),
             if (_isLoading)
-              const SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(child: CircularProgressIndicator()),
+              const SliverToBoxAdapter(
+                child: AppSkeletonLoader.card(count: 3),
               )
             else if (_errorMessage != null)
               SliverFillRemaining(
                 hasScrollBody: false,
-                child: _buildErrorState(),
+                child: AppErrorWidget(
+                  title: 'Failed to load progress',
+                  message: _errorMessage ?? '-',
+                  onRetry: _loadProgress,
+                  retryLabel: 'Try Again',
+                ),
               )
             else
               SliverToBoxAdapter(
@@ -235,7 +240,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     return SliverAppBar(
       expandedHeight: taTitle == '-' ? 185 : 220,
       pinned: true,
-      backgroundColor: _navBlue,
+      backgroundColor: AppTheme.primary,
       leading: IconButton(
         icon: const Icon(
           Icons.arrow_back_ios_new_rounded,
@@ -248,7 +253,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         background: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [_navBlueDark, _navBlue, _navBlueLight],
+              colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -314,10 +319,10 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.13),
-                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white.withValues(alpha: 0.13),
+                            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.18),
+                              color: Colors.white.withValues(alpha: 0.18),
                             ),
                           ),
                           child: Row(
@@ -356,47 +361,6 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     );
   }
 
-  Widget _buildErrorState() {
-    return Padding(
-      padding: const EdgeInsets.all(28),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: Colors.redAccent,
-            size: 46,
-          ),
-          const SizedBox(height: 14),
-          const Text(
-            'Failed to load progress',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0xFF2D3238),
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _errorMessage ?? '-',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.black54,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 18),
-          ElevatedButton.icon(
-            onPressed: _loadProgress,
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Try Again'),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildProgressOverview() {
     final latest = _latestProgress;
     final status = latest?['status_progress']?.toString() ?? 'No progress yet';
@@ -413,7 +377,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
           const Text(
             'Current Progress',
             style: TextStyle(
-              color: Color(0xFF1E293B),
+              color: AppTheme.textPrimary,
               fontSize: 15,
               fontWeight: FontWeight.w800,
             ),
@@ -425,7 +389,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
               Text(
                 '${_latestPercentValue.round()}%',
                 style: const TextStyle(
-                  color: _navBlue,
+                  color: AppTheme.primary,
                   fontSize: 42,
                   fontWeight: FontWeight.w900,
                   height: 1,
@@ -438,9 +402,9 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                   child: LinearProgressIndicator(
                     value: _latestPercentValue / 100,
                     minHeight: 10,
-                    backgroundColor: const Color(0xFFE2E8F0),
-                    valueColor: const AlwaysStoppedAnimation<Color>(_navBlue),
-                    borderRadius: BorderRadius.circular(20),
+                    backgroundColor: AppTheme.cardBorder,
+                    valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primary),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   ),
                 ),
               ),
@@ -482,11 +446,11 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             icon: const Icon(Icons.trending_up_rounded),
             label: const Text('Update Progress'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _navBlue,
+              backgroundColor: AppTheme.primary,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
             ),
           ),
@@ -498,11 +462,11 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             icon: const Icon(Icons.playlist_add_check_rounded),
             label: const Text('Add Checklist'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: _navBlue,
-              side: const BorderSide(color: _navBlue, width: 1.4),
+              foregroundColor: AppTheme.primary,
+              side: const BorderSide(color: AppTheme.primary, width: 1.4),
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
             ),
           ),
@@ -527,7 +491,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 child: Text(
                   'Latest Checklist',
                   style: TextStyle(
-                    color: Color(0xFF1E293B),
+                    color: AppTheme.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                   ),
@@ -536,7 +500,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
               Text(
                 '${checklist.where((item) => _isDone(item['is_selesai'] ?? item['tgl_selesai'])).length}/${checklist.length}',
                 style: const TextStyle(
-                  color: _navBlue,
+                  color: AppTheme.primary,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -571,15 +535,15 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: AppTheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Row(
         children: [
           Checkbox(
             value: done,
-            activeColor: _navBlue,
+            activeColor: AppTheme.primary,
             onChanged: id == null || _isSubmitting
                 ? null
                 : (value) => _toggleChecklist(item, value == true),
@@ -594,7 +558,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                       child: Text(
                         title,
                         style: TextStyle(
-                          color: const Color(0xFF1E293B),
+                          color: AppTheme.textPrimary,
                           fontSize: 13.5,
                           fontWeight: FontWeight.w700,
                           decoration: done ? TextDecoration.lineThrough : null,
@@ -605,13 +569,13 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEEF2FF),
-                        borderRadius: BorderRadius.circular(8),
+                        color: AppTheme.primaryGhost,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Text(
                         'Bobot ${bobot.toStringAsFixed(bobot.truncateToDouble() == bobot ? 0 : 1)}',
                         style: const TextStyle(
-                          color: _navBlue,
+                          color: AppTheme.primary,
                           fontSize: 10.5,
                           fontWeight: FontWeight.w700,
                         ),
@@ -624,7 +588,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                   Text(
                     note,
                     style: const TextStyle(
-                      color: Color(0xFF64748B),
+                      color: AppTheme.textSecondary,
                       fontSize: 12,
                       height: 1.4,
                     ),
@@ -668,7 +632,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
           const Text(
             'Progress History',
             style: TextStyle(
-              color: Color(0xFF1E293B),
+              color: AppTheme.textPrimary,
               fontSize: 15,
               fontWeight: FontWeight.w800,
             ),
@@ -696,9 +660,9 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: AppTheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Row(
         children: [
@@ -706,14 +670,14 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             width: 54,
             height: 54,
             decoration: BoxDecoration(
-              color: _navBlue.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(16),
+              color: AppTheme.primaryGhost,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Center(
               child: Text(
                 '${percent.round()}%',
                 style: const TextStyle(
-                  color: _navBlue,
+                  color: AppTheme.primary,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -727,7 +691,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 Text(
                   status,
                   style: const TextStyle(
-                    color: Color(0xFF1E293B),
+                    color: AppTheme.textPrimary,
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
                   ),
@@ -739,7 +703,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Color(0xFF64748B),
+                      color: AppTheme.textSecondary,
                       fontSize: 12,
                     ),
                   ),
@@ -748,7 +712,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 Text(
                   _formatDateTime(updatedAt),
                   style: const TextStyle(
-                    color: Color(0xFF94A3B8),
+                    color: AppTheme.textMuted,
                     fontSize: 11,
                   ),
                 ),
@@ -779,7 +743,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       isScrollControlled: true,
       useSafeArea: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -808,7 +772,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
                       value: isOverride,
-                      activeThumbColor: _navBlue,
+                      activeThumbColor: AppTheme.primary,
                       title: const Text(
                         'Override Manual Persentase',
                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
@@ -861,7 +825,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                       child: ElevatedButton(
                         onPressed: () => Navigator.pop(context, true),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _navBlue,
+                          backgroundColor: AppTheme.primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
@@ -974,7 +938,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       isScrollControlled: true,
       useSafeArea: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       builder: (context) {
         return StatefulBuilder(
@@ -1036,7 +1000,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     contentPadding: EdgeInsets.zero,
                     title: const Text('Tandai selesai'),
                     controlAffinity: ListTileControlAffinity.leading,
-                    activeColor: _navBlue,
+                    activeColor: AppTheme.primary,
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
@@ -1044,7 +1008,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context, true),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _navBlue,
+                        backgroundColor: AppTheme.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
@@ -1322,8 +1286,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       width: 42,
       height: 4,
       decoration: BoxDecoration(
-        color: const Color(0xFFCBD5E1),
-        borderRadius: BorderRadius.circular(99),
+        color: AppTheme.cardBorder,
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
     );
   }
@@ -1332,65 +1296,28 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
     required IconData icon,
     required String message,
   }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 22),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: const Color(0xFF94A3B8), size: 30),
-          const SizedBox(height: 8),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Color(0xFF64748B),
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
+    return AppEmptyStateWidget(
+      icon: icon,
+      title: message,
+      compact: true,
     );
   }
 
   BoxDecoration _cardDecoration() {
     return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: Colors.black.withOpacity(0.04)),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.035),
-          blurRadius: 12,
-          offset: const Offset(0, 4),
-        ),
-      ],
+      color: AppTheme.surface,
+      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+      border: Border.all(color: AppTheme.cardBorder),
+      boxShadow: AppTheme.subtleShadow,
     );
   }
 
   void _showSuccess(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: const Color(0xFF16A34A),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppSnackBars.success(context, message);
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.redAccent,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppSnackBars.error(context, message);
   }
 }
 
@@ -1410,12 +1337,12 @@ class _InfoLine extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: const Color(0xFF0D4AA3), size: 18),
+        Icon(icon, color: AppTheme.primary, size: 18),
         const SizedBox(width: 8),
         Text(
           '$label: ',
           style: const TextStyle(
-            color: Color(0xFF64748B),
+            color: AppTheme.textSecondary,
             fontWeight: FontWeight.w700,
             fontSize: 12,
           ),
@@ -1424,7 +1351,7 @@ class _InfoLine extends StatelessWidget {
           child: Text(
             value,
             style: const TextStyle(
-              color: Color(0xFF1E293B),
+              color: AppTheme.textPrimary,
               fontWeight: FontWeight.w600,
               fontSize: 12,
               height: 1.4,

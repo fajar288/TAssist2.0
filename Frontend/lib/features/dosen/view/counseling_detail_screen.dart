@@ -6,6 +6,7 @@ import 'package:tassist/features/dosen/data/dosen_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:tassist/model/models.dart';
 import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 import 'package:tassist/widgets/custom_request_card.dart';
 
 class CounselingDetailScreen extends StatefulWidget {
@@ -81,7 +82,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
         Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF312E81), Color(0xFF4338CA), Color(0xFF6366F1)],
+              colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -136,7 +137,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  const Color(0xFF1E1B4B).withOpacity(0.85),
+                  AppTheme.textPrimary.withValues(alpha: 0.85),
                 ],
               ),
             ),
@@ -175,9 +176,12 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                       errorBuilder: (_, __, ___) => Container(
                         width: 80,
                         height: 80,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [AppTheme.primaryLight, Color(0xFFA5B4FC)],
+                            colors: [
+                              AppTheme.primaryLight,
+                              AppTheme.primaryLight.withValues(alpha: 0.65),
+                            ],
                           ),
                         ),
                         child: Center(
@@ -284,9 +288,9 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryGhost,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       border: Border.all(
-                        color: AppTheme.primary.withOpacity(0.15),
+                        color: AppTheme.primary.withValues(alpha: 0.15),
                       ),
                     ),
                     child: Row(
@@ -332,7 +336,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryGhost,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: const Icon(
                       Icons.picture_as_pdf_rounded,
@@ -401,7 +405,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
               backgroundColor: AppTheme.accepted,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               elevation: 0,
               textStyle: GoogleFonts.poppins(
@@ -426,7 +430,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: const BorderSide(color: AppTheme.declined, width: 1.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               textStyle: GoogleFonts.poppins(
                 fontSize: 15,
@@ -446,7 +450,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
       decoration: BoxDecoration(
         color: isAccepted ? AppTheme.acceptedBg : AppTheme.declinedBg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(
           color: isAccepted ? AppTheme.acceptedBorder : AppTheme.declinedBorder,
           width: 1.5,
@@ -519,11 +523,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
         _isProcessing = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Permohonan berhasil diterima.'),
-        ),
-      );
+      AppSnackBars.success(context, 'Permohonan berhasil diterima.');
 
       Navigator.pop(context, true);
     } catch (e) {
@@ -566,11 +566,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
         _isProcessing = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Permohonan berhasil ditolak.'),
-        ),
-      );
+      AppSnackBars.success(context, 'Permohonan berhasil ditolak.');
 
       Navigator.pop(context, true);
     } catch (e) {
@@ -645,10 +641,9 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                 final text = controller.text.trim();
 
                 if (text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Alasan penolakan wajib diisi.'),
-                    ),
+                  AppSnackBars.error(
+                    context,
+                    'Alasan penolakan wajib diisi.',
                   );
                   return;
                 }
@@ -671,12 +666,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppTheme.declined,
-      ),
-    );
+    AppSnackBars.error(context, message);
   }
 }
 
@@ -703,7 +693,7 @@ class _InfoRow extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: AppTheme.primaryGhost,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           ),
           child: Icon(icon, size: 16, color: AppTheme.primary),
         ),

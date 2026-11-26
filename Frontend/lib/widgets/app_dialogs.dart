@@ -27,15 +27,15 @@ class _GlassDialogShell extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(AppTheme.radiusXl),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.92),
-                    borderRadius: BorderRadius.circular(28),
+                    color: AppTheme.surface.withValues(alpha: 0.92),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.6),
+                      color: AppTheme.surface.withValues(alpha: 0.6),
                       width: 1.5,
                     ),
                     boxShadow: [
@@ -105,8 +105,11 @@ Future<void> showAcceptedDialog(BuildContext context) {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppTheme.accepted, Color(0xFF34D399)],
+                gradient: LinearGradient(
+                  colors: [
+                    AppTheme.accepted,
+                    AppTheme.accepted.withValues(alpha: 0.85),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -162,7 +165,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
                   backgroundColor: AppTheme.accepted,
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
                   elevation: 0,
                 ),
@@ -241,10 +244,10 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
                     onPressed: () => Navigator.of(ctx).pop(false),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.textSecondary,
-                      side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                      side: const BorderSide(color: AppTheme.cardBorder, width: 1.5),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       ),
                     ),
                     child: Text(
@@ -265,7 +268,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
                       backgroundColor: AppTheme.declined,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       ),
                       elevation: 0,
                     ),
@@ -308,8 +311,8 @@ Future<String?> showApologyDialog(BuildContext context) {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3F4F6),
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppTheme.surfaceVariant,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
                   child: const Icon(
                     Icons.mail_outline_rounded,
@@ -363,11 +366,11 @@ Future<String?> showApologyDialog(BuildContext context) {
                 filled: true,
                 fillColor: AppTheme.background,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   borderSide: const BorderSide(
                     color: AppTheme.primary,
                     width: 2,
@@ -385,10 +388,10 @@ Future<String?> showApologyDialog(BuildContext context) {
                     onPressed: () => Navigator.of(ctx).pop(null),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.textSecondary,
-                      side: const BorderSide(color: Color(0xFFE2E8F0)),
+                      side: const BorderSide(color: AppTheme.cardBorder),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       ),
                     ),
                     child: Text(
@@ -405,7 +408,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       ),
                     ),
                     child: Row(

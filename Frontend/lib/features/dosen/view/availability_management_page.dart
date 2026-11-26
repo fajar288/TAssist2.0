@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../data/dosen_service.dart';
 
 /// T-76 (F-SCH-04): Supervisor Availability Management screen for Dosen.
@@ -85,7 +88,7 @@ class _AvailabilityManagementPageState
       isScrollControlled: true,
       useSafeArea: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       builder: (ctx) {
         return StatefulBuilder(
@@ -108,7 +111,7 @@ class _AvailabilityManagementPageState
                         height: 4,
                         decoration: BoxDecoration(
                           color: AppTheme.cardBorder,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
                       ),
                     ),
@@ -339,13 +342,11 @@ class _AvailabilityManagementPageState
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   void _showSnack(String msg, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: isError ? AppTheme.declined : AppTheme.accepted,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    if (isError) {
+      AppSnackBars.error(context, msg);
+    } else {
+      AppSnackBars.success(context, msg);
+    }
   }
 
   @override
@@ -370,15 +371,11 @@ class _AvailabilityManagementPageState
       body: RefreshIndicator(
         onRefresh: _loadSlots,
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const AppLoadingWidget()
             : _errorMessage != null
-                ? ListView(
-                    padding: const EdgeInsets.all(24),
-                    children: [
-                      Text(_errorMessage!, style: const TextStyle(color: AppTheme.declined)),
-                      const SizedBox(height: 12),
-                      ElevatedButton(onPressed: _loadSlots, child: const Text('Coba Lagi')),
-                    ],
+                ? AppErrorWidget(
+                    message: _errorMessage!,
+                    onRetry: _loadSlots,
                   )
                 : ListView(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
@@ -419,7 +416,7 @@ class _AvailabilityManagementPageState
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
             color: AppTheme.primaryGhost,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
           child: Text(
             '$count',
@@ -464,7 +461,7 @@ class _AvailabilityManagementPageState
               color: available
                   ? AppTheme.accepted.withValues(alpha: 0.12)
                   : AppTheme.declined.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Icon(
               available ? Icons.event_available_rounded : Icons.event_busy_rounded,

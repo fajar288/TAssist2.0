@@ -1,5 +1,6 @@
 import 'dart:ui'; // Diperlukan untuk ImageFilter
 import 'package:flutter/material.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 class NavItem {
   final IconData icon;
@@ -30,14 +31,14 @@ class NavbarShell extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16), 
         child: ClipRRect( // ClipRRect dipindah ke luar agar efek blur tidak melebar
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           child: BackdropFilter( // Widget kunci untuk efek blur di belakang
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
               decoration: BoxDecoration(
                 // Warna dibuat lebih transparan agar konten di belakang terlihat samar
-                color: Colors.white.withOpacity(0.12), 
-                borderRadius: BorderRadius.circular(24),
+                color: Colors.white.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.2), // Border putih tipis memperkuat kesan kaca
                   width: 1.5,
@@ -88,8 +89,8 @@ class _NavbarItemWidget extends StatelessWidget {
     required this.labelAnimation,
   });
 
-  static const Color _activeColor = Color(0xFF0D4AA3);
-  static const Color _inactiveColor = Color(0xFF2D3238); // Sedikit lebih soft dibanding hitam pekat
+  static const Color _activeColor = AppTheme.primary;
+  static const Color _inactiveColor = AppTheme.textPrimary; // Sedikit lebih soft dibanding hitam pekat
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,7 @@ class _NavbarItemWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 // Tambahkan sedikit shadow pada pill aktif agar lebih pop-out
                 color: isActive ? _activeColor : Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 boxShadow: isActive ? [
                   BoxShadow(
                     color: _activeColor.withOpacity(0.3),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../data/auth_service.dart';
 
 class EditStudentProfilePage extends StatefulWidget {
@@ -110,7 +111,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     });
 
     if (result.isSuccess) {
-      _showSnackBar(result.message);
+      AppSnackBars.success(context, result.message);
 
       await Future.delayed(const Duration(milliseconds: 450));
 
@@ -118,21 +119,8 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
 
       Navigator.pop(context, true);
     } else {
-      _showSnackBar(result.message, isError: true);
+      AppSnackBars.error(context, result.message);
     }
-  }
-
-  void _showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : AppTheme.primary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-      ),
-    );
   }
 
   @override
@@ -172,10 +160,10 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
                     color: AppTheme.surface,
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 22,
                         offset: const Offset(0, 10),
                       ),
@@ -225,7 +213,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: AppTheme.textMuted,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                               ),
                               elevation: 0,
                             ),
@@ -310,8 +298,8 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
             color: AppTheme.primaryGhost,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppTheme.primaryLight.withOpacity(0.3)),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            border: Border.all(color: AppTheme.primaryLight.withValues(alpha: 0.3)),
           ),
           child: Text(
             value,
@@ -364,24 +352,24 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
               vertical: 16,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               borderSide: const BorderSide(color: AppTheme.primaryLight),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               borderSide: const BorderSide(color: AppTheme.primaryLight),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               borderSide: const BorderSide(color: AppTheme.primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Colors.red),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.declined),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Colors.red, width: 2),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.declined, width: 2),
             ),
           ),
         ),

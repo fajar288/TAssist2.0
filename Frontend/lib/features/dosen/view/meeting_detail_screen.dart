@@ -6,6 +6,7 @@ import 'package:tassist/features/dosen/data/dosen_service.dart';
 
 import 'package:tassist/model/models.dart';
 import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 import 'package:tassist/widgets/custom_request_card.dart';
 
 class MeetingDetailScreen extends StatefulWidget {
@@ -39,14 +40,14 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
         slivers: [
           SliverAppBar(
             pinned: true,
-            backgroundColor: const Color(0xFF0D4AA3),
+            backgroundColor: AppTheme.primary,
             leading: Padding(
               padding: const EdgeInsets.all(8),
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -68,7 +69,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             flexibleSpace: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF082E6B), Color(0xFF0D4AA3)],
+                  colors: [AppTheme.primaryDark, AppTheme.primary],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -128,7 +129,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                    colors: [Color(0xFF082E6B), Color(0xFF1A65C8)],
+                    colors: [AppTheme.primaryDark, AppTheme.primaryLight],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -192,7 +193,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF082E6B), Color(0xFF0D4AA3)],
+                colors: [AppTheme.primaryDark, AppTheme.primary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -235,7 +236,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     Container(
                       width: 1,
                       height: 70,
-                      color: const Color(0xFFE2E8F0),
+                      color: AppTheme.cardBorder,
                       margin: const EdgeInsets.symmetric(horizontal: 16),
                     ),
                     Expanded(
@@ -318,7 +319,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryGhost,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
                 child: const Icon(
                   Icons.description_rounded,
@@ -343,7 +344,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppTheme.background,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Text(
               widget.request.description,
@@ -385,7 +386,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               elevation: 0,
               textStyle: GoogleFonts.poppins(
@@ -407,7 +408,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               side: const BorderSide(color: AppTheme.declined, width: 1.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               textStyle: GoogleFonts.poppins(
                 fontSize: 15,
@@ -445,15 +446,15 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
       icon = Icons.event_busy_rounded;
       text = 'Meeting has been declined.';
     } else if (isWaitingStudent) {
-      bgColor = const Color(0xFFFFF7ED);
-      borderColor = const Color(0xFFFED7AA);
-      textColor = const Color(0xFFC2410C);
+      bgColor = AppTheme.warningBg;
+      borderColor = AppTheme.warningBorder;
+      textColor = AppTheme.warning;
       icon = Icons.hourglass_top_rounded;
       text = 'Waiting for student confirmation.';
     } else {
-      bgColor = const Color(0xFFFFF7ED);
-      borderColor = const Color(0xFFFED7AA);
-      textColor = const Color(0xFFC2410C);
+      bgColor = AppTheme.warningBg;
+      borderColor = AppTheme.warningBorder;
+      textColor = AppTheme.warning;
       icon = Icons.info_outline_rounded;
       text = 'This meeting is pending.';
     }
@@ -463,7 +464,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(color: borderColor, width: 1.5),
       ),
       child: Row(
@@ -492,7 +493,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       decoration: BoxDecoration(
         color: AppTheme.primaryGhost,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
       child: Text(
         text,
@@ -577,9 +578,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
         _isProcessing = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Jadwal berhasil dikonfirmasi.')),
-      );
+      AppSnackBars.success(context, 'Jadwal berhasil dikonfirmasi.');
 
       Navigator.pop(context, true);
     } catch (e) {
@@ -616,9 +615,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
         _isProcessing = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Jadwal berhasil ditolak.')),
-      );
+      AppSnackBars.success(context, 'Jadwal berhasil ditolak.');
 
       Navigator.pop(context, true);
     } catch (e) {
@@ -703,12 +700,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppTheme.declined,
-      ),
-    );
+    AppSnackBars.error(context, message);
   }
 }
 
@@ -729,15 +721,15 @@ class _ModeOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
           color: selected ? AppTheme.primaryGhost : Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           border: Border.all(
-            color: selected ? AppTheme.primary : const Color(0xFFE2E8F0),
+            color: selected ? AppTheme.primary : AppTheme.cardBorder,
             width: selected ? 1.6 : 1,
           ),
         ),
@@ -854,7 +846,7 @@ class _InfoTile extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: AppTheme.primaryGhost,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           ),
           child: Icon(icon, size: 16, color: AppTheme.primary),
         ),

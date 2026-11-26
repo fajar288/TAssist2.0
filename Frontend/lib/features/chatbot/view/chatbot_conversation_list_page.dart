@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import '../../../model/chatbot_model.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_empty_state_widget.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../data/chatbot_service.dart';
 import 'chatbot_page.dart';
 
@@ -56,7 +60,7 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
         title: const Text(
           'Hapus Percakapan',
           style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
@@ -74,7 +78,7 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.declined,
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Hapus'),
@@ -90,21 +94,11 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
           setState(() {
             _conversations.removeWhere((c) => c.percakapanId == conversation.percakapanId);
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Percakapan berhasil dihapus.'),
-              backgroundColor: AppTheme.accepted,
-            ),
-          );
+          AppSnackBars.success(context, 'Percakapan berhasil dihapus.');
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Gagal menghapus percakapan: $e'),
-              backgroundColor: AppTheme.declined,
-            ),
-          );
+          AppSnackBars.error(context, 'Gagal menghapus percakapan: $e');
         }
       }
     }
@@ -185,86 +179,24 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: AppTheme.primary));
+      return const AppLoadingWidget();
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline_rounded, color: AppTheme.declined, size: 48),
-              const SizedBox(height: 12),
-              Text(
-                'Terjadi Kesalahan',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.textPrimary),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                onPressed: _loadConversations,
-                icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Coba Lagi'),
-              ),
-            ],
-          ),
-        ),
+      return AppErrorWidget(
+        message: _errorMessage!,
+        onRetry: _loadConversations,
       );
     }
 
     if (_conversations.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryGhost,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.chat_bubble_outline_rounded, size: 48, color: AppTheme.primary),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Belum Ada Riwayat',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppTheme.textPrimary),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Mulai tanyakan seputar informasi dan alur Tugas Akhir Anda kepada Asisten TA.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: _startNewConversation,
-                icon: const Icon(Icons.chat_rounded, size: 18),
-                label: const Text('Mulai Chat Baru', style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-            ],
-          ),
-        ),
+      return AppEmptyStateWidget(
+        icon: Icons.chat_bubble_outline_rounded,
+        title: 'Belum Ada Riwayat',
+        subtitle:
+            'Mulai tanyakan seputar informasi dan alur Tugas Akhir Anda kepada Asisten TA.',
+        actionLabel: 'Mulai Chat Baru',
+        onAction: _startNewConversation,
       );
     }
 
@@ -280,21 +212,15 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               border: Border.all(color: AppTheme.cardBorder),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x05000000),
-                  blurRadius: 6,
-                  offset: Offset(0, 2),
-                ),
-              ],
+              boxShadow: AppTheme.subtleShadow,
             ),
             child: Material(
               color: Colors.transparent,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               child: InkWell(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 onTap: () => _openConversation(conversation),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -304,7 +230,7 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: AppTheme.primaryGhost,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
                         child: const Icon(Icons.smart_toy_outlined, color: AppTheme.primary, size: 24),
                       ),

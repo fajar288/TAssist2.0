@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 import '../data/dosen_service.dart';
 import 'package:tassist/core/helpers/avatar_helper.dart';
 
@@ -82,9 +84,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
     if (!_hasChanges) return;
 
     if (_passwordController.text.isNotEmpty && _passwordController.text != _passwordConfirmController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Konfirmasi password tidak cocok!')),
-      );
+      AppSnackBars.error(context, 'Konfirmasi password tidak cocok!');
       return;
     }
 
@@ -101,15 +101,13 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
       );
       
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profil berhasil diperbarui')),
-        );
+        AppSnackBars.success(context, 'Profil berhasil diperbarui');
         Navigator.pop(context, true);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      if (mounted) {
+        AppSnackBars.error(context, e.toString());
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -118,9 +116,9 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC), // Warna background soft
+      backgroundColor: AppTheme.background, // Warna background soft
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E3A8A), // Sesuai navBlue TAssist
+        backgroundColor: AppTheme.primary,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
           onPressed: () => Navigator.pop(context),
@@ -143,7 +141,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                     width: 120,
                     height: 120,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE2E8F0),
+                      color: AppTheme.cardBorder,
                       shape: BoxShape.circle,
                       image: _selectedPhoto != null && _selectedPhoto!.bytes != null
                           ? DecorationImage(
@@ -162,7 +160,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                               : null,
                     ),
                     child: (_selectedPhoto == null && widget.initialProfile['avatar'] == null)
-                        ? const Icon(Icons.person, size: 60, color: Color(0xFF94A3B8))
+                        ? const Icon(Icons.person, size: 60, color: AppTheme.textMuted)
                         : null,
                   ),
                   Positioned(
@@ -173,7 +171,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E3A8A),
+                          color: AppTheme.primary,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 3),
                         ),
@@ -201,7 +199,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Ubah Password (Opsional)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
               ),
             ),
             const SizedBox(height: 16),
@@ -217,9 +215,9 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
               child: ElevatedButton(
                 onPressed: _hasChanges && !_isLoading ? _saveProfile : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _hasChanges ? const Color(0xFF1E3A8A) : Colors.grey.shade400,
+                  backgroundColor: _hasChanges ? AppTheme.primary : AppTheme.textMuted,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
                   elevation: 0,
                 ),
                 child: _isLoading 
@@ -237,26 +235,26 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
+        Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           readOnly: isReadOnly,
           obscureText: isPassword,
           keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-          style: TextStyle(color: isReadOnly ? const Color(0xFF94A3B8) : const Color(0xFF1E293B)),
+          style: TextStyle(color: isReadOnly ? AppTheme.textMuted : AppTheme.textPrimary),
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: const Color(0xFF94A3B8), size: 20),
+            prefixIcon: Icon(icon, color: AppTheme.textMuted, size: 20),
             filled: true,
-            fillColor: isReadOnly ? const Color(0xFFF1F5F9) : Colors.white,
+            fillColor: isReadOnly ? AppTheme.background : AppTheme.surface,
             contentPadding: const EdgeInsets.symmetric(vertical: 16),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.shade200),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.cardBorder),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF1E3A8A)),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.primary),
             ),
           ),
         ),

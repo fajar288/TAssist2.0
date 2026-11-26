@@ -9,6 +9,9 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../../../model/annotation_model.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../data/annotation_service.dart';
 import '../data/offline_annotation_cache.dart';
 
@@ -165,9 +168,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
         if (result.newFromOthersCount > 0) {
           parts.add('${result.newFromOthersCount} new annotations from others since your last sync');
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(parts.join(' • '))),
-        );
+        AppSnackBars.info(context, parts.join(' • '));
       }
     } catch (e) {
       debugPrint('AnnotationViewerPage: syncOfflineDraftsIfOnline skipped: $e');
@@ -200,7 +201,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
               title: Row(
                 children: [
                   const Icon(Icons.note_add_rounded, color: AppTheme.primary),
@@ -243,7 +244,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                     decoration: InputDecoration(
                       hintText: 'Tuliskan catatan perbaikan untuk mahasiswa...',
                       hintStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                     ),
                   ),
                 ],
@@ -274,10 +275,9 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                         final drafts = await _offlineCache.getPendingDraftModels(widget.versiId);
                         if (!mounted) return;
                         setState(() => _offlineDrafts = drafts);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Draft anotasi disimpan offline — akan disinkronkan saat online.'),
-                          ),
+                        AppSnackBars.info(
+                          context,
+                          'Draft anotasi disimpan offline — akan disinkronkan saat online.',
                         );
                         return;
                       }
@@ -292,9 +292,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                       );
 
                       if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Anotasi berhasil ditambahkan.')),
-                      );
+                      AppSnackBars.success(context, 'Anotasi berhasil ditambahkan.');
                       _fetchAnnotations();
                     } catch (e) {
                       debugPrint('Error creating annotation: $e');
@@ -313,21 +311,18 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                           _isOfflineMode = true;
                           _offlineDrafts = drafts;
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Koneksi terputus: anotasi disimpan sebagai draft offline.'),
-                          ),
+                        AppSnackBars.info(
+                          context,
+                          'Koneksi terputus: anotasi disimpan sebagai draft offline.',
                         );
                       } else if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Gagal membuat anotasi: $e')),
-                        );
+                        AppSnackBars.error(context, 'Gagal membuat anotasi: $e');
                       }
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                   ),
                   child: const Text('Simpan', style: TextStyle(color: Colors.white)),
                 ),
@@ -385,7 +380,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 ),
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -396,8 +391,8 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(2),
+                        color: AppTheme.cardBorder,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
                     // Header
@@ -420,7 +415,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: AppTheme.primaryGhost,
-                                        borderRadius: BorderRadius.circular(4),
+                                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                                       ),
                                       child: Text(
                                         anotasi.tipe.name.toUpperCase(),
@@ -445,7 +440,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: statusBg,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                               border: Border.all(color: statusColor.withOpacity(0.4)),
                             ),
                             child: Text(
@@ -484,16 +479,14 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.info,
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                             ),
                             onPressed: () async {
                               Navigator.pop(sheetContext);
                               try {
                                 await _service.markRevised(anotasi.anotasiId);
                                 if (!mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Anotasi berhasil ditandai sebagai revised.')),
-                                );
+                                AppSnackBars.success(context, 'Anotasi berhasil ditandai sebagai revised.');
                                 _fetchAnnotations();
                               } catch (e) {
                                 debugPrint('Error marking revised: $e');
@@ -513,16 +506,14 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.accepted,
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                             ),
                             onPressed: () async {
                               Navigator.pop(sheetContext);
                               try {
                                 await _service.markResolved(anotasi.anotasiId);
                                 if (!mounted) return;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Anotasi berhasil diselesaikan.')),
-                                );
+                                AppSnackBars.success(context, 'Anotasi berhasil diselesaikan.');
                                 _fetchAnnotations();
                               } catch (e) {
                                 debugPrint('Error marking resolved: $e');
@@ -554,7 +545,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     color: AppTheme.surfaceVariant,
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                                     border: Border.all(color: AppTheme.cardBorder),
                                   ),
                                   child: Column(
@@ -597,7 +588,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                 filled: true,
                                 fillColor: AppTheme.surfaceVariant,
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                                   borderSide: BorderSide.none,
                                 ),
                               ),
@@ -652,9 +643,9 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 height: 250,
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
                 ),
-                child: const Center(child: CircularProgressIndicator()),
+                child: const Center(child: AppLoadingWidget()),
               );
             }
 
@@ -664,7 +655,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
                 ),
                 child: const Center(child: Text('Gagal memuat ringkasan anotasi versi.')),
               );
@@ -676,8 +667,8 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
             return Container(
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -706,7 +697,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: AppTheme.primaryGhost,
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                             ),
                             child: Text(
                               'v${v['nomor_versi']}',
@@ -769,7 +760,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
         actions: [
           if (_offlineDrafts.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.cloud_upload_outlined, color: Colors.orange),
+              icon: const Icon(Icons.cloud_upload_outlined, color: AppTheme.warning),
               tooltip: 'Sinkronkan Draft Offline (${_offlineDrafts.length})',
               onPressed: _syncOfflineDraftsIfOnline,
             ),
@@ -800,7 +791,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
             IconButton(
               icon: Icon(
                 _isAddingAnnotationMode ? Icons.edit_note : Icons.add_comment_outlined,
-                color: _isAddingAnnotationMode ? Colors.orange : AppTheme.primary,
+                color: _isAddingAnnotationMode ? AppTheme.warning : AppTheme.primary,
               ),
               tooltip: _isAddingAnnotationMode ? 'Mode Anotasi Aktif (Tap pada PDF)' : 'Tambah Anotasi',
               onPressed: () {
@@ -808,11 +799,10 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                   _isAddingAnnotationMode = !_isAddingAnnotationMode;
                 });
                 if (_isAddingAnnotationMode) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Mode Anotasi Aktif: Tap pada area halaman PDF untuk meletakkan anotasi.'),
-                      duration: Duration(seconds: 2),
-                    ),
+                  AppSnackBars.info(
+                    context,
+                    'Mode Anotasi Aktif: Tap pada area halaman PDF untuk meletakkan anotasi.',
+                    duration: const Duration(seconds: 2),
                   );
                 }
               },
@@ -825,25 +815,13 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
 
   Widget _buildBody() {
     if (_isLoadingPdf) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: AppLoadingWidget());
     }
 
     if (_pdfError != null || (_signedUrl == null && _cachedPdfPath == null)) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48, color: AppTheme.declined),
-            const SizedBox(height: 12),
-            Text(_pdfError ?? 'Gagal memuat PDF', style: const TextStyle(color: AppTheme.textSecondary)),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadInitialData,
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
-              child: const Text('Coba Lagi', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
+      return AppErrorWidget(
+        message: _pdfError ?? 'Gagal memuat PDF',
+        onRetry: _loadInitialData,
       );
     }
 
@@ -892,8 +870,8 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.indigo.shade700,
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppTheme.primary,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   ),
                   child: const Row(
                     children: [
@@ -919,10 +897,10 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.amber.shade700,
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppTheme.warning,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 6, offset: const Offset(0, 2)),
+                      BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 6, offset: const Offset(0, 2)),
                     ],
                   ),
                   child: const Row(
@@ -972,7 +950,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                       border: Border.all(color: Colors.white, width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),

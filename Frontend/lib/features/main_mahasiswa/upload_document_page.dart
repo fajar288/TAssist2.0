@@ -2,6 +2,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_empty_state_widget.dart';
+import '../../widgets/app_error_widget.dart';
+import '../../widgets/app_loading_widget.dart';
+import '../../widgets/app_skeleton_loader.dart';
+import '../../widgets/app_snackbars.dart';
 import '../anotasi/view/annotation_viewer_page.dart';
 
 class UploadDocumentPage extends StatefulWidget {
@@ -75,34 +81,36 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
       final file = result.files.first;
 
       if (!_isFileAllowed(file)) {
-        _showSnackBar(
-          'File harus berformat pdf, doc, docx, ppt, pptx, atau zip.',
-          isError: true,
-        );
+        if (mounted) {
+          AppSnackBars.error(
+            context,
+            'File harus berformat pdf, doc, docx, ppt, pptx, atau zip.',
+          );
+        }
         return null;
       }
 
       if (file.size > 20 * 1024 * 1024) {
-        _showSnackBar(
+        AppSnackBars.error(
+          context,
           'Ukuran file maksimal 20MB.',
-          isError: true,
         );
         return null;
       }
 
       if (file.bytes == null && (file.path == null || file.path!.isEmpty)) {
-        _showSnackBar(
+        AppSnackBars.error(
+          context,
           'File tidak bisa dibaca. Coba pilih file lain.',
-          isError: true,
         );
         return null;
       }
 
       return file;
     } catch (e) {
-      _showSnackBar(
+      AppSnackBars.error(
+        context,
         e.toString().replaceFirst('Exception: ', ''),
-        isError: true,
       );
       return null;
     }
@@ -169,15 +177,15 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
   Color _statusColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'draft':
-        return Colors.grey;
+        return AppTheme.textMuted;
       case 'diajukan':
-        return Colors.orange;
+        return AppTheme.pending;
       case 'direvisi':
-        return Colors.redAccent;
+        return AppTheme.declined;
       case 'disetujui':
-        return Colors.green;
+        return AppTheme.accepted;
       default:
-        return Colors.grey;
+        return AppTheme.textMuted;
     }
   }
 
@@ -285,9 +293,9 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: AppTheme.surface,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(30),
+                    top: Radius.circular(AppTheme.radiusXl),
                   ),
                 ),
                 child: SingleChildScrollView(
@@ -302,8 +310,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                             width: 42,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(10),
+                              color: AppTheme.cardBorder,
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                             ),
                           ),
                         ),
@@ -311,7 +319,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                         const Text(
                           'Upload New Document',
                           style: TextStyle(
-                            color: Color(0xFF2D3142),
+                            color: AppTheme.textPrimary,
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
                           ),
@@ -320,7 +328,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                         const Text(
                           'Fill the document details before sending it to your lecturer.',
                           style: TextStyle(
-                            color: Colors.black54,
+                            color: AppTheme.textSecondary,
                             fontSize: 13,
                             height: 1.35,
                           ),
@@ -399,7 +407,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
 
                                       if (!mounted) return;
 
-                                      _showSnackBar("Dokumen berhasil diunggah.");
+                                      AppSnackBars.success(context, 'Dokumen berhasil diunggah.');
                                     } catch (e) {
                                       if (!mounted) return;
 
@@ -407,18 +415,18 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                                         isSubmitting = false;
                                       });
 
-                                      _showSnackBar(
+                                      AppSnackBars.error(
+                                        context,
                                         e
                                             .toString()
                                             .replaceFirst('Exception: ', ''),
-                                        isError: true,
                                       );
                                     }
                                   },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF0D47A1),
+                              backgroundColor: AppTheme.primary,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                               ),
                             ),
                             child: isSubmitting
@@ -463,7 +471,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
     final dokumenId = int.tryParse(document['dokumen_id']?.toString() ?? '');
 
     if (dokumenId == null) {
-      _showSnackBar('ID dokumen tidak valid.', isError: true);
+      AppSnackBars.error(context, 'ID dokumen tidak valid.');
       return;
     }
 
@@ -488,9 +496,9 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
                 decoration: const BoxDecoration(
-                  color: Colors.white,
+                  color: AppTheme.surface,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(30),
+                    top: Radius.circular(AppTheme.radiusXl),
                   ),
                 ),
                 child: SingleChildScrollView(
@@ -503,8 +511,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                           width: 42,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10),
+                            color: AppTheme.cardBorder,
+                            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                           ),
                         ),
                       ),
@@ -512,7 +520,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       const Text(
                         'Upload New Version',
                         style: TextStyle(
-                          color: Color(0xFF2D3142),
+                          color: AppTheme.textPrimary,
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
                         ),
@@ -521,7 +529,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       Text(
                         document['judul_dokumen']?.toString() ?? '-',
                         style: const TextStyle(
-                          color: Colors.black54,
+                          color: AppTheme.textSecondary,
                           fontSize: 13,
                           height: 1.35,
                         ),
@@ -569,7 +577,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
 
                                     if (!mounted) return;
 
-                                    _showSnackBar(
+                                    AppSnackBars.success(
+                                      context,
                                       'Versi baru dokumen berhasil diunggah.',
                                     );
                                   } catch (e) {
@@ -579,16 +588,16 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                                       isSubmitting = false;
                                     });
 
-                                    _showSnackBar(
+                                    AppSnackBars.error(
+                                      context,
                                       e.toString().replaceFirst('Exception: ', ''),
-                                      isError: true,
                                     );
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF0D47A1),
+                            backgroundColor: AppTheme.primary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                             ),
                           ),
                           child: isSubmitting
@@ -642,9 +651,9 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.surface,
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(30),
+              top: Radius.circular(AppTheme.radiusXl),
             ),
           ),
           child: Column(
@@ -654,8 +663,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 width: 42,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
+                  color: AppTheme.cardBorder,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
               ),
               const SizedBox(height: 22),
@@ -665,7 +674,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     latestVersion['file_url']?.toString() ?? '',
                   ),
                 ),
-                color: const Color(0xFF0D47A1),
+                color: AppTheme.primary,
                 size: 52,
               ),
               const SizedBox(height: 12),
@@ -673,7 +682,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 document['judul_dokumen']?.toString() ?? '-',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: Color(0xFF2D3142),
+                  color: AppTheme.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                 ),
@@ -683,7 +692,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 document['jenis_dokumen']?.toString() ?? '-',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: Colors.black54,
+                  color: AppTheme.textSecondary,
                   fontSize: 13,
                 ),
               ),
@@ -693,7 +702,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   description,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    color: Colors.black54,
+                    color: AppTheme.textSecondary,
                     fontSize: 13,
                     height: 1.35,
                   ),
@@ -717,18 +726,18 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(
-                          color: Color(0xFF0D47A1),
+                          color: AppTheme.primary,
                           width: 1.3,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: const Text(
                         'Versions',
                         style: TextStyle(
-                          color: Color(0xFF0D47A1),
+                          color: AppTheme.primary,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -742,9 +751,9 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                         _showUploadVersionSheet(document);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0D47A1),
+                        backgroundColor: AppTheme.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
@@ -770,7 +779,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
     final dokumenId = int.tryParse(document['dokumen_id']?.toString() ?? '');
 
     if (dokumenId == null) {
-      _showSnackBar('ID dokumen tidak valid.', isError: true);
+      AppSnackBars.error(context, 'ID dokumen tidak valid.');
       return;
     }
 
@@ -788,9 +797,9 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
           height: MediaQuery.of(sheetContext).size.height * 0.72,
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.surface,
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(30),
+              top: Radius.circular(AppTheme.radiusXl),
             ),
           ),
           child: FutureBuilder<Map<String, dynamic>>(
@@ -801,7 +810,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
 
               if (isLoading) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: AppLoadingWidget(),
                 );
               }
 
@@ -810,7 +819,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   child: Text(
                     snapshot.error.toString().replaceFirst('Exception: ', ''),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.redAccent),
+                    style: const TextStyle(color: AppTheme.declined),
                   ),
                 );
               }
@@ -833,8 +842,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       width: 42,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
+                        color: AppTheme.cardBorder,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
                   ),
@@ -842,7 +851,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   const Text(
                     'Document Versions',
                     style: TextStyle(
-                      color: Color(0xFF2D3142),
+                      color: AppTheme.textPrimary,
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
                     ),
@@ -851,18 +860,17 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   Text(
                     document['judul_dokumen']?.toString() ?? '-',
                     style: const TextStyle(
-                      color: Colors.black54,
+                      color: AppTheme.textSecondary,
                       fontSize: 13,
                     ),
                   ),
                   const SizedBox(height: 20),
                   Expanded(
                     child: versions.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No version history yet.',
-                              style: TextStyle(color: Colors.black54),
-                            ),
+                        ? const AppEmptyStateWidget(
+                            compact: true,
+                            icon: Icons.history_rounded,
+                            title: 'No version history yet.',
                           )
                         : ListView.builder(
                             itemCount: versions.length,
@@ -892,16 +900,16 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
           height: MediaQuery.of(sheetContext).size.height * 0.72,
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.surface,
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(30),
+              top: Radius.circular(AppTheme.radiusXl),
             ),
           ),
           child: FutureBuilder<List<Map<String, dynamic>>>(
             future: future,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: AppLoadingWidget());
               }
 
               if (snapshot.hasError) {
@@ -909,7 +917,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   child: Text(
                     snapshot.error.toString().replaceFirst('Exception: ', ''),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.redAccent),
+                    style: const TextStyle(color: AppTheme.declined),
                   ),
                 );
               }
@@ -924,8 +932,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
+                        color: AppTheme.cardBorder,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
                   ),
@@ -933,26 +941,26 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   const Text(
                     'Dosen Pembimbing Comments',
                     style: TextStyle(
+                      color: AppTheme.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  const Text(
                     'Riwayat masukan dari dosen untuk dokumenmu.',
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color: AppTheme.textSecondary,
                       fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: 24),
                   Expanded(
                     child: comments.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No feedback yet.',
-                              style: TextStyle(color: Colors.black54),
-                            ),
+                        ? const AppEmptyStateWidget(
+                            compact: true,
+                            icon: Icons.chat_bubble_outline_rounded,
+                            title: 'No feedback yet.',
                           )
                         : ListView.builder(
                             itemCount: comments.length,
@@ -995,14 +1003,14 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 width: 16,
                 height: 16,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF0D47A1),
+                  color: AppTheme.primary,
                   shape: BoxShape.circle,
                 ),
               ),
               Expanded(
                 child: Container(
                   width: 2,
-                  color: isLast ? Colors.transparent : Colors.grey[300],
+                  color: isLast ? Colors.transparent : AppTheme.cardBorder,
                 ),
               ),
             ],
@@ -1018,7 +1026,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     '$docTitle • V$version',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF0D47A1),
+                      color: AppTheme.primary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -1026,8 +1034,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF5F7FA),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppTheme.surfaceVariant,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: Text(feedback['komentar']?.toString() ?? '-'),
                   ),
@@ -1039,8 +1047,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       if (position != null && position.isNotEmpty) position,
                       _formatDateTime(feedback['created_at']?.toString()),
                     ].join(' • '),
-                    style: TextStyle(
-                      color: Colors.grey[500],
+                    style: const TextStyle(
+                      color: AppTheme.textMuted,
                       fontSize: 12,
                     ),
                   ),
@@ -1078,7 +1086,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
               Expanded(
                 child: Container(
                   width: 2,
-                  color: Colors.grey[300],
+                  color: AppTheme.cardBorder,
                 ),
               ),
             ],
@@ -1094,7 +1102,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     'Version ${version['nomor_versi'] ?? '-'}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF0D47A1),
+                      color: AppTheme.primary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -1102,8 +1110,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF5F7FA),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppTheme.surfaceVariant,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: Text(
                       note == null || note.isEmpty
@@ -1143,7 +1151,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       label: const Text('Buka Dokumen & Anotasi'),
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
                       ),
                     ),
@@ -1164,15 +1172,15 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F7FA),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        color: AppTheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Row(
         children: [
           Icon(
             _documentIcon(extension),
-            color: const Color(0xFF0D47A1),
+            color: AppTheme.primary,
             size: 36,
           ),
           const SizedBox(width: 12),
@@ -1185,7 +1193,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: Color(0xFF2D3142),
+                    color: AppTheme.textPrimary,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -1193,7 +1201,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 Text(
                   '${(file.size / 1024 / 1024).toStringAsFixed(2)} MB',
                   style: const TextStyle(
-                    color: Colors.black54,
+                    color: AppTheme.textSecondary,
                     fontSize: 12,
                   ),
                 ),
@@ -1221,9 +1229,9 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
         labelText: label,
         hintText: hint,
         filled: true,
-        fillColor: const Color(0xFFF8FAFC),
+        fillColor: AppTheme.surfaceVariant,
         counterStyle: const TextStyle(
-          color: Color(0xFF9CA3AF),
+          color: AppTheme.textMuted,
           fontSize: 11,
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -1231,17 +1239,17 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
           vertical: 14,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.cardBorder),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.cardBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           borderSide: const BorderSide(
-            color: Color(0xFF0D47A1),
+            color: AppTheme.primary,
             width: 1.5,
           ),
         ),
@@ -1271,7 +1279,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
             child: Text(
               label,
               style: const TextStyle(
-                color: Colors.black54,
+                color: AppTheme.textSecondary,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -1280,7 +1288,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
           Text(
             value,
             style: const TextStyle(
-              color: Color(0xFF2D3142),
+              color: AppTheme.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
@@ -1290,77 +1298,34 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
     );
   }
 
-  void _showSnackBar(String message, {bool isError = false}) {
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: isError ? Colors.red : Colors.green,
-          // HAPUS behavior floating
-        ),
-      );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        backgroundColor: Color(0xFFEEF2F6),
-        body: Center(
-          child: CircularProgressIndicator(),
+        backgroundColor: AppTheme.background,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(top: 16),
+            child: AppSkeletonLoader.card(count: 4),
+          ),
         ),
       );
     }
 
     if (_errorMessage != null) {
       return Scaffold(
-        backgroundColor: const Color(0xFFEEF2F6),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(28),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.error_outline_rounded,
-                  color: Colors.redAccent,
-                  size: 46,
-                ),
-                const SizedBox(height: 14),
-                const Text(
-                  'Failed to load documents',
-                  style: TextStyle(
-                    color: Color(0xFF2D3142),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _errorMessage ?? '-',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                ElevatedButton(
-                  onPressed: _loadDocuments,
-                  child: const Text('Try Again'),
-                ),
-              ],
-            ),
-          ),
+        backgroundColor: AppTheme.background,
+        body: AppErrorWidget(
+          title: 'Failed to load documents',
+          message: _errorMessage ?? '-',
+          retryLabel: 'Try Again',
+          onRetry: _loadDocuments,
         ),
       );
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF2F6),
+      backgroundColor: AppTheme.background,
       body: Padding(
         padding: const EdgeInsets.only(bottom: 16),
         child: SafeArea(
@@ -1382,14 +1347,14 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF2D3142),
+                              color: AppTheme.textPrimary,
                             ),
                           ),
                           Text(
                             "and don't forget to tell your lecturer :)",
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.black54,
+                              color: AppTheme.textSecondary,
                             ),
                           ),
                         ],
@@ -1432,16 +1397,11 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
       key: const ValueKey('empty'),
       physics: const AlwaysScrollableScrollPhysics(),
       children: const [
-        SizedBox(height: 220),
-        Center(
-          child: Text(
-            'no documents yet',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+        SizedBox(height: 140),
+        AppEmptyStateWidget(
+          icon: Icons.upload_file_rounded,
+          title: 'no documents yet',
+          subtitle: 'Ketuk tombol New untuk mengunggah dokumen bimbingan TA.',
         ),
       ],
     );
@@ -1472,20 +1432,9 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
 
         return InkWell(
           onTap: () => _showDocumentOptions(doc),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.black.withOpacity(0.04)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
+            decoration: AppTheme.cardDecoration(radius: AppTheme.radiusMd),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 16, 12, 14),
               child: Column(
@@ -1494,7 +1443,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   Icon(
                     _documentIcon(extension),
                     size: 58,
-                    color: const Color(0xFF2D3142),
+                    color: AppTheme.textPrimary,
                   ),
                   const SizedBox(height: 12),
                   Text(
@@ -1515,7 +1464,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Colors.black54,
+                      color: AppTheme.textSecondary,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1527,8 +1476,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: _statusColor(status).withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(30),
+                      color: _statusColor(status).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                     ),
                     child: Text(
                       'V${versionNumber ?? '-'} • ${_formatStatus(status)}',
@@ -1551,21 +1500,15 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
   Widget _buildCommentButton() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        boxShadow: AppTheme.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: _showCommentsBottomSheet,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: const Padding(
             padding: EdgeInsets.all(12.0),
             child: Column(
@@ -1573,14 +1516,14 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
               children: [
                 Icon(
                   Icons.chat_bubble_outline,
-                  color: Color(0xFF0D47A1),
+                  color: AppTheme.primary,
                   size: 28,
                 ),
                 SizedBox(height: 4),
                 Text(
                   'Comments',
                   style: TextStyle(
-                    color: Color(0xFF0D47A1),
+                    color: AppTheme.primary,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1596,21 +1539,15 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
   Widget _buildNewButton() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        boxShadow: AppTheme.cardShadow,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: _showUploadDocumentSheet,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
@@ -1619,8 +1556,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0D47A1),
-                    borderRadius: BorderRadius.circular(4),
+                    color: AppTheme.primary,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   ),
                   child: const Icon(
                     Icons.add,
@@ -1632,7 +1569,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 const Text(
                   'New',
                   style: TextStyle(
-                    color: Color(0xFF0D47A1),
+                    color: AppTheme.primary,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),

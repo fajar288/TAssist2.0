@@ -6,6 +6,9 @@ import 'package:tassist/features/dosen/data/dosen_service.dart';
 
 import 'package:tassist/model/models.dart';
 import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_empty_state_widget.dart';
+import 'package:tassist/widgets/app_error_widget.dart';
+import 'package:tassist/widgets/app_loading_widget.dart';
 import 'package:tassist/widgets/custom_bottom_nav.dart';
 import 'package:tassist/widgets/custom_meeting_card.dart';
 import 'availability_management_page.dart';
@@ -27,10 +30,6 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
 
   String _selectedFilter = 'All';
   final _filters = ['All', 'Pending', 'Confirmed', 'Declined'];
-
-  static const Color _navBlue = Color(0xFF0D4AA3);
-  static const Color _navBlueDark = Color(0xFF082E6B);
-  static const Color _navBlueLight = Color(0xFF1A65C8);
 
   @override
   void initState() {
@@ -106,15 +105,20 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
             if (_isLoading)
               const SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 80),
-                  child: Center(child: CircularProgressIndicator()),
+                  padding: EdgeInsets.only(top: 40),
+                  child: AppLoadingWidget(),
                 ),
               )
             else if (_errorMessage != null)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
-                  child: _buildErrorCard(),
+                  padding: const EdgeInsets.fromLTRB(4, 16, 4, 0),
+                  child: AppErrorWidget(
+                    title: 'Failed to load schedule',
+                    message: _errorMessage ?? '-',
+                    onRetry: _loadJadwal,
+                    retryLabel: 'Try Again',
+                  ),
                 ),
               )
             else
@@ -128,7 +132,12 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                       16,
                 ),
                 sliver: _filteredMeetings.isEmpty
-                    ? const SliverToBoxAdapter(child: _EmptyMeetingState())
+                    ? const SliverToBoxAdapter(
+                        child: AppEmptyStateWidget(
+                          icon: Icons.event_busy_rounded,
+                          title: 'No meeting schedule found',
+                        ),
+                      )
                     : SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (ctx, i) {
@@ -153,7 +162,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [_navBlueDark, _navBlue, _navBlueLight],
+          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -201,10 +210,10 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                 icon: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(14),
+                    color: Colors.white.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -234,14 +243,14 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF082E6B), Color(0xFF1A65C8)],
+              colors: [AppTheme.primaryDark, AppTheme.primaryLight],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0D4AA3).withOpacity(0.3),
+                color: AppTheme.primary.withValues(alpha: 0.3),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -252,8 +261,8 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(14),
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 child: const Icon(
                   Icons.notifications_active_rounded,
@@ -340,9 +349,9 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                border: Border.all(color: AppTheme.cardBorder),
               ),
               child: Row(
                 children: [
@@ -358,52 +367,11 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                   const Icon(
                     Icons.keyboard_arrow_down_rounded,
                     size: 18,
-                    color: Color(0xFF64748B),
+                    color: AppTheme.textSecondary,
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: AppTheme.cardDecoration(),
-      child: Column(
-        children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: Colors.redAccent,
-            size: 42,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Failed to load schedule',
-            style: GoogleFonts.poppins(
-              color: AppTheme.textPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            _errorMessage ?? '-',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              color: AppTheme.textSecondary,
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: 14),
-          ElevatedButton.icon(
-            onPressed: _loadJadwal,
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Try Again'),
           ),
         ],
       ),
@@ -421,50 +389,5 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
     if (changed == true && mounted) {
       _loadJadwal();
     }
-  }
-}
-
-class _EmptyMeetingState extends StatelessWidget {
-  const _EmptyMeetingState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 60),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: Color(0xFFEEF2F6),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.event_busy_rounded,
-              size: 48,
-              color: Color(0xFF0D4AA3),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No meeting schedule found',
-            style: GoogleFonts.poppins(
-              color: const Color(0xFF1E293B),
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'There are no schedules matching\nthis filter right now.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              color: const Color(0xFF64748B),
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

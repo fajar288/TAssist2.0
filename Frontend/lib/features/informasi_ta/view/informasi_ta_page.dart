@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
 import '../../../model/informasi_ta_model.dart';
+import '../../../widgets/app_empty_state_widget.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
 import '../data/informasi_ta_service.dart';
 import 'informasi_ta_detail_page.dart';
 
@@ -108,11 +111,11 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                     fillColor: AppTheme.surfaceVariant,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       borderSide: const BorderSide(color: AppTheme.cardBorder),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       borderSide: const BorderSide(color: AppTheme.cardBorder),
                     ),
                   ),
@@ -166,44 +169,20 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const AppLoadingWidget();
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48, color: AppTheme.declined),
-            const SizedBox(height: 12),
-            Text(
-              _errorMessage!,
-              style: const TextStyle(color: AppTheme.textSecondary),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadData,
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
-              child: const Text('Coba Lagi', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
+      return AppErrorWidget(
+        message: _errorMessage!,
+        onRetry: _loadData,
       );
     }
 
     if (_items.isEmpty) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.campaign_outlined, size: 48, color: AppTheme.textMuted),
-            const SizedBox(height: 12),
-            Text(
-              'Belum ada informasi TA yang dipublikasikan.',
-              style: TextStyle(color: AppTheme.textSecondary),
-            ),
-          ],
-        ),
+      return const AppEmptyStateWidget(
+        icon: Icons.campaign_outlined,
+        title: 'Belum ada informasi TA yang dipublikasikan.',
       );
     }
 
@@ -226,20 +205,14 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
               ),
             );
           },
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               border: Border.all(color: AppTheme.cardBorder),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: AppTheme.subtleShadow,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +223,7 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: AppTheme.primaryGhost,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Text(
                         item.kategori,

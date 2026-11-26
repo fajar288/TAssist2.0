@@ -6,6 +6,9 @@ import '../../../core/helpers/avatar_helper.dart';
 import '../../main_mahasiswa/navbar_mahasiswa.dart';
 import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_empty_state_widget.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
 import 'lecturer_detail_page.dart';
 import 'lecturer_recommendation_page.dart';
 
@@ -194,7 +197,7 @@ class _LecturersPageState extends State<LecturersPage> {
     final lecturers = _filteredLecturers;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF2F6),
+      backgroundColor: AppTheme.background,
       extendBody: true,
       body: SafeArea(
         child: Stack(
@@ -220,7 +223,7 @@ class _LecturersPageState extends State<LecturersPage> {
                           Expanded(
                             child: _isLoading
                                 ? const Center(
-                                    child: CircularProgressIndicator(),
+                                    child: AppLoadingWidget(),
                                   )
                                 : _errorMessage != null
                                     ? _buildErrorState()
@@ -279,7 +282,7 @@ class _LecturersPageState extends State<LecturersPage> {
             child: IconButton(
               icon: const Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: Color(0xFF2D3238),
+                color: AppTheme.textPrimary,
                 size: 22,
               ),
               onPressed: () => Navigator.pop(context),
@@ -288,7 +291,7 @@ class _LecturersPageState extends State<LecturersPage> {
           const Text(
             'Lecturers',
             style: TextStyle(
-              color: Color(0xFF2D3238),
+              color: AppTheme.textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -303,7 +306,7 @@ class _LecturersPageState extends State<LecturersPage> {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Row(
@@ -343,16 +346,16 @@ class _LecturersPageState extends State<LecturersPage> {
     return Container(
       height: 44,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: Colors.black.withOpacity(0.05)),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Row(
         children: [
@@ -363,7 +366,7 @@ class _LecturersPageState extends State<LecturersPage> {
               decoration: BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     width: 1,
                   ),
                 ),
@@ -373,7 +376,7 @@ class _LecturersPageState extends State<LecturersPage> {
                   const Icon(
                     Icons.search_rounded,
                     size: 20,
-                    color: Color(0xFF2D3238),
+                    color: AppTheme.textPrimary,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -384,7 +387,7 @@ class _LecturersPageState extends State<LecturersPage> {
                       decoration: const InputDecoration(
                         hintText: 'Search name, expertise, or NID',
                         hintStyle: TextStyle(
-                          color: Color(0xFF9BA3AF),
+                          color: AppTheme.textMuted,
                           fontSize: 14,
                         ),
                         border: InputBorder.none,
@@ -432,7 +435,7 @@ class _LecturersPageState extends State<LecturersPage> {
             border: hasBorder
                 ? Border(
                     right: BorderSide(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       width: 1,
                     ),
                   )
@@ -444,13 +447,13 @@ class _LecturersPageState extends State<LecturersPage> {
               Icon(
                 icon,
                 size: 18,
-                color: const Color(0xFF2D3238),
+                color: AppTheme.textPrimary,
               ),
               const SizedBox(width: 6),
               Text(
                 label,
                 style: const TextStyle(
-                  color: Color(0xFF5A6269),
+                  color: AppTheme.textSecondary,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -460,7 +463,7 @@ class _LecturersPageState extends State<LecturersPage> {
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: const BoxDecoration(
-                    color: Color(0xFF0D4AA3),
+                    color: AppTheme.primary,
                     shape: BoxShape.circle,
                   ),
                   child: Text(
@@ -558,13 +561,13 @@ class _LecturersPageState extends State<LecturersPage> {
     return Material(
       elevation: 8,
       shadowColor: Colors.black26,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         constraints: const BoxConstraints(maxHeight: 360),
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: const Color(0xFFF3F4F6),
-          borderRadius: BorderRadius.circular(16),
+          color: AppTheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -577,55 +580,19 @@ class _LecturersPageState extends State<LecturersPage> {
   }
 
   Widget _buildEmptyState() {
-    return const Center(
-      child: Text(
-        'No lecturers found.',
-        style: TextStyle(
-          color: Color(0xFF5A6269),
-          fontSize: 16,
-        ),
-      ),
+    return const AppEmptyStateWidget(
+      icon: Icons.person_search_rounded,
+      title: 'No lecturers found.',
+      subtitle: 'Coba ubah kata kunci pencarian atau filter bidang keahlian.',
     );
   }
 
   Widget _buildErrorState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.error_outline_rounded,
-              color: Colors.redAccent,
-              size: 42,
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Failed to load lecturers',
-              style: TextStyle(
-                color: Color(0xFF2D3238),
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _errorMessage ?? '-',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.black54,
-                fontSize: 13,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadLecturers,
-              child: const Text('Try Again'),
-            ),
-          ],
-        ),
-      ),
+    return AppErrorWidget(
+      title: 'Failed to load lecturers',
+      message: _errorMessage ?? '-',
+      retryLabel: 'Try Again',
+      onRetry: _loadLecturers,
     );
   }
 }
@@ -650,12 +617,12 @@ class _LecturerCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.black.withOpacity(0.05)),
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(color: AppTheme.cardBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -700,7 +667,7 @@ class _LecturerCard extends StatelessWidget {
   }
 
   Widget _buildAvatar() {
-    final borderRadius = BorderRadius.circular(14);
+    final borderRadius = BorderRadius.circular(AppTheme.radiusMd);
 
     Widget image;
 
@@ -736,7 +703,7 @@ class _LecturerCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: const Color(0xFFF3F4F6),
+          color: AppTheme.surfaceVariant,
         ),
         child: ClipRRect(
           borderRadius: borderRadius,
@@ -764,7 +731,7 @@ class _LecturerCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  color: Color(0xFF111111),
+                  color: AppTheme.textPrimary,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                 ),
@@ -773,7 +740,7 @@ class _LecturerCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(5),
               decoration: const BoxDecoration(
-                color: Color(0xFFE5E7EB),
+                color: AppTheme.cardBorder,
                 shape: BoxShape.circle,
               ),
               child: Text(
@@ -792,7 +759,7 @@ class _LecturerCard extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-            color: Color(0xFF6B7280),
+            color: AppTheme.textSecondary,
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -827,7 +794,7 @@ class _DropdownRadioTile extends StatelessWidget {
             Icon(
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
               size: 20,
-              color: isSelected ? const Color(0xFF0D4AA3) : Colors.grey,
+              color: isSelected ? AppTheme.primary : AppTheme.textMuted,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -927,12 +894,12 @@ class _ModeTabButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 10),
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

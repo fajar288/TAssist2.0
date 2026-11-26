@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 import '../data/notifikasi_service.dart';
 import '../view/notifikasi_page.dart';
@@ -7,10 +8,10 @@ class NotifikasiBellButton extends StatefulWidget {
   const NotifikasiBellButton({
     super.key,
     this.size = 50,
-    this.iconColor = const Color(0xFF0D4AA3),
-    this.backgroundColor = Colors.white,
+    this.iconColor = AppTheme.primary,
+    this.backgroundColor = AppTheme.surface,
     this.borderColor,
-    this.badgeColor = const Color(0xFFDC2626),
+    this.badgeColor = AppTheme.declined,
     this.pageTitle = 'Notifications',
   });
 

@@ -1,6 +1,7 @@
 // lib/widgets/student_menu_tile.dart
 
 import 'package:flutter/material.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 class StudentMenuTile extends StatelessWidget {
   final String title;
@@ -30,14 +31,14 @@ class StudentMenuTile extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: Ink(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 3),
                 ),
@@ -51,8 +52,8 @@ class StudentMenuTile extends StatelessWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: Icon(icon, color: color, size: 20),
                   ),

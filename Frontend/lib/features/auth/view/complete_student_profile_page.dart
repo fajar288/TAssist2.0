@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../app/app.dart';
+import '../../../theme/app_theme.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../data/auth_service.dart';
 
 class CompleteStudentProfilePage extends StatefulWidget {
@@ -92,7 +94,7 @@ class _CompleteStudentProfilePageState
     final angkatan = int.tryParse(_angkatanController.text.trim());
 
     if (angkatan == null) {
-      _showSnackBar('Angkatan harus berupa angka.', isError: true);
+      AppSnackBars.error(context, 'Angkatan harus berupa angka.');
       return;
     }
 
@@ -115,7 +117,7 @@ class _CompleteStudentProfilePageState
     });
 
     if (result.isSuccess) {
-      _showSnackBar(result.message);
+      AppSnackBars.success(context, result.message);
 
       await Future.delayed(const Duration(milliseconds: 450));
 
@@ -127,29 +129,14 @@ class _CompleteStudentProfilePageState
         (route) => false,
       );
     } else {
-      _showSnackBar(result.message, isError: true);
+      AppSnackBars.error(context, result.message);
     }
-  }
-
-  void _showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : const Color(0xFF0D47A1),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    const primaryBlue = Color(0xFF0D47A1);
-
     return Scaffold(
-      backgroundColor: const Color(0xFFEAF6FF),
+      backgroundColor: AppTheme.background,
       body: SafeArea(
         child: _isInitialLoading
             ? const _CompleteProfileSkeleton()
@@ -168,11 +155,11 @@ class _CompleteStudentProfilePageState
                           width: double.infinity,
                           padding: const EdgeInsets.all(22),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(28),
+                            color: AppTheme.surface,
+                            borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
+                                color: Colors.black.withValues(alpha: 0.08),
                                 blurRadius: 22,
                                 offset: const Offset(0, 10),
                               ),
@@ -269,12 +256,12 @@ class _CompleteStudentProfilePageState
                                     onPressed:
                                         _isSubmitting ? null : _submitProfile,
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: primaryBlue,
+                                      backgroundColor: AppTheme.primary,
                                       foregroundColor: Colors.white,
                                       disabledBackgroundColor:
-                                          primaryBlue.withOpacity(0.55),
+                                          AppTheme.primary.withValues(alpha: 0.55),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
+                                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                                       ),
                                     ),
                                     child: AnimatedSwitcher(
@@ -322,7 +309,7 @@ class _CompleteStudentProfilePageState
         const Text(
           'Lengkapi Profil',
           style: TextStyle(
-            color: Color(0xFF0D47A1),
+            color: AppTheme.primary,
             fontSize: 28,
             fontWeight: FontWeight.w800,
           ),
@@ -331,7 +318,7 @@ class _CompleteStudentProfilePageState
         Text(
           'Data ini diperlukan agar akun mahasiswa kamu bisa menggunakan fitur bimbingan TA dengan lengkap.',
           style: TextStyle(
-            color: Colors.black.withOpacity(0.62),
+            color: Colors.black.withValues(alpha: 0.62),
             fontSize: 14.5,
             height: 1.45,
           ),
@@ -355,7 +342,7 @@ class _CompleteStudentProfilePageState
         Text(
           label,
           style: const TextStyle(
-            color: Color(0xFF1F2A44),
+            color: AppTheme.textPrimary,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
@@ -371,30 +358,30 @@ class _CompleteStudentProfilePageState
           decoration: InputDecoration(
             hintText: hintText,
             filled: true,
-            fillColor: const Color(0xFFF8FBFF),
+            fillColor: AppTheme.surfaceVariant,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.cardBorder),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.cardBorder),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Color(0xFF2F49D1)),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.primary),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Colors.red),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.declined),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Colors.red),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              borderSide: const BorderSide(color: AppTheme.declined),
             ),
           ),
         ),
@@ -442,7 +429,7 @@ class _CompleteProfileSkeletonState extends State<_CompleteProfileSkeleton>
   Widget _box({
     required double height,
     double? width,
-    double radius = 16,
+    double radius = AppTheme.radiusMd,
   }) {
     return AnimatedBuilder(
       animation: _animation,
@@ -456,9 +443,9 @@ class _CompleteProfileSkeletonState extends State<_CompleteProfileSkeleton>
               begin: Alignment(-1 + _animation.value, 0),
               end: Alignment(_animation.value, 0),
               colors: const [
-                Color(0xFFE8EEF7),
-                Color(0xFFF7FAFF),
-                Color(0xFFE8EEF7),
+                AppTheme.cardBorder,
+                AppTheme.surfaceVariant,
+                AppTheme.cardBorder,
               ],
             ),
           ),
@@ -474,22 +461,22 @@ class _CompleteProfileSkeletonState extends State<_CompleteProfileSkeleton>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _box(width: 210, height: 32, radius: 12),
+          _box(width: 210, height: 32, radius: AppTheme.radiusMd),
           const SizedBox(height: 12),
-          _box(height: 16, radius: 8),
+          _box(height: 16, radius: AppTheme.radiusSm),
           const SizedBox(height: 8),
-          _box(width: 260, height: 16, radius: 8),
+          _box(width: 260, height: 16, radius: AppTheme.radiusSm),
           const SizedBox(height: 26),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.82),
-              borderRadius: BorderRadius.circular(28),
+              color: Colors.white.withValues(alpha: 0.82),
+              borderRadius: BorderRadius.circular(AppTheme.radiusXl),
             ),
             child: Column(
               children: [
-                _box(height: 18, radius: 8),
+                _box(height: 18, radius: AppTheme.radiusSm),
                 const SizedBox(height: 10),
                 _box(height: 54),
                 const SizedBox(height: 18),

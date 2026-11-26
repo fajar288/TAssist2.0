@@ -6,6 +6,9 @@ import '../../auth/data/auth_service.dart';
 import '../../notifikasi/widgets/notifikasi_bell_button.dart';
 import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_empty_state_widget.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
 import 'lecturer_recommendation_page.dart';
 import 'lecturers_page.dart';
 
@@ -210,7 +213,7 @@ class _LecturerSelectionDashboardPageState
     return RichText(
       text: TextSpan(
         style: const TextStyle(
-          color: Color(0xFF111111),
+          color: AppTheme.textPrimary,
           fontSize: 14,
           height: 1.35,
         ),
@@ -241,20 +244,20 @@ class _LecturerSelectionDashboardPageState
   Color _statusColor(String status) {
     switch (status.toLowerCase()) {
       case 'menunggu':
-        return const Color(0xFFFFA000);
+        return AppTheme.pending;
       case 'diterima':
-        return const Color(0xFF2E7D32);
+        return AppTheme.accepted;
       case 'ditolak':
-        return const Color(0xFFC62828);
+        return AppTheme.declined;
       default:
-        return const Color(0xFF6B7280);
+        return AppTheme.textSecondary;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF2F6),
+      backgroundColor: AppTheme.background,
       extendBody: true,
       body: RefreshIndicator(
         onRefresh: _loadDashboardData,
@@ -286,7 +289,7 @@ class _LecturerSelectionDashboardPageState
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF082E6B), Color(0xFF0D4AA3), Color(0xFF1A65C8)],
+          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -393,16 +396,10 @@ class _LecturerSelectionDashboardPageState
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 20, 14, 12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black.withOpacity(0.05)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Border.all(color: AppTheme.cardBorder),
+        boxShadow: AppTheme.cardShadow,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -411,7 +408,7 @@ class _LecturerSelectionDashboardPageState
             "Let's choose your lecturer first!",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFF111111),
+              color: AppTheme.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
@@ -428,13 +425,13 @@ class _LecturerSelectionDashboardPageState
               if (!mounted) return;
               _loadPermohonan();
             },
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: AppTheme.primaryGhost,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 border: Border.all(color: AppTheme.infoBorder),
               ),
               child: const Row(
@@ -509,7 +506,7 @@ class _LecturerSelectionDashboardPageState
             Text(
               'view all lecturers',
               style: TextStyle(
-                color: Color(0xFF111111),
+                color: AppTheme.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -518,7 +515,7 @@ class _LecturerSelectionDashboardPageState
             Icon(
               Icons.arrow_forward_ios_rounded,
               size: 14,
-              color: Color(0xFF111111),
+              color: AppTheme.textPrimary,
             ),
           ],
         ),
@@ -531,37 +528,23 @@ class _LecturerSelectionDashboardPageState
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black.withOpacity(0.05)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Border.all(color: AppTheme.cardBorder),
+        boxShadow: AppTheme.cardShadow,
       ),
       child: _isLoadingPermohonan
           ? const SizedBox(
               height: 100,
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(child: AppLoadingWidget(compact: true)),
             )
           : _permohonanError != null
               ? _buildRequestError()
               : _permohonanList.isEmpty
-                  ? const SizedBox(
-                      height: 100,
-                      child: Center(
-                        child: Text(
-                          "there's nothing here...",
-                          style: TextStyle(
-                            color: Color(0xFF7D848C),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
+                  ? const AppEmptyStateWidget(
+                      compact: true,
+                      icon: Icons.assignment_outlined,
+                      title: "there's nothing here...",
                     )
                   : Column(
                       children: _permohonanList
@@ -577,31 +560,11 @@ class _LecturerSelectionDashboardPageState
   }
 
   Widget _buildRequestError() {
-    return SizedBox(
-      height: 130,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: Colors.redAccent,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _permohonanError ?? 'Failed to load request.',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.black54,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: _loadPermohonan,
-            child: const Text('Try Again'),
-          ),
-        ],
-      ),
+    return AppErrorWidget(
+      compact: true,
+      message: _permohonanError ?? 'Failed to load request.',
+      retryLabel: 'Try Again',
+      onRetry: _loadPermohonan,
     );
   }
 
@@ -618,15 +581,15 @@ class _LecturerSelectionDashboardPageState
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _showPermohonanDetail(request),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: const Color(0xFF0D4AA3),
-            borderRadius: BorderRadius.circular(14),
+            color: AppTheme.primary,
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0D4AA3).withOpacity(0.3),
+                color: AppTheme.primary.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 3),
               ),
@@ -636,7 +599,7 @@ class _LecturerSelectionDashboardPageState
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
                 child: Text(
                   _initials(namaDosen),
                   style: const TextStyle(
@@ -726,18 +689,18 @@ class _LecturerBannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: Container(
         height: 72,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           image: DecorationImage(
             image: NetworkImage(imageUrl),
             fit: BoxFit.cover,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -746,8 +709,8 @@ class _LecturerBannerCard extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: Colors.black.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+            color: Colors.black.withValues(alpha: 0.3),
           ),
           child: Text(
             title,

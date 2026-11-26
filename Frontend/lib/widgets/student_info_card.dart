@@ -1,6 +1,7 @@
 // lib/widgets/student_info_card.dart
 
 import 'package:flutter/material.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 class StudentInfoCard extends StatelessWidget {
   final String label;
@@ -25,10 +26,10 @@ class StudentInfoCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -42,8 +43,8 @@ class StudentInfoCard extends StatelessWidget {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
             child: Icon(icon, color: color, size: 18),
           ),

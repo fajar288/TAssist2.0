@@ -23,7 +23,7 @@ class RiskDetailSheet extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       constraints: BoxConstraints(
@@ -40,8 +40,8 @@ class RiskDetailSheet extends StatelessWidget {
               height: 4,
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
+                color: AppTheme.cardBorder,
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
             ),
           ),
@@ -79,7 +79,7 @@ class RiskDetailSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: risk.backgroundColor,
                   border: Border.all(color: risk.borderColor),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -107,7 +107,7 @@ class RiskDetailSheet extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: risk.backgroundColor,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               border: Border.all(color: risk.borderColor),
             ),
             child: Column(
@@ -136,7 +136,7 @@ class RiskDetailSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   child: LinearProgressIndicator(
                     value: (risk.skor / 100).clamp(0.0, 1.0),
                     minHeight: 8,
@@ -192,7 +192,7 @@ class RiskDetailSheet extends StatelessWidget {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: AppTheme.surfaceVariant,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                           border: Border.all(
                             color: isHigh ? AppTheme.riskAttentionBorder : AppTheme.cardBorder,
                           ),
@@ -234,15 +234,15 @@ class RiskDetailSheet extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: isHigh ? Colors.amber.shade100 : AppTheme.cardBorder,
-                                borderRadius: BorderRadius.circular(6),
+                                color: isHigh ? AppTheme.warningBg : AppTheme.cardBorder,
+                                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                               ),
                               child: Text(
                                 '+${item.kontribusi}',
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: isHigh ? Colors.amber.shade900 : AppTheme.textSecondary,
+                                  color: isHigh ? AppTheme.warning : AppTheme.textSecondary,
                                 ),
                               ),
                             ),
@@ -264,7 +264,7 @@ class RiskDetailSheet extends StatelessWidget {
                 backgroundColor: AppTheme.primary,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),

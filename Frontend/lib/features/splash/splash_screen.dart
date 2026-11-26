@@ -2,6 +2,7 @@ import 'dart:math' show sqrt;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 /// SplashScreen — Layar awal TAssist
 ///
@@ -43,8 +44,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   // ─── Warna ──────────────────────────────────────────────────────────────────
-  static const _blue = Color(0xFF1A6EE0);
-  static const _bg   = Color(0xFFEEF2F6);
+  static const _blue = AppTheme.primary;
+  static const _bg   = AppTheme.background;
 
   // ─── Controllers & Animations ───────────────────────────────────────────────
 
@@ -311,7 +312,7 @@ class _SplashScreenState extends State<SplashScreen>
                         end: Alignment.centerRight,
                         colors: const [
                           Colors.white,
-                          Color(0xFFD0E8FF),
+                          AppTheme.primaryGhost,
                           Colors.white,
                           Colors.white,
                         ],
@@ -354,7 +355,7 @@ class _SplashScreenState extends State<SplashScreen>
             height: 90,
             decoration: BoxDecoration(
               color: _blue,
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               boxShadow: [
                 BoxShadow(
                   color: _blue.withOpacity(0.55 * _glowAnim.value),
@@ -468,7 +469,7 @@ class _GraduationCapPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(w * 0.50, h * 0.33),
       w * 0.038,
-      Paint()..color = const Color(0xFF1A6EE0),
+      Paint()..color = AppTheme.primary,
     );
   }
 
