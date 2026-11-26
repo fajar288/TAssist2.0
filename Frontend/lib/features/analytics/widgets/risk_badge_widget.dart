@@ -1,6 +1,7 @@
 // lib/features/analytics/widgets/risk_badge_widget.dart
 
 import 'package:flutter/material.dart';
+import 'package:tassist/theme/app_theme.dart';
 import '../model/risk_snapshot_model.dart';
 import 'risk_detail_sheet.dart';
 
@@ -39,14 +40,14 @@ class RiskBadgeWidget extends StatelessWidget {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         padding: compact
             ? const EdgeInsets.symmetric(horizontal: 8, vertical: 3)
             : const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(color: borderColor, width: 1),
         ),
         child: Row(
@@ -70,8 +71,8 @@ class RiskBadgeWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(10),
+                color: color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
               child: Text(
                 '${risk.skor}',

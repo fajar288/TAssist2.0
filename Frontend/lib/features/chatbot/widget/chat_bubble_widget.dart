@@ -24,7 +24,7 @@ class ChatBubbleWidget extends StatelessWidget {
       context: context,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       builder: (ctx) {
         return Padding(
@@ -39,7 +39,7 @@ class ChatBubbleWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: AppTheme.chatCitationBg,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     child: const Icon(Icons.menu_book_rounded, color: AppTheme.chatCitation, size: 20),
                   ),
@@ -81,7 +81,7 @@ class ChatBubbleWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceVariant,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   border: Border.all(color: AppTheme.cardBorder),
                 ),
                 child: Text(
@@ -96,7 +96,7 @@ class ChatBubbleWidget extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
                   ),
                   onPressed: () => Navigator.pop(ctx),
                   child: const Text('Tutup'),
@@ -146,10 +146,10 @@ class ChatBubbleWidget extends StatelessWidget {
                         ? AppTheme.chatUserBubble
                         : (isRefused ? AppTheme.chatRefusalBg : AppTheme.chatAssistantBubble),
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(16),
-                      topRight: const Radius.circular(16),
-                      bottomLeft: isUser ? const Radius.circular(16) : Radius.zero,
-                      bottomRight: isUser ? Radius.zero : const Radius.circular(16),
+                      topLeft: const Radius.circular(AppTheme.radiusMd),
+                      topRight: const Radius.circular(AppTheme.radiusMd),
+                      bottomLeft: isUser ? const Radius.circular(AppTheme.radiusMd) : Radius.zero,
+                      bottomRight: isUser ? Radius.zero : const Radius.circular(AppTheme.radiusMd),
                     ),
                     border: isRefused
                         ? Border.all(color: AppTheme.chatRefusal, width: 1.2)

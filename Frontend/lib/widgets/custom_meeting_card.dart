@@ -38,8 +38,8 @@ class MeetingRequestCard extends StatelessWidget {
                   ],
                 ),
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                  topLeft: Radius.circular(AppTheme.radiusLg),
+                  topRight: Radius.circular(AppTheme.radiusLg),
                 ),
               ),
               child: Row(
@@ -48,7 +48,7 @@ class MeetingRequestCard extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryGhost,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     child: const Icon(
                       Icons.calendar_today_rounded,
@@ -138,7 +138,7 @@ class MeetingRequestCard extends StatelessWidget {
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryGhost,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     child: const Icon(
                       Icons.arrow_forward_ios_rounded,

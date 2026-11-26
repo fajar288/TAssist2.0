@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_empty_state_widget.dart';
+import 'package:tassist/widgets/app_error_widget.dart';
+import 'package:tassist/widgets/app_skeleton_loader.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 
 import '../data/notifikasi_service.dart';
 
@@ -66,16 +71,16 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
       await _loadNotifikasi();
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Semua notifikasi ditandai sebagai dibaca.')),
+      AppSnackBars.success(
+        context,
+        'Semua notifikasi ditandai sebagai dibaca.',
       );
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', '')),
-        ),
+      AppSnackBars.error(
+        context,
+        e.toString().replaceFirst('Exception: ', ''),
       );
     }
   }
@@ -110,10 +115,9 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
       } catch (e) {
         if (!mounted) return;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString().replaceFirst('Exception: ', '')),
-          ),
+        AppSnackBars.error(
+          context,
+          e.toString().replaceFirst('Exception: ', ''),
         );
       }
     }
@@ -152,9 +156,9 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.surface,
             borderRadius: BorderRadius.vertical(
-              top: Radius.circular(28),
+              top: Radius.circular(AppTheme.radiusXl),
             ),
           ),
           child: ListView(
@@ -166,8 +170,8 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   width: 42,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE2E8F0),
-                    borderRadius: BorderRadius.circular(99),
+                    color: AppTheme.cardBorder,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   ),
                 ),
               ),
@@ -180,8 +184,8 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                     width: 52,
                     height: 52,
                     decoration: BoxDecoration(
-                      color: iconColor.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(16),
+                      color: iconColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: Icon(
                       _iconForType(type),
@@ -197,7 +201,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                         const Text(
                           'Notification Detail',
                           style: TextStyle(
-                            color: Color(0xFF64748B),
+                            color: AppTheme.textSecondary,
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),
@@ -206,7 +210,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                         Text(
                           title,
                           style: const TextStyle(
-                            color: Color(0xFF0F172A),
+                            color: AppTheme.textPrimary,
                             fontSize: 20,
                             fontWeight: FontWeight.w900,
                             height: 1.2,
@@ -224,16 +228,16 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(18),
+                  color: AppTheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   border: Border.all(
-                    color: const Color(0xFFE2E8F0),
+                    color: AppTheme.cardBorder,
                   ),
                 ),
                 child: Text(
                   message,
                   style: const TextStyle(
-                    color: Color(0xFF334155),
+                    color: AppTheme.textPrimary,
                     fontSize: 14,
                     height: 1.45,
                     fontWeight: FontWeight.w500,
@@ -258,11 +262,11 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0D4AA3),
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppTheme.primary,
+                    foregroundColor: AppTheme.surface,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                   ),
                   child: const Text(
@@ -289,10 +293,10 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(
-          color: const Color(0xFFE2E8F0),
+          color: AppTheme.cardBorder,
         ),
       ),
       child: Row(
@@ -301,7 +305,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
           Icon(
             icon,
             size: 18,
-            color: const Color(0xFF64748B),
+            color: AppTheme.textSecondary,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -311,7 +315,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                 Text(
                   label,
                   style: const TextStyle(
-                    color: Color(0xFF94A3B8),
+                    color: AppTheme.textMuted,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
@@ -320,7 +324,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                 Text(
                   value,
                   style: const TextStyle(
-                    color: Color(0xFF0F172A),
+                    color: AppTheme.textPrimary,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     height: 1.3,
@@ -349,25 +353,25 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
   Color _iconColorForType(String? type) {
     final value = type?.toLowerCase() ?? '';
 
-    if (value.contains('dokumen')) return const Color(0xFF2563EB);
-    if (value.contains('feedback')) return const Color(0xFF16A34A);
-    if (value.contains('jadwal')) return const Color(0xFFF59E0B);
-    if (value.contains('permohonan')) return const Color(0xFF7C3AED);
-    if (value.contains('progres')) return const Color(0xFF0F766E);
+    if (value.contains('dokumen')) return AppTheme.primary;
+    if (value.contains('feedback')) return AppTheme.accepted;
+    if (value.contains('jadwal')) return AppTheme.pending;
+    if (value.contains('permohonan')) return AppTheme.primaryLight;
+    if (value.contains('progres')) return AppTheme.info;
 
-    return const Color(0xFF64748B);
+    return AppTheme.textSecondary;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: false,
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF0F172A),
+        backgroundColor: AppTheme.surface,
+        foregroundColor: AppTheme.textPrimary,
         actions: [
           IconButton(
             tooltip: _isUnreadOnly ? 'Tampilkan semua' : 'Tampilkan belum dibaca',
@@ -399,35 +403,20 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: AppSkeletonLoader.list(count: 6),
+      );
     }
 
     if (_errorMessage != null) {
       return ListView(
-        padding: const EdgeInsets.all(20),
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          const SizedBox(height: 80),
-          const Icon(
-            Icons.error_outline_rounded,
-            size: 56,
-            color: Color(0xFFEF4444),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _errorMessage!,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Color(0xFF334155),
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: ElevatedButton.icon(
-              onPressed: _loadNotifikasi,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Coba Lagi'),
-            ),
+          const SizedBox(height: 60),
+          AppErrorWidget(
+            message: _errorMessage!,
+            onRetry: _loadNotifikasi,
           ),
         ],
       );
@@ -435,25 +424,14 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
 
     if (_notifikasi.isEmpty) {
       return ListView(
-        padding: const EdgeInsets.all(20),
+        physics: const AlwaysScrollableScrollPhysics(),
         children: [
-          const SizedBox(height: 100),
-          const Icon(
-            Icons.notifications_none_rounded,
-            size: 64,
-            color: Color(0xFF94A3B8),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _isUnreadOnly
+          const SizedBox(height: 80),
+          AppEmptyStateWidget(
+            icon: Icons.notifications_none_rounded,
+            title: _isUnreadOnly
                 ? 'Belum ada notifikasi yang belum dibaca.'
                 : 'Belum ada notifikasi.',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Color(0xFF475569),
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
           ),
         ],
       );
@@ -478,9 +456,9 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Row(
         children: [
@@ -488,12 +466,12 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: const Color(0xFF2563EB).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(14),
+              color: AppTheme.primaryGhost,
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: const Icon(
               Icons.notifications_active_rounded,
-              color: Color(0xFF2563EB),
+              color: AppTheme.primary,
             ),
           ),
           const SizedBox(width: 12),
@@ -506,7 +484,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                       ? '$_unreadCount belum dibaca'
                       : 'Semua sudah dibaca',
                   style: const TextStyle(
-                    color: Color(0xFF0F172A),
+                    color: AppTheme.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                   ),
@@ -517,7 +495,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                       ? 'Menampilkan notifikasi yang belum dibaca.'
                       : 'Menampilkan semua notifikasi terbaru.',
                   style: const TextStyle(
-                    color: Color(0xFF64748B),
+                    color: AppTheme.textSecondary,
                     fontSize: 12,
                   ),
                 ),
@@ -539,23 +517,17 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
 
     return InkWell(
       onTap: () => _openNotificationDetail(item),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: isRead ? const Color(0xFFE2E8F0) : const Color(0xFF93C5FD),
+            color: isRead ? AppTheme.cardBorder : AppTheme.infoBorder,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.04),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
+          boxShadow: AppTheme.subtleShadow,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -565,7 +537,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
               height: 44,
               decoration: BoxDecoration(
                 color: iconColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               child: Icon(
                 _iconForType(type),
@@ -585,7 +557,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                         child: Text(
                           title,
                           style: TextStyle(
-                            color: const Color(0xFF0F172A),
+                            color: AppTheme.textPrimary,
                             fontSize: 14,
                             fontWeight: isRead ? FontWeight.w600 : FontWeight.w800,
                           ),
@@ -597,14 +569,14 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                           height: 9,
                           margin: const EdgeInsets.only(top: 5, left: 8),
                           decoration: const BoxDecoration(
-                            color: Color(0xFF2563EB),
+                            color: AppTheme.primary,
                             shape: BoxShape.circle,
                           ),
                         ),
                       const SizedBox(width: 8),
                       const Icon(
                         Icons.chevron_right_rounded,
-                        color: Color(0xFFCBD5E1),
+                        color: AppTheme.textMuted,
                         size: 24,
                       ),
                     ],
@@ -613,7 +585,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   Text(
                     message,
                     style: const TextStyle(
-                      color: Color(0xFF475569),
+                      color: AppTheme.textSecondary,
                       fontSize: 13,
                       height: 1.35,
                     ),
@@ -625,13 +597,13 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                         const Icon(
                           Icons.access_time_rounded,
                           size: 14,
-                          color: Color(0xFF94A3B8),
+                          color: AppTheme.textMuted,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           createdAt,
                           style: const TextStyle(
-                            color: Color(0xFF94A3B8),
+                            color: AppTheme.textMuted,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),

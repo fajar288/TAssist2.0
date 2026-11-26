@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/app_empty_state_widget.dart';
+import '../../widgets/app_error_widget.dart';
+import '../../widgets/app_skeleton_loader.dart';
+import '../../widgets/app_snackbars.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -201,15 +206,15 @@ class _SchedulePageState extends State<SchedulePage> {
     final bimbinganId = _activeBimbinganId;
 
     if (bimbinganId == null) {
-      _showSnackBar(
+      AppSnackBars.error(
+        context,
         'Bimbingan aktif tidak ditemukan. Silakan refresh halaman.',
-        isError: true,
       );
       return;
     }
 
     if (_selectedDate == null) {
-      _showSnackBar('Tanggal wajib dipilih.', isError: true);
+      AppSnackBars.error(context, 'Tanggal wajib dipilih.');
       return;
     }
 
@@ -217,10 +222,7 @@ class _SchedulePageState extends State<SchedulePage> {
     final endMinutes = (_endHour * 60) + _endMinute;
 
     if (endMinutes <= startMinutes) {
-      _showSnackBar(
-        'Waktu selesai harus setelah waktu mulai.',
-        isError: true,
-      );
+      AppSnackBars.error(context, 'Waktu selesai harus setelah waktu mulai.');
       return;
     }
 
@@ -240,7 +242,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
       if (!mounted) return;
 
-      _showSnackBar('Jadwal bimbingan berhasil diajukan.');
+      AppSnackBars.success(context, 'Jadwal bimbingan berhasil diajukan.');
 
       setState(() {
         _currentState = ScheduleState.initial;
@@ -253,10 +255,7 @@ class _SchedulePageState extends State<SchedulePage> {
     } catch (e) {
       if (!mounted) return;
 
-      _showSnackBar(
-        e.toString().replaceFirst('Exception: ', ''),
-        isError: true,
-      );
+      AppSnackBars.error(context, e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (!mounted) return;
 
@@ -264,16 +263,6 @@ class _SchedulePageState extends State<SchedulePage> {
         _isSubmitting = false;
       });
     }
-  }
-
-  void _showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
   }
 
   String _formatDateForApi(DateTime date) {
@@ -333,13 +322,13 @@ class _SchedulePageState extends State<SchedulePage> {
   Color _statusColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'menunggu':
-        return Colors.orange;
+        return AppTheme.pending;
       case 'dikonfirmasi':
-        return Colors.green;
+        return AppTheme.accepted;
       case 'ditolak':
-        return Colors.red;
+        return AppTheme.declined;
       default:
-        return Colors.grey;
+        return AppTheme.textMuted;
     }
   }
 
@@ -363,9 +352,12 @@ class _SchedulePageState extends State<SchedulePage> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        backgroundColor: Color(0xFFEEF2F6),
-        body: Center(
-          child: CircularProgressIndicator(),
+        backgroundColor: AppTheme.background,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(top: 16),
+            child: AppSkeletonLoader.list(count: 4),
+          ),
         ),
       );
     }
@@ -381,7 +373,7 @@ class _SchedulePageState extends State<SchedulePage> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFEEF2F6),
+        backgroundColor: AppTheme.background,
         body: RefreshIndicator(
           onRefresh: _loadScheduleData,
           child: SafeArea(
@@ -413,45 +405,12 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Widget _buildErrorPage() {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF2F6),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.error_outline_rounded,
-                color: Colors.redAccent,
-                size: 46,
-              ),
-              const SizedBox(height: 14),
-              const Text(
-                'Failed to load schedule page',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF2D3238),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _errorMessage ?? '-',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black54,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 18),
-              ElevatedButton(
-                onPressed: _loadScheduleData,
-                child: const Text('Try Again'),
-              ),
-            ],
-          ),
-        ),
+      backgroundColor: AppTheme.background,
+      body: AppErrorWidget(
+        title: 'Failed to load schedule page',
+        message: _errorMessage ?? '-',
+        retryLabel: 'Try Again',
+        onRetry: _loadScheduleData,
       ),
     );
   }
@@ -465,9 +424,9 @@ class _SchedulePageState extends State<SchedulePage> {
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFEEF2FF),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFC7D2FE)),
+        color: AppTheme.primaryGhost,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.infoBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -477,7 +436,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 ? 'Ketersediaan Dosen pada ${_formatDateForApi(_selectedDate!)}:'
                 : 'Slot Ketersediaan Rutin Dosen:',
             style: const TextStyle(
-              color: Color(0xFF312E81),
+              color: AppTheme.primaryDark,
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
@@ -486,7 +445,7 @@ class _SchedulePageState extends State<SchedulePage> {
           if (slotsToShow.isEmpty)
             const Text(
               'Tidak ada slot tersedia pada tanggal ini.',
-              style: TextStyle(color: Color(0xFF475569), fontSize: 12),
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
             )
           else
             Wrap(
@@ -498,14 +457,14 @@ class _SchedulePageState extends State<SchedulePage> {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFA5B4FC)),
+                    color: AppTheme.surface,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                    border: Border.all(color: AppTheme.infoBorder),
                   ),
                   child: Text(
                     _selectedDate != null ? range : '$day $range',
                     style: const TextStyle(
-                      color: Color(0xFF3730A3),
+                      color: AppTheme.primary,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
@@ -529,14 +488,14 @@ class _SchedulePageState extends State<SchedulePage> {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF333333),
+            color: AppTheme.textPrimary,
           ),
         ),
         Text(
           'with mr. $advisorName',
           style: const TextStyle(
             fontSize: 16,
-            color: Colors.grey,
+            color: AppTheme.textSecondary,
           ),
         ),
       ],
@@ -565,8 +524,8 @@ class _SchedulePageState extends State<SchedulePage> {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.symmetric(vertical: 15),
               decoration: BoxDecoration(
-                color: const Color(0xFF0D47A1),
-                borderRadius: BorderRadius.circular(12),
+                color: AppTheme.primary,
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -581,7 +540,7 @@ class _SchedulePageState extends State<SchedulePage> {
             const SizedBox(height: 10),
             const Icon(
               Icons.keyboard_arrow_down,
-              color: Color(0xFF0D47A1),
+              color: AppTheme.primary,
               size: 30,
             ),
           ],
@@ -623,19 +582,19 @@ class _SchedulePageState extends State<SchedulePage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFF59E0B)),
+                  color: AppTheme.warningBg,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                  border: Border.all(color: AppTheme.warningBorder),
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.info_outline_rounded, color: Color(0xFFB45309), size: 18),
+                    Icon(Icons.info_outline_rounded, color: AppTheme.warning, size: 18),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Di luar ketersediaan yang dipublikasikan dosen. Anda tetap dapat mengajukan jadwal ini.',
                         style: TextStyle(
-                          color: Color(0xFF92400E),
+                          color: AppTheme.textPrimary,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -670,10 +629,10 @@ class _SchedulePageState extends State<SchedulePage> {
             ElevatedButton(
               onPressed: _isSubmitting ? null : _submitSchedule,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0D47A1),
+                backgroundColor: AppTheme.primary,
                 minimumSize: const Size(double.infinity, 55),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
               ),
               child: _isSubmitting
@@ -697,7 +656,7 @@ class _SchedulePageState extends State<SchedulePage> {
                     setState(() => _currentState = ScheduleState.initial),
                 child: const Icon(
                   Icons.keyboard_arrow_up,
-                  color: Color(0xFF0D47A1),
+                  color: AppTheme.primary,
                   size: 30,
                 ),
               ),
@@ -714,9 +673,9 @@ class _SchedulePageState extends State<SchedulePage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
+          color: AppTheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(color: AppTheme.cardBorder),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -726,12 +685,12 @@ class _SchedulePageState extends State<SchedulePage> {
                   ? 'DD/MM/YYYY'
                   : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
               style: TextStyle(
-                color: _selectedDate == null ? Colors.grey : Colors.black,
+                color: _selectedDate == null ? AppTheme.textMuted : AppTheme.textPrimary,
               ),
             ),
             const Icon(
               Icons.calendar_today,
-              color: Color(0xFF0D47A1),
+              color: AppTheme.primary,
             ),
           ],
         ),
@@ -779,16 +738,16 @@ class _SchedulePageState extends State<SchedulePage> {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade300),
+        color: AppTheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Column(
         children: [
           Text(
             title,
             style: const TextStyle(
-              color: Color(0xFF0D47A1),
+              color: AppTheme.primary,
               fontWeight: FontWeight.w700,
               fontSize: 13,
             ),
@@ -832,7 +791,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return Expanded(
       child: Column(
         children: [
-          Text(label, style: const TextStyle(color: Colors.grey)),
+          Text(label, style: const TextStyle(color: AppTheme.textMuted)),
           Expanded(
             child: CupertinoPicker(
               scrollController: controller,
@@ -860,15 +819,15 @@ class _SchedulePageState extends State<SchedulePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        color: AppTheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 14,
-            backgroundColor: const Color(0xFF0D47A1),
+            backgroundColor: AppTheme.primary,
             child: Text(
               _initials(advisorName),
               style: const TextStyle(
@@ -927,18 +886,18 @@ class _SchedulePageState extends State<SchedulePage> {
 
     return InkWell(
       onTap: () => setState(() => _selectedMode = value),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF0D47A1).withOpacity(0.1)
-              : const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(12),
+              ? AppTheme.primary.withValues(alpha: 0.1)
+              : AppTheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF0D47A1)
-                : Colors.grey.shade300,
+                ? AppTheme.primary
+                : AppTheme.cardBorder,
             width: isSelected ? 1.6 : 1,
           ),
         ),
@@ -947,7 +906,7 @@ class _SchedulePageState extends State<SchedulePage> {
             Icon(
               icon,
               color:
-                  isSelected ? const Color(0xFF0D47A1) : Colors.grey.shade600,
+                  isSelected ? AppTheme.primary : AppTheme.textSecondary,
               size: 20,
             ),
             const SizedBox(width: 8),
@@ -955,7 +914,7 @@ class _SchedulePageState extends State<SchedulePage> {
               label,
               style: TextStyle(
                 color:
-                    isSelected ? const Color(0xFF0D47A1) : Colors.grey.shade700,
+                    isSelected ? AppTheme.primary : AppTheme.textSecondary,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -973,23 +932,23 @@ class _SchedulePageState extends State<SchedulePage> {
       decoration: InputDecoration(
         hintText: '....',
         filled: true,
-        fillColor: const Color(0xFFF8FAFC),
+        fillColor: AppTheme.surfaceVariant,
         counterStyle: const TextStyle(
-          color: Color(0xFF9CA3AF),
+          color: AppTheme.textMuted,
           fontSize: 11,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.cardBorder),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.cardBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           borderSide: const BorderSide(
-            color: Color(0xFF0D47A1),
+            color: AppTheme.primary,
             width: 1.5,
           ),
         ),
@@ -1003,16 +962,10 @@ class _SchedulePageState extends State<SchedulePage> {
         width: double.infinity,
         padding: const EdgeInsets.all(18),
         decoration: _cardDecoration(),
-        child: const Center(
-          child: Text(
-            'No meeting schedule has been submitted yet.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black54,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+        child: const AppEmptyStateWidget(
+          compact: true,
+          icon: Icons.event_busy_rounded,
+          title: 'No meeting schedule has been submitted yet.',
         ),
       );
     }
@@ -1044,7 +997,7 @@ class _SchedulePageState extends State<SchedulePage> {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: const Color(0xFF0D47A1),
+              backgroundColor: AppTheme.primary,
               child: Text(
                 _initials(dosenName),
                 style: const TextStyle(
@@ -1069,14 +1022,14 @@ class _SchedulePageState extends State<SchedulePage> {
                   Text(
                     'Meet with mr. $dosenName',
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: Colors.black87),
+                    style: const TextStyle(color: AppTheme.textPrimary),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     '${_formatDisplayDate(tanggal)} at ${_formatDisplayTime(mulai)} - ${_formatDisplayTime(selesai)} • $mode',
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Colors.black54,
+                      color: AppTheme.textSecondary,
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1106,7 +1059,7 @@ class _SchedulePageState extends State<SchedulePage> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       builder: (context) {
         return Padding(
@@ -1143,9 +1096,9 @@ class _SchedulePageState extends State<SchedulePage> {
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0D47A1),
+                    backgroundColor: AppTheme.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                   ),
                   child: const Text(
@@ -1162,17 +1115,6 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   BoxDecoration _cardDecoration() {
-    return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.05),
-          blurRadius: 10,
-          spreadRadius: 2,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    );
+    return AppTheme.cardDecoration(radius: AppTheme.radiusLg);
   }
 }

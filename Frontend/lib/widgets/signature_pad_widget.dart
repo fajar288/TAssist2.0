@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 
 import '../theme/app_theme.dart';
 
@@ -33,11 +34,9 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
 
   Future<void> _exportSignature() async {
     if (_lines.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Silakan goreskan tanda tangan Anda terlebih dahulu.'),
-          backgroundColor: AppTheme.declined,
-        ),
+      AppSnackBars.error(
+        context,
+        'Silakan goreskan tanda tangan Anda terlebih dahulu.',
       );
       return;
     }
@@ -83,12 +82,7 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal mengekspor tanda tangan: $e'),
-            backgroundColor: AppTheme.declined,
-          ),
-        );
+        AppSnackBars.error(context, 'Gagal mengekspor tanda tangan: $e');
       }
     } finally {
       if (mounted) setState(() => _isProcessing = false);
@@ -101,7 +95,7 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         boxShadow: AppTheme.cardShadow,
       ),
       child: Column(
@@ -137,14 +131,14 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
             height: 180,
             decoration: BoxDecoration(
               color: AppTheme.surfaceVariant,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               border: Border.all(
                 color: _lines.isNotEmpty ? AppTheme.primary : AppTheme.cardBorder,
                 width: 1.5,
               ),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               child: GestureDetector(
                 onPanStart: (details) {
                   setState(() {
@@ -176,7 +170,7 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       side: const BorderSide(color: AppTheme.cardBorder),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
                     child: const Text('Batal', style: TextStyle(color: AppTheme.textSecondary)),
@@ -192,7 +186,7 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                   ),
                   icon: _isProcessing

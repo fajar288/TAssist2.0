@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../app/app.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/app_empty_state_widget.dart';
+import '../../widgets/app_error_widget.dart';
+import '../../widgets/app_loading_widget.dart';
 import 'navbar_mahasiswa.dart';
 import '../lecturer_selection/view/lecturer_selection_dashboard_page.dart';
 import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
@@ -43,74 +46,33 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
 
   Widget _buildLockedFeaturePage() {
     return const Scaffold(
-      backgroundColor: Color(0xFFEEF2F6),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(32.0),
-          child: Text(
-            "This feature is not available\nuntil you have an academic advisor",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black54,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
+      backgroundColor: AppTheme.background,
+      body: AppEmptyStateWidget(
+        icon: Icons.lock_outline_rounded,
+        title: 'Fitur Belum Tersedia',
+        subtitle:
+            'This feature is not available until you have an academic advisor',
       ),
     );
   }
 
   Widget _buildLoadingPage() {
     return const Scaffold(
-      backgroundColor: Color(0xFFEEF2F6),
+      backgroundColor: AppTheme.background,
       body: Center(
-        child: CircularProgressIndicator(),
+        child: AppLoadingWidget(),
       ),
     );
   }
 
   Widget _buildErrorPage(Object error) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF2F6),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.error_outline_rounded,
-                color: Colors.redAccent,
-                size: 42,
-              ),
-              const SizedBox(height: 14),
-              const Text(
-                'Failed to load student dashboard',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF2D3238),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                error.toString().replaceFirst('Exception: ', ''),
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black54,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 18),
-              ElevatedButton(
-                onPressed: _reloadBimbinganStatus,
-                child: const Text('Try Again'),
-              ),
-            ],
-          ),
-        ),
+      backgroundColor: AppTheme.background,
+      body: AppErrorWidget(
+        title: 'Failed to load student dashboard',
+        message: error.toString().replaceFirst('Exception: ', ''),
+        retryLabel: 'Try Again',
+        onRetry: _reloadBimbinganStatus,
       ),
     );
   }

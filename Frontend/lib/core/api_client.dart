@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:tassist/widgets/app_snackbars.dart';
 
 import 'api_config.dart';
 
@@ -308,16 +309,9 @@ class ApiClient {
     final overlayContext = nav.overlay?.context;
     if (overlayContext != null) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(overlayContext).showSnackBar(
-        SnackBar(
-          content: const Text('Sesi telah berakhir. Silakan login kembali.'),
-          backgroundColor: Colors.red.shade700,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        ),
+      AppSnackBars.error(
+        overlayContext,
+        'Sesi telah berakhir. Silakan login kembali.',
       );
     }
   }

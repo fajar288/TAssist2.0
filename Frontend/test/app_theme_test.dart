@@ -11,6 +11,7 @@ void main() {
   group('AppTheme tokens', () {
     test('core palette', () {
       expect(AppTheme.primary, const Color(0xFF4338CA));
+      expect(AppTheme.primaryDark, const Color(0xFF312E81));
       expect(AppTheme.primaryLight, const Color(0xFF6366F1));
       expect(AppTheme.primaryGhost, const Color(0xFFEEF2FF));
       expect(AppTheme.background, const Color(0xFFF1F5F9));
@@ -18,6 +19,13 @@ void main() {
       expect(AppTheme.textPrimary, const Color(0xFF1E1B4B));
       expect(AppTheme.textSecondary, const Color(0xFF64748B));
       expect(AppTheme.textMuted, const Color(0xFF94A3B8));
+    });
+
+    test('border radius scale tokens (T-59)', () {
+      expect(AppTheme.radiusSm, 8.0);
+      expect(AppTheme.radiusMd, 14.0);
+      expect(AppTheme.radiusLg, 20.0);
+      expect(AppTheme.radiusXl, 28.0);
     });
 
     test('semantic status palette', () {
@@ -63,6 +71,12 @@ void main() {
       expect(
         theme.elevatedButtonTheme.style?.backgroundColor?.resolve({}),
         AppTheme.primary,
+      );
+      expect(
+        theme.elevatedButtonTheme.style?.shape?.resolve({}),
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        ),
       );
     });
   });

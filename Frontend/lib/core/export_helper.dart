@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'api_client.dart';
@@ -20,9 +21,7 @@ class ExportHelper {
     final token = await ApiClient.instance.tokenStore.read();
     if (token == null || token.isEmpty) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sesi login tidak ditemukan.')),
-        );
+        AppSnackBars.error(context, 'Sesi login tidak ditemukan.');
       }
       return;
     }
@@ -32,8 +31,9 @@ class ExportHelper {
 
     if (kIsWeb) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unduh melalui endpoint terautentikasi: $url')),
+        AppSnackBars.info(
+          context,
+          'Unduh melalui endpoint terautentikasi: $url',
         );
       }
       return;
@@ -57,11 +57,9 @@ class ExportHelper {
       await file.writeAsBytes(response.bodyBytes, flush: true);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('File ekspor tersimpan: ${file.path}'),
-            behavior: SnackBarBehavior.floating,
-          ),
+        AppSnackBars.success(
+          context,
+          'File ekspor tersimpan: ${file.path}',
         );
       }
 
@@ -71,12 +69,7 @@ class ExportHelper {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal mengekspor riwayat: $e'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
+        AppSnackBars.error(context, 'Gagal mengekspor riwayat: $e');
       }
     }
   }

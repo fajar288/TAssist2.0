@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:tassist/core/export_helper.dart';
 import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 import 'package:tassist/widgets/student_info_card.dart';
 import 'package:tassist/widgets/student_menu_title.dart';
 import 'package:tassist/features/dosen/view/dosen_student_documents_page.dart';
@@ -29,13 +31,13 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   Color get _statusColor {
     switch (student.status) {
       case 'active':
-        return const Color(0xFF22C55E);
+        return AppTheme.accepted;
       case 'warning':
-        return const Color(0xFFF59E0B);
+        return AppTheme.pending;
       case 'completed':
-        return const Color(0xFF6366F1);
+        return AppTheme.primaryLight;
       default:
-        return Colors.grey;
+        return AppTheme.textMuted;
     }
   }
 
@@ -55,13 +57,13 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   Color get _avatarColor {
     switch (student.status) {
       case 'active':
-        return const Color(0xFF6366F1);
+        return AppTheme.primaryLight;
       case 'warning':
-        return const Color(0xFFF59E0B);
+        return AppTheme.pending;
       case 'completed':
-        return const Color(0xFF22C55E);
+        return AppTheme.accepted;
       default:
-        return const Color(0xFF64748B);
+        return AppTheme.textSecondary;
     }
   }
 
@@ -131,7 +133,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: AppTheme.background,
       body: FadeTransition(
         opacity: _fadeAnim,
         child: SlideTransition(
@@ -180,8 +182,8 @@ class _StudentDetailPageState extends State<StudentDetailPage>
         child: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(10),
+            color: Colors.white.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           ),
           child: const Icon(Icons.arrow_back_ios_new_rounded,
               color: Colors.white, size: 16),
@@ -191,8 +193,8 @@ class _StudentDetailPageState extends State<StudentDetailPage>
         Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(10),
+            color: Colors.white.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           ),
           child: IconButton(
             icon: const Icon(Icons.more_vert_rounded,
@@ -253,10 +255,10 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                           width: 68,
                           height: 68,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.25),
-                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white.withValues(alpha: 0.25),
+                            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                             border: Border.all(
-                                color: Colors.white.withOpacity(0.5), width: 2),
+                                color: Colors.white.withValues(alpha: 0.5), width: 2),
                           ),
                           child: Center(
                             child: Text(
@@ -280,10 +282,10 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: _statusColor.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(20),
+                                  color: _statusColor.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                                   border: Border.all(
-                                    color: _statusColor.withOpacity(0.4),
+                                    color: _statusColor.withValues(alpha: 0.4),
                                     width: 1,
                                   ),
                                 ),
@@ -337,15 +339,9 @@ class _StudentDetailPageState extends State<StudentDetailPage>
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        boxShadow: AppTheme.subtleShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,10 +368,10 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           ),
           const SizedBox(height: 12),
           ClipRRect(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             child: LinearProgressIndicator(
               value: student.progress,
-              backgroundColor: _statusColor.withOpacity(0.12),
+              backgroundColor: _statusColor.withValues(alpha: 0.12),
               valueColor: AlwaysStoppedAnimation<Color>(_statusColor),
               minHeight: 10,
             ),
@@ -384,13 +380,13 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           Row(
             children: [
               _miniStat(context, '${student.meetingCount}', 'Meetings',
-                  Icons.calendar_today_rounded, const Color(0xFF6366F1)),
+                  Icons.calendar_today_rounded, AppTheme.primaryLight),
               _divider(),
               _miniStat(context, '${student.taskCompleted}/${student.taskCount}',
-                  'Tasks Done', Icons.task_alt_rounded, const Color(0xFF22C55E)),
+                  'Tasks Done', Icons.task_alt_rounded, AppTheme.accepted),
               _divider(),
               _miniStat(context, student.counselingSince, 'Since',
-                  Icons.access_time_rounded, const Color(0xFFF59E0B)),
+                  Icons.access_time_rounded, AppTheme.pending),
             ],
           ),
         ],
@@ -446,25 +442,25 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           label: 'NIM',
           value: student.nim,
           icon: Icons.badge_rounded,
-          accentColor: const Color(0xFF6366F1),
+          accentColor: AppTheme.primaryLight,
         ),
         StudentInfoCard(
           label: 'Major',
           value: student.major,
           icon: Icons.school_rounded,
-          accentColor: const Color(0xFF0EA5E9),
+          accentColor: AppTheme.info,
         ),
         StudentInfoCard(
           label: 'Batch Year',
           value: student.year,
           icon: Icons.calendar_month_rounded,
-          accentColor: const Color(0xFFF59E0B),
+          accentColor: AppTheme.pending,
         ),
         StudentInfoCard(
           label: 'Counseling Since',
           value: student.counselingSince,
           icon: Icons.handshake_rounded,
-          accentColor: const Color(0xFF22C55E),
+          accentColor: AppTheme.accepted,
         ),
       ],
     );
@@ -488,42 +484,42 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           title: 'Progress',
           subtitle: 'View and update thesis progress',
           icon: Icons.trending_up_rounded,
-          iconColor: const Color(0xFF6366F1),
+          iconColor: AppTheme.primaryLight,
           onTap: _openProgressPage,
         ),
         StudentMenuTile(
           title: 'Checklist',
           subtitle: 'Manage thesis checklist items',
           icon: Icons.checklist_rounded,
-          iconColor: const Color(0xFF22C55E),
+          iconColor: AppTheme.accepted,
           onTap: _openProgressPage,
         ),
         StudentMenuTile(
           title: 'Meetings',
           subtitle: '${student.meetingCount} sessions recorded',
           icon: Icons.video_call_rounded,
-          iconColor: const Color(0xFF0EA5E9),
+          iconColor: AppTheme.info,
           onTap: () => _showSnackBar(context, 'Meetings feature coming soon'),
         ),
         StudentMenuTile(
           title: 'Documents',
           subtitle: 'Uploaded files & feedback',
           icon: Icons.folder_rounded,
-          iconColor: const Color(0xFFF59E0B),
+          iconColor: AppTheme.pending,
           onTap: _openDocumentsPage,
         ),
         StudentMenuTile(
           title: 'Berita Acara',
           subtitle: 'Generate & approve supervision minutes',
           icon: Icons.assignment_turned_in_rounded,
-          iconColor: const Color(0xFF4338CA),
+          iconColor: AppTheme.primary,
           onTap: _openBeritaAcaraPage,
         ),
         StudentMenuTile(
           title: 'Export Riwayat (PDF / Excel)',
           subtitle: 'Download meetings, versions & progress summary',
           icon: Icons.file_download_outlined,
-          iconColor: const Color(0xFF0EA5E9),
+          iconColor: AppTheme.info,
           onTap: () {
             final bimbinganId = student.bimbinganIdAsInt;
             if (bimbinganId == null) {
@@ -579,19 +575,19 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           title: 'Email',
           subtitle: student.email,
           icon: Icons.email_rounded,
-          iconColor: const Color(0xFF6366F1),
+          iconColor: AppTheme.primaryLight,
           onTap: () => _showSnackBar(context, 'Opening email...'),
           trailing: const Icon(Icons.open_in_new_rounded,
-              size: 14, color: Colors.grey),
+              size: 14, color: AppTheme.textMuted),
         ),
         StudentMenuTile(
           title: 'Phone',
           subtitle: student.phone,
           icon: Icons.phone_rounded,
-          iconColor: const Color(0xFF22C55E),
+          iconColor: AppTheme.accepted,
           onTap: () => _showSnackBar(context, 'Calling ${student.name}...'),
           trailing: const Icon(Icons.call_rounded,
-              size: 16, color: Color(0xFF22C55E)),
+              size: 16, color: AppTheme.accepted),
         ),
       ],
     );
@@ -602,9 +598,9 @@ class _StudentDetailPageState extends State<StudentDetailPage>
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF1F1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFFFCCCC), width: 1),
+        color: AppTheme.declinedBg,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.declinedBorder, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -612,13 +608,13 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           Row(
             children: [
               const Icon(Icons.warning_amber_rounded,
-                  color: Color(0xFFEF4444), size: 18),
+                  color: AppTheme.declined, size: 18),
               const SizedBox(width: 7),
               Text(
                 'Danger Zone',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFFEF4444),
+                      color: AppTheme.declined,
                       fontSize: 14,
                     ),
               ),
@@ -629,7 +625,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
             'Ending counseling will permanently remove this student from your active advisee list. This action cannot be undone.',
             style: TextStyle(
               fontSize: 12,
-              color: const Color(0xFFEF4444).withOpacity(0.75),
+              color: AppTheme.declined.withValues(alpha: 0.75),
               height: 1.5,
             ),
           ),
@@ -641,11 +637,11 @@ class _StudentDetailPageState extends State<StudentDetailPage>
               icon: const Icon(Icons.link_off_rounded, size: 16),
               label: const Text('End Counseling'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFFEF4444),
-                side: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
+                foregroundColor: AppTheme.declined,
+                side: const BorderSide(color: AppTheme.declined, width: 1.5),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
               ),
             ),
@@ -659,7 +655,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       builder: (ctx) => Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
@@ -670,8 +666,8 @@ class _StudentDetailPageState extends State<StudentDetailPage>
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
+                color: AppTheme.cardBorder,
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
             ),
             const SizedBox(height: 16),
@@ -709,7 +705,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
         title: const Text('End Counseling?',
             style: TextStyle(fontWeight: FontWeight.w700)),
         content: Text(
@@ -725,19 +721,12 @@ class _StudentDetailPageState extends State<StudentDetailPage>
             onPressed: () {
               Navigator.pop(ctx);
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content:
-                      Text('Counseling with ${student.name} has been ended.'),
-                  backgroundColor: const Color(0xFFEF4444),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
+              AppSnackBars.error(
+                context,
+                'Counseling with ${student.name} has been ended.',
               );
             },
-            style:
-                TextButton.styleFrom(foregroundColor: const Color(0xFFEF4444)),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.declined),
             child: const Text('End Counseling',
                 style: TextStyle(fontWeight: FontWeight.w600)),
           ),
@@ -747,13 +736,6 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   }
 
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    AppSnackBars.info(context, message);
   }
 }

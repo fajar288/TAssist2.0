@@ -7,6 +7,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../model/berita_acara_model.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_empty_state_widget.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../../../widgets/signature_pad_widget.dart';
 import '../data/berita_acara_service.dart';
 
@@ -101,11 +105,9 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
 
   Future<void> _generateDraft() async {
     if (_periodeMulai.isAfter(_periodeSelesai)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tanggal mulai periode tidak boleh melebihi tanggal selesai.'),
-          backgroundColor: AppTheme.declined,
-        ),
+      AppSnackBars.error(
+        context,
+        'Tanggal mulai periode tidak boleh melebihi tanggal selesai.',
       );
       return;
     }
@@ -120,22 +122,15 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Berita Acara ${created.nomor} berhasil dibuat (Draft).'),
-            backgroundColor: AppTheme.accepted,
-          ),
+        AppSnackBars.success(
+          context,
+          'Berita Acara ${created.nomor} berhasil dibuat (Draft).',
         );
         _loadData();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal membuat Berita Acara: $e'),
-            backgroundColor: AppTheme.declined,
-          ),
-        );
+        AppSnackBars.error(context, 'Gagal membuat Berita Acara: $e');
       }
     } finally {
       if (mounted) setState(() => _isGenerating = false);
@@ -151,11 +146,9 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
         ba: ba,
         onApproved: (updatedBa) {
           Navigator.pop(ctx);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Berita Acara ${updatedBa.nomor} berhasil disetujui!'),
-              backgroundColor: AppTheme.accepted,
-            ),
+          AppSnackBars.success(
+            context,
+            'Berita Acara ${updatedBa.nomor} berhasil disetujui!',
           );
           _loadData();
         },
@@ -174,12 +167,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal mengunduh Berita Acara: $e'),
-            backgroundColor: AppTheme.declined,
-          ),
-        );
+        AppSnackBars.error(context, 'Gagal mengunduh Berita Acara: $e');
       }
     }
   }
@@ -269,7 +257,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
       elevation: 0,
       color: AppTheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         side: const BorderSide(color: AppTheme.cardBorder),
       ),
       child: Padding(
@@ -371,7 +359,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                   backgroundColor: AppTheme.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                 ),
                 icon: _isGenerating
                     ? const SizedBox(
@@ -394,57 +382,30 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
 
   Widget _buildDocumentList() {
     if (_isLoading) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(32),
-          child: CircularProgressIndicator(color: AppTheme.primary),
-        ),
-      );
+      return const AppLoadingWidget();
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Text(_errorMessage!, style: const TextStyle(color: AppTheme.declined)),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: _loadData,
-                child: const Text('Coba Lagi'),
-              ),
-            ],
-          ),
-        ),
+      return AppErrorWidget(
+        message: _errorMessage!,
+        onRetry: _loadData,
+        compact: true,
       );
     }
 
     if (_items.isEmpty) {
       return Container(
-        padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           border: Border.all(color: AppTheme.cardBorder),
         ),
-        child: const Center(
-          child: Column(
-            children: [
-              Icon(Icons.inventory_2_outlined, size: 40, color: AppTheme.textMuted),
-              SizedBox(height: 8),
-              Text(
-                'Belum ada Berita Acara',
-                style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Gunakan formulir di atas untuk men-generate dokumen Berita Acara pertama.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-              ),
-            ],
-          ),
+        child: const AppEmptyStateWidget(
+          icon: Icons.inventory_2_outlined,
+          title: 'Belum ada Berita Acara',
+          subtitle:
+              'Gunakan formulir di atas untuk men-generate dokumen Berita Acara pertama.',
+          compact: true,
         ),
       );
     }
@@ -460,7 +421,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
           elevation: 0,
           color: AppTheme.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             side: const BorderSide(color: AppTheme.cardBorder),
           ),
           child: Padding(
@@ -620,7 +581,7 @@ class _ApprovalModalState extends State<_ApprovalModal> {
       ),
       decoration: const BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -634,7 +595,7 @@ class _ApprovalModalState extends State<_ApprovalModal> {
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: AppTheme.cardBorder,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
               ),
             ),
@@ -706,7 +667,7 @@ class _ApprovalModalState extends State<_ApprovalModal> {
                 decoration: InputDecoration(
                   labelText: 'PIN Otorisasi (atau Password Akun Dosen)',
                   hintText: 'Masukkan 6 digit PIN',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                   prefixIcon: const Icon(Icons.lock_outline),
                 ),
               ),
@@ -717,7 +678,7 @@ class _ApprovalModalState extends State<_ApprovalModal> {
                   backgroundColor: AppTheme.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                 ),
                 child: _isSubmitting
                     ? const SizedBox(

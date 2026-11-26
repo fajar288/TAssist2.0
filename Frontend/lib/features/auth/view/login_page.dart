@@ -7,6 +7,8 @@ import '../../../core/google_web_button/google_button.dart' as google_web_button
 
 import 'package:flutter/material.dart';
 import '../../../app/app.dart';
+import '../../../theme/app_theme.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../data/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,12 +50,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal menyiapkan Google Sign-In: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      AppSnackBars.error(context, 'Gagal menyiapkan Google Sign-In: $e');
     }
   }
 
@@ -72,11 +69,9 @@ class _LoginPageState extends State<LoginPage> {
     if (idToken == null || idToken.isEmpty) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('ID Token Google kosong. Cek konfigurasi Google Cloud.'),
-          backgroundColor: Colors.red,
-        ),
+      AppSnackBars.error(
+        context,
+        'ID Token Google kosong. Cek konfigurasi Google Cloud.',
       );
       return;
     }
@@ -87,12 +82,7 @@ class _LoginPageState extends State<LoginPage> {
   void _handleGoogleWebAuthError(Object error) {
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Login Google gagal: $error'),
-        backgroundColor: Colors.red,
-      ),
-    );
+    AppSnackBars.error(context, 'Login Google gagal: $error');
   }
 
   Future<void> _continueGoogleLoginWithIdToken(String idToken) async {
@@ -131,20 +121,10 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Role pengguna tidak dikenali.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        AppSnackBars.error(context, 'Role pengguna tidak dikenali.');
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: Colors.red,
-        ),
-      );
+      AppSnackBars.error(context, result.message);
     }
   }
 
@@ -177,21 +157,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (result.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Login berhasil.'),
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).size.height - 140,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      AppSnackBars.success(context, 'Login berhasil.');
 
       if (result.role == 'dosen') {
         Navigator.pushReplacementNamed(
@@ -204,29 +170,15 @@ class _LoginPageState extends State<LoginPage> {
           TAssistApp.dashboardRoute,
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Role pengguna tidak dikenali.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        AppSnackBars.error(context, 'Role pengguna tidak dikenali.');
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: Colors.red,
-        ),
-      );
+      AppSnackBars.error(context, result.message);
     }
   }
 
   void _showForgotPasswordInfo() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Fitur forgot password belum tersedia.'),
-      ),
-    );
+    AppSnackBars.info(context, 'Fitur forgot password belum tersedia.');
   }
 
   void _goToLearningPage() {
@@ -257,18 +209,18 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryBlue = Color(0xFF0D47A1);
+    const primaryBlue = AppTheme.primary;
     final size = MediaQuery.of(context).size;
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3FAFF),
+      backgroundColor: AppTheme.background,
       body: SafeArea(
         child: Stack(
           children: [
             const Positioned.fill(
               child: ColoredBox(
-                color: Color(0xFFEAF6FF),
+                color: AppTheme.primaryGhost,
               ),
             ),
 
@@ -294,11 +246,11 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(32),
+                    top: Radius.circular(AppTheme.radiusXl),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.10),
+                      color: Colors.black.withValues(alpha: 0.10),
                       blurRadius: 24,
                       offset: const Offset(0, -6),
                     ),
@@ -391,7 +343,7 @@ class _LoginPageState extends State<LoginPage> {
                                 horizontal: 4,
                                 vertical: 4,
                               ),
-                              foregroundColor: const Color(0xFF2F49D1),
+                              foregroundColor: AppTheme.primary,
                             ),
                             child: const Text(
                               'Forgot password?',
@@ -415,9 +367,9 @@ class _LoginPageState extends State<LoginPage> {
                               foregroundColor: Colors.white,
                               elevation: 0,
                               disabledBackgroundColor:
-                                  primaryBlue.withOpacity(0.65),
+                                  primaryBlue.withValues(alpha: 0.65),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
+                                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                               ),
                             ),
                             child: _isLoading
@@ -454,13 +406,13 @@ class _LoginPageState extends State<LoginPage> {
                                 height: 56,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(18),
+                                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                                   border: Border.all(
-                                    color: const Color(0xFFE0E0E0),
+                                    color: AppTheme.cardBorder,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.035),
+                                      color: Colors.black.withValues(alpha: 0.035),
                                       blurRadius: 14,
                                       offset: const Offset(0, 6),
                                     ),
@@ -468,7 +420,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 child: Center(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(18),
+                                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                                     child: Transform.scale(
                                       scaleX: 1.0,
                                       scaleY: 1.16,
@@ -563,7 +515,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Icon(
           Icons.school_outlined,
           size: size,
-          color: const Color(0xFF2F49D1).withOpacity(opacity),
+          color: AppTheme.primary.withValues(alpha: opacity),
         ),
       ),
     );
@@ -578,14 +530,14 @@ class _LoginPageState extends State<LoginPage> {
           vertical: 20,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFF4F8FC).withOpacity(0.92),
-          borderRadius: BorderRadius.circular(26),
+          color: AppTheme.surface.withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(AppTheme.radiusXl),
           border: Border.all(
-            color: const Color(0xFFBAC7F2),
+            color: AppTheme.cardBorder,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
@@ -597,7 +549,7 @@ class _LoginPageState extends State<LoginPage> {
             Text(
               'TAssist',
               style: TextStyle(
-                color: Color(0xFF2F49D1),
+                color: AppTheme.primary,
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.2,
@@ -608,7 +560,7 @@ class _LoginPageState extends State<LoginPage> {
               'Sistem Bimbingan Tugas Akhir',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xFF6D7A90),
+                color: AppTheme.textSecondary,
                 fontSize: 12.5,
                 fontWeight: FontWeight.w500,
               ),
@@ -626,7 +578,7 @@ class _LoginPageState extends State<LoginPage> {
         Text(
           'Sign In',
           style: TextStyle(
-            color: Color(0xFF172033),
+            color: AppTheme.textPrimary,
             fontSize: 26,
             fontWeight: FontWeight.w900,
           ),
@@ -635,7 +587,7 @@ class _LoginPageState extends State<LoginPage> {
         Text(
           'Masuk untuk melanjutkan bimbingan TA-mu.',
           style: TextStyle(
-            color: Color(0xFF7A8496),
+            color: AppTheme.textSecondary,
             fontSize: 14.5,
             fontWeight: FontWeight.w500,
           ),
@@ -649,7 +601,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         const Expanded(
           child: Divider(
-            color: Color(0xFFE6E8EE),
+            color: AppTheme.cardBorder,
             thickness: 1,
           ),
         ),
@@ -658,7 +610,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(
             text,
             style: const TextStyle(
-              color: Color(0xFF8A94A6),
+              color: AppTheme.textMuted,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
@@ -666,7 +618,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         const Expanded(
           child: Divider(
-            color: Color(0xFFE6E8EE),
+            color: AppTheme.cardBorder,
             thickness: 1,
           ),
         ),
@@ -696,7 +648,7 @@ class _LoginPageState extends State<LoginPage> {
       validator: validator,
       onFieldSubmitted: onFieldSubmitted,
       style: const TextStyle(
-        color: Color(0xFF172033),
+        color: AppTheme.textPrimary,
         fontSize: 15,
         fontWeight: FontWeight.w600,
       ),
@@ -704,7 +656,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: labelText,
         hintText: hintText,
         filled: true,
-        fillColor: const Color(0xFFFBFDFF),
+        fillColor: AppTheme.surfaceVariant,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 18,
@@ -713,44 +665,44 @@ class _LoginPageState extends State<LoginPage> {
             ? null
             : Icon(
                 prefixIcon,
-                color: const Color(0xFF7B8AA5),
+                color: AppTheme.textSecondary,
               ),
         suffixIcon: suffixIcon,
         labelStyle: const TextStyle(
-          color: Color(0xFF7A8496),
+          color: AppTheme.textSecondary,
           fontWeight: FontWeight.w600,
         ),
         floatingLabelStyle: const TextStyle(
-          color: Color(0xFF2F49D1),
+          color: AppTheme.primary,
           fontWeight: FontWeight.w700,
         ),
         hintStyle: const TextStyle(
-          color: Color(0xFFA3ACBA),
+          color: AppTheme.textMuted,
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Color(0xFFE0E6F0)),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.cardBorder),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Color(0xFFE0E6F0)),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.cardBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           borderSide: const BorderSide(
-            color: Color(0xFF2F49D1),
+            color: AppTheme.primary,
             width: 1.4,
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Colors.red),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.declined),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Colors.red),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          borderSide: const BorderSide(color: AppTheme.declined),
         ),
       ),
     );
@@ -763,23 +715,23 @@ class _LoginPageState extends State<LoginPage> {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
+      color: AppTheme.surface,
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         child: Container(
           width: double.infinity,
           height: 56,
           padding: const EdgeInsets.symmetric(horizontal: 18),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             border: Border.all(
-              color: const Color(0xFFE0E0E0),
+              color: AppTheme.cardBorder,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.035),
+                color: Colors.black.withValues(alpha: 0.035),
                 blurRadius: 14,
                 offset: const Offset(0, 6),
               ),

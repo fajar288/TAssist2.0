@@ -8,12 +8,19 @@ class AppTheme {
   // ─── Core Palette ────────────────────────────────────────────────────────────
   static const Color primary       = Color(0xFF4338CA); // Deep Indigo
   static const Color primaryLight  = Color(0xFF6366F1); // Indigo-500
+  static const Color primaryDark   = Color(0xFF312E81); // Indigo-900
   static const Color primaryGhost  = Color(0xFFEEF2FF); // Indigo-50
   static const Color background    = Color(0xFFF1F5F9); // Slate-100
   static const Color surface       = Color(0xFFFFFFFF);
   static const Color textPrimary   = Color(0xFF1E1B4B); // Indigo-950
   static const Color textSecondary = Color(0xFF64748B); // Slate-500
   static const Color textMuted     = Color(0xFF94A3B8); // Slate-400
+
+  // ─── Radius Scale (S8.7) ─────────────────────────────────────────────────────
+  static const double radiusSm = 8.0;  // chips, badges, tags
+  static const double radiusMd = 14.0; // cards, buttons, inputs
+  static const double radiusLg = 20.0; // large cards, modals
+  static const double radiusXl = 28.0; // dialogs, sheets
 
   // ─── Semantic Colors ─────────────────────────────────────────────────────────
   static const Color pending     = Color(0xFFF59E0B); // Amber-400
@@ -101,13 +108,13 @@ class AppTheme {
   // ─── Card Shadow ─────────────────────────────────────────────────────────────
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: const Color(0xFF4338CA).withOpacity(0.08),
+          color: primary.withValues(alpha: 0.08),
           blurRadius: 24,
           offset: const Offset(0, 10),
           spreadRadius: 0,
         ),
         BoxShadow(
-          color: Colors.black.withOpacity(0.04),
+          color: Colors.black.withValues(alpha: 0.04),
           blurRadius: 6,
           offset: const Offset(0, 2),
         ),
@@ -115,7 +122,7 @@ class AppTheme {
 
   static List<BoxShadow> get subtleShadow => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.06),
+          color: Colors.black.withValues(alpha: 0.06),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -123,7 +130,7 @@ class AppTheme {
 
   static List<BoxShadow> get avatarGlow => [
         BoxShadow(
-          color: const Color(0xFF4338CA).withOpacity(0.25),
+          color: primary.withValues(alpha: 0.25),
           blurRadius: 20,
           spreadRadius: 2,
           offset: const Offset(0, 4),
@@ -131,7 +138,7 @@ class AppTheme {
       ];
 
   // ─── Decoration Helpers ───────────────────────────────────────────────────────
-  static BoxDecoration cardDecoration({double radius = 20}) => BoxDecoration(
+  static BoxDecoration cardDecoration({double radius = radiusLg}) => BoxDecoration(
         color: surface,
         borderRadius: BorderRadius.circular(radius),
         boxShadow: cardShadow,
@@ -308,7 +315,7 @@ class AppTheme {
           elevation: 0,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(radiusMd),
           ),
           textStyle: GoogleFonts.poppins(
             fontSize: 15,

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
 import '../features/analytics/model/risk_snapshot_model.dart';
 import '../features/analytics/widgets/risk_badge_widget.dart';
 
@@ -20,13 +21,13 @@ class StudentCard extends StatelessWidget {
   Color _statusColor(BuildContext context) {
     switch (student.status) {
       case 'active':
-        return const Color(0xFF22C55E);
+        return AppTheme.accepted;
       case 'warning':
-        return const Color(0xFFF59E0B);
+        return AppTheme.pending;
       case 'completed':
-        return const Color(0xFF6366F1);
+        return AppTheme.primaryLight;
       default:
-        return Colors.grey;
+        return AppTheme.textMuted;
     }
   }
 
@@ -59,13 +60,13 @@ class StudentCard extends StatelessWidget {
   Color _avatarColor() {
     switch (student.status) {
       case 'active':
-        return const Color(0xFF6366F1);
+        return AppTheme.primaryLight;
       case 'warning':
-        return const Color(0xFFF59E0B);
+        return AppTheme.pending;
       case 'completed':
-        return const Color(0xFF22C55E);
+        return AppTheme.accepted;
       default:
-        return const Color(0xFF64748B);
+        return AppTheme.textSecondary;
     }
   }
 
@@ -79,11 +80,11 @@ class StudentCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: Ink(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -206,8 +207,8 @@ class StudentCard extends StatelessWidget {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: _avatarColor().withOpacity(0.15),
-            borderRadius: BorderRadius.circular(14),
+            color: _avatarColor().withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
           child: Center(
             child: Text(
@@ -229,7 +230,7 @@ class StudentCard extends StatelessWidget {
               width: 12,
               height: 12,
               decoration: BoxDecoration(
-                color: const Color(0xFFF59E0B),
+                color: AppTheme.pending,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
               ),
@@ -243,8 +244,8 @@ class StudentCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
+        color: statusColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -266,7 +267,7 @@ class StudentCard extends StatelessWidget {
 
   Widget _buildProgressBar(BuildContext context, Color color) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       child: LinearProgressIndicator(
         value: student.progress,
         backgroundColor: color.withOpacity(0.12),

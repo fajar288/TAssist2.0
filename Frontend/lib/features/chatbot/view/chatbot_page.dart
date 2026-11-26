@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../../model/chatbot_model.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_loading_widget.dart';
 import '../data/chatbot_service.dart';
 import '../widget/chat_bubble_widget.dart';
 import '../widget/typing_indicator_widget.dart';
@@ -365,7 +366,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
   Widget _buildChatArea() {
     if (_isLoadingHistory) {
-      return const Center(child: CircularProgressIndicator(color: AppTheme.primary));
+      return const AppLoadingWidget();
     }
 
     if (_messages.isEmpty && !_isSending) {
@@ -377,12 +378,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 border: Border.all(color: AppTheme.cardBorder),
-                boxShadow: const [
-                  BoxShadow(color: Color(0x06000000), blurRadius: 10, offset: Offset(0, 4)),
-                ],
+                boxShadow: AppTheme.subtleShadow,
               ),
               child: Column(
                 children: [
@@ -390,7 +389,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: AppTheme.primaryGhost,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: const Icon(Icons.school_rounded, color: AppTheme.primary, size: 36),
                   ),
@@ -426,13 +425,13 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: InkWell(
                   onTap: () => _sendMessage(prompt),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppTheme.surface,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       border: Border.all(color: AppTheme.cardBorder),
                     ),
                     child: Row(
@@ -521,7 +520,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
               child: Container(
                 decoration: BoxDecoration(
                   color: AppTheme.surfaceVariant,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   border: Border.all(color: AppTheme.cardBorder),
                 ),
                 child: TextField(

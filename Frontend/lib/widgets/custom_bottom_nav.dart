@@ -1,6 +1,7 @@
 // lib/widgets/custom_bottom_nav.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 // ─── Wrapper ──────────────────────────────────────────────────────────────────
 // Gunakan DosenNavbarWrapper sebagai body Scaffold (bukan bottomNavigationBar)
@@ -129,13 +130,13 @@ class _CustomBottomNavState extends State<CustomBottomNav>
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(24),
+                color: Colors.white.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.2),
                   width: 1.5,
@@ -181,8 +182,8 @@ class _NavItemWidget extends StatelessWidget {
   final Animation<double> labelAnimation;
 
   // Warna identik dengan NavbarShell
-  static const Color _activeColor   = Color(0xFF0D4AA3);
-  static const Color _inactiveColor = Color(0xFF2D3238);
+  static const Color _activeColor   = AppTheme.primary;
+  static const Color _inactiveColor = AppTheme.textPrimary;
 
   const _NavItemWidget({
     required this.item,
@@ -206,7 +207,7 @@ class _NavItemWidget extends StatelessWidget {
               height: isActive ? 60  : 50,
               decoration: BoxDecoration(
                 color: isActive ? _activeColor : Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 boxShadow: isActive
                     ? [
                         BoxShadow(

@@ -5,6 +5,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../model/berita_acara_model.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_empty_state_widget.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
+import '../../../widgets/app_snackbars.dart';
 import '../data/berita_acara_service.dart';
 
 class BeritaAcaraListPage extends StatefulWidget {
@@ -68,12 +72,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal mengunduh Berita Acara: $e'),
-            backgroundColor: AppTheme.declined,
-          ),
-        );
+        AppSnackBars.error(context, 'Gagal mengunduh Berita Acara: $e');
       }
     }
   }
@@ -87,7 +86,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
         padding: const EdgeInsets.all(24),
         decoration: const BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -100,7 +99,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: AppTheme.cardBorder,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
               ),
             ),
@@ -161,7 +160,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                 backgroundColor: AppTheme.primary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
               ),
               icon: const Icon(Icons.download, size: 20),
               label: const Text('Unduh File Dokumen PDF', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -256,68 +255,22 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: AppTheme.primary));
+      return const AppLoadingWidget();
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: AppTheme.declined),
-              const SizedBox(height: 12),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppTheme.textSecondary),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _loadData,
-                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
-                child: const Text('Coba Lagi', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-        ),
+      return AppErrorWidget(
+        message: _errorMessage!,
+        onRetry: _loadData,
       );
     }
 
     if (_items.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: AppTheme.primaryGhost,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.description_outlined, size: 48, color: AppTheme.primary),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Belum Ada Berita Acara',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Berita Acara resmi akan diterbitkan oleh dosen pembimbing setelah sesi bimbingan selesai dievaluasi.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
-              ),
-            ],
-          ),
-        ),
+      return const AppEmptyStateWidget(
+        icon: Icons.description_outlined,
+        title: 'Belum Ada Berita Acara',
+        subtitle:
+            'Berita Acara resmi akan diterbitkan oleh dosen pembimbing setelah sesi bimbingan selesai dievaluasi.',
       );
     }
 
@@ -331,12 +284,12 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
           elevation: 0,
           color: AppTheme.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             side: const BorderSide(color: AppTheme.cardBorder),
           ),
           child: InkWell(
             onTap: () => _showDetailSheet(ba),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(

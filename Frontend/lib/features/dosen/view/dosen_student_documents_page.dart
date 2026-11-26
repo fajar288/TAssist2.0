@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tassist/features/dosen/data/dosen_service.dart';
 import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_empty_state_widget.dart';
+import 'package:tassist/widgets/app_error_widget.dart';
+import 'package:tassist/widgets/app_loading_widget.dart';
+import 'package:tassist/widgets/app_snackbars.dart';
 import '../../anotasi/view/annotation_viewer_page.dart';
 
 class DosenStudentDocumentsPage extends StatefulWidget {
@@ -115,15 +120,15 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
   Color _statusColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'draft':
-        return Colors.grey;
+        return AppTheme.textMuted;
       case 'diajukan':
-        return Colors.orange;
+        return AppTheme.pending;
       case 'direvisi':
-        return Colors.redAccent;
+        return AppTheme.declined;
       case 'disetujui':
-        return Colors.green;
+        return AppTheme.accepted;
       default:
-        return Colors.grey;
+        return AppTheme.textMuted;
     }
   }
 
@@ -167,7 +172,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
           builder: (context, setDialogState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
               ),
               title: const Text('Give Feedback'),
               content: Form(
@@ -319,23 +324,19 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
           height: MediaQuery.of(sheetContext).size.height * 0.76,
           padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
           decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            color: AppTheme.surface,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
           ),
           child: FutureBuilder<List<Map<String, dynamic>>>(
             future: future,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const AppLoadingWidget();
               }
 
               if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    snapshot.error.toString().replaceFirst('Exception: ', ''),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.redAccent),
-                  ),
+                return AppErrorWidget(
+                  message: snapshot.error.toString().replaceFirst('Exception: ', ''),
                 );
               }
 
@@ -349,8 +350,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                       width: 42,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
+                        color: AppTheme.cardBorder,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
                   ),
@@ -358,7 +359,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   Text(
                     document['judul_dokumen']?.toString() ?? '-',
                     style: const TextStyle(
-                      color: Color(0xFF111827),
+                      color: AppTheme.textPrimary,
                       fontSize: 21,
                       fontWeight: FontWeight.w900,
                     ),
@@ -411,22 +412,22 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        color: AppTheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.cardBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.history_rounded, color: Color(0xFF0D4AA3)),
+              const Icon(Icons.history_rounded, color: AppTheme.primary),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Version ${version['nomor_versi'] ?? '-'}',
                   style: const TextStyle(
-                    color: Color(0xFF111827),
+                    color: AppTheme.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w900,
                   ),
@@ -435,8 +436,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                 decoration: BoxDecoration(
-                  color: _statusColor(status).withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(30),
+                  color: _statusColor(status).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                 ),
                 child: Text(
                   _formatStatus(status),
@@ -471,7 +472,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
             const Text(
               'Existing Feedback',
               style: TextStyle(
-                color: Color(0xFF111827),
+                color: AppTheme.textPrimary,
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
               ),
@@ -502,10 +503,10 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   icon: const Icon(Icons.edit_note_rounded, size: 18),
                   label: const Text('Anotasi PDF'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4338CA),
+                    backgroundColor: AppTheme.primary,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                   ),
                 ),
@@ -518,7 +519,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   label: const Text('Feedback'),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(13),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                   ),
                 ),
@@ -539,8 +540,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(11),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),
       child: Text(
         page == null || page.isEmpty ? comment : 'Page $page: $comment',
@@ -565,20 +566,14 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
 
     return InkWell(
       onTap: () => _showVersionsSheet(document),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: Colors.black.withOpacity(0.04)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.045),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          border: Border.all(color: AppTheme.cardBorder),
+          boxShadow: AppTheme.subtleShadow,
         ),
         child: Row(
           children: [
@@ -586,12 +581,12 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
               width: 54,
               height: 54,
               decoration: BoxDecoration(
-                color: const Color(0xFF0D47A1).withOpacity(0.09),
-                borderRadius: BorderRadius.circular(15),
+                color: AppTheme.primaryGhost,
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               child: Icon(
                 _documentIcon(extension),
-                color: const Color(0xFF0D47A1),
+                color: AppTheme.primary,
                 size: 31,
               ),
             ),
@@ -605,7 +600,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Color(0xFF111827),
+                      color: AppTheme.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.w900,
                     ),
@@ -648,77 +643,39 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: const [
-        SizedBox(height: 180),
-        Center(
-          child: Text(
-            'No documents uploaded yet.',
-            style: TextStyle(
-              color: Colors.black54,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+        SizedBox(height: 80),
+        AppEmptyStateWidget(
+          icon: Icons.folder_open_rounded,
+          title: 'No documents uploaded yet.',
         ),
       ],
     );
   }
 
   Widget _buildErrorState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.error_outline_rounded,
-              color: Colors.redAccent,
-              size: 46,
-            ),
-            const SizedBox(height: 14),
-            const Text(
-              'Failed to load documents',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFF111827),
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _errorMessage ?? '-',
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.black54, fontSize: 13),
-            ),
-            const SizedBox(height: 18),
-            ElevatedButton(
-              onPressed: _loadDocuments,
-              child: const Text('Try Again'),
-            ),
-          ],
-        ),
-      ),
+    return AppErrorWidget(
+      title: 'Failed to load documents',
+      message: _errorMessage ?? '-',
+      onRetry: _loadDocuments,
+      retryLabel: 'Try Again',
     );
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    if (isError) {
+      AppSnackBars.error(context, message);
+    } else {
+      AppSnackBars.success(context, message);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF0D47A1),
+        backgroundColor: AppTheme.primary,
         foregroundColor: Colors.white,
         title: const Text(
           'Student Documents',
@@ -731,8 +688,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
             decoration: const BoxDecoration(
-              color: Color(0xFF0D47A1),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(26)),
+              color: AppTheme.primary,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(AppTheme.radiusXl)),
             ),
             child: Row(
               children: [
@@ -781,7 +738,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
           ),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const AppLoadingWidget()
                 : _errorMessage != null
                     ? _buildErrorState()
                     : RefreshIndicator(

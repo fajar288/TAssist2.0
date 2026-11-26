@@ -36,10 +36,10 @@ class _TypingIndicatorWidgetState extends State<TypingIndicatorWidget>
       margin: const EdgeInsets.only(left: 16, right: 80, top: 4, bottom: 4),
       decoration: BoxDecoration(
         color: AppTheme.chatAssistantBubble,
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(16),
-          topRight: const Radius.circular(16),
-          bottomRight: const Radius.circular(16),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppTheme.radiusMd),
+          topRight: Radius.circular(AppTheme.radiusMd),
+          bottomRight: Radius.circular(AppTheme.radiusMd),
           bottomLeft: Radius.zero,
         ),
         border: Border.all(color: AppTheme.cardBorder, width: 0.8),
@@ -71,7 +71,7 @@ class _TypingIndicatorWidgetState extends State<TypingIndicatorWidget>
                     width: 5,
                     height: 5,
                     decoration: BoxDecoration(
-                      color: AppTheme.primary.withOpacity(opacity),
+                      color: AppTheme.primary.withValues(alpha: opacity),
                       shape: BoxShape.circle,
                     ),
                   );

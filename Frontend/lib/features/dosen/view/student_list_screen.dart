@@ -4,6 +4,10 @@ import 'package:tassist/features/analytics/data/analytics_service.dart';
 import 'package:tassist/features/analytics/model/risk_snapshot_model.dart';
 import 'package:tassist/features/dosen/data/dosen_service.dart';
 import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_empty_state_widget.dart';
+import 'package:tassist/widgets/app_error_widget.dart';
+import 'package:tassist/widgets/app_skeleton_loader.dart';
 import 'package:tassist/widgets/custom_bottom_nav.dart';
 import 'package:tassist/widgets/student_card.dart';
 
@@ -34,10 +38,6 @@ class _StudentListPageState extends State<StudentListPage>
   late Animation<double> _headerFadeAnim;
 
   final List<String> _filters = ['All', 'Active', 'Warning', 'Completed'];
-
-  static const Color _navBlue = Color(0xFF0D4AA3);
-  static const Color _navBlueDark = Color(0xFF082E6B);
-  static const Color _navBlueLight = Color(0xFF1A65C8);
 
   @override
   void initState() {
@@ -134,7 +134,7 @@ class _StudentListPageState extends State<StudentListPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: AppTheme.background,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -148,9 +148,16 @@ class _StudentListPageState extends State<StudentListPage>
           const SizedBox(height: 8),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const SingleChildScrollView(
+                    child: AppSkeletonLoader.card(count: 4),
+                  )
                 : _errorMessage != null
-                    ? _buildErrorState()
+                    ? AppErrorWidget(
+                        title: 'Failed to load students',
+                        message: _errorMessage ?? '-',
+                        onRetry: _loadStudents,
+                        retryLabel: 'Try Again',
+                      )
                     : RefreshIndicator(
                         onRefresh: _loadStudents,
                         child: _filteredStudents.isEmpty
@@ -206,7 +213,7 @@ class _StudentListPageState extends State<StudentListPage>
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [_navBlueDark, _navBlue, _navBlueLight],
+          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -248,10 +255,10 @@ class _StudentListPageState extends State<StudentListPage>
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(14),
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
@@ -266,11 +273,11 @@ class _StudentListPageState extends State<StudentListPage>
               const SizedBox(height: 20),
               Row(
                 children: [
-                  _headerStatChip('$active Active', const Color(0xFF22C55E)),
+                  _headerStatChip('$active Active', AppTheme.accepted),
                   const SizedBox(width: 10),
-                  _headerStatChip('$warning Warning', const Color(0xFFF59E0B)),
+                  _headerStatChip('$warning Warning', AppTheme.pending),
                   const SizedBox(width: 10),
-                  _headerStatChip('$completed Done', const Color(0xFF6366F1)),
+                  _headerStatChip('$completed Done', AppTheme.primaryLight),
                 ],
               ),
             ],
@@ -284,9 +291,9 @@ class _StudentListPageState extends State<StudentListPage>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         children: [
@@ -314,15 +321,9 @@ class _StudentListPageState extends State<StudentListPage>
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          boxShadow: AppTheme.subtleShadow,
         ),
         child: TextField(
           controller: _searchController,
@@ -376,9 +377,9 @@ class _StudentListPageState extends State<StudentListPage>
               padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                    ? AppTheme.primary
+                    : AppTheme.surface,
+                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 boxShadow: [
                   BoxShadow(
                     color: isSelected
@@ -416,9 +417,9 @@ class _StudentListPageState extends State<StudentListPage>
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Colors.white.withOpacity(0.25)
-                          : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8),
+                          ? Colors.white.withValues(alpha: 0.25)
+                          : AppTheme.surfaceVariant,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     child: Text(
                       '$count',
@@ -447,91 +448,18 @@ class _StudentListPageState extends State<StudentListPage>
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
-        const SizedBox(height: 160),
-        Center(
-          child: Column(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.search_off_rounded,
-                  size: 36,
-                  color: Colors.grey.shade400,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'No students found',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey.shade600,
-                    ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Try adjusting your search or filter',
-                style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
-              ),
-              const SizedBox(height: 24),
-              TextButton.icon(
-                onPressed: () {
-                  _searchController.clear();
-                  _onFilterChanged('All');
-                },
-                icon: const Icon(Icons.refresh_rounded, size: 16),
-                label: const Text('Reset filters'),
-              ),
-            ],
-          ),
+        const SizedBox(height: 80),
+        AppEmptyStateWidget(
+          icon: Icons.search_off_rounded,
+          title: 'No students found',
+          subtitle: 'Try adjusting your search or filter',
+          actionLabel: 'Reset filters',
+          onAction: () {
+            _searchController.clear();
+            _onFilterChanged('All');
+          },
         ),
       ],
-    );
-  }
-
-  Widget _buildErrorState() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.error_outline_rounded,
-              color: Colors.redAccent,
-              size: 46,
-            ),
-            const SizedBox(height: 14),
-            const Text(
-              'Failed to load students',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFF2D3238),
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _errorMessage ?? '-',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.black54,
-                fontSize: 13,
-              ),
-            ),
-            const SizedBox(height: 18),
-            ElevatedButton(
-              onPressed: _loadStudents,
-              child: const Text('Try Again'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

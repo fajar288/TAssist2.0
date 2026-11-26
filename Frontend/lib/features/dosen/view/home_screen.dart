@@ -8,6 +8,9 @@ import 'package:tassist/features/notifikasi/widgets/notifikasi_bell_button.dart'
 import 'dosen_edit_profile_page.dart';
 import 'package:tassist/model/models.dart';
 import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/app_empty_state_widget.dart';
+import 'package:tassist/widgets/app_error_widget.dart';
+import 'package:tassist/widgets/app_skeleton_loader.dart';
 import 'package:tassist/widgets/custom_bottom_nav.dart';
 import 'package:tassist/widgets/custom_request_card.dart';
 import 'counseling_detail_screen.dart';
@@ -37,10 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _selectedFilter = 'All';
   final _filters = ['All', 'Pending', 'Accepted', 'Declined'];
-
-  static const Color _navBlue = Color(0xFF0D4AA3);
-  static const Color _navBlueDark = Color(0xFF082E6B);
-  static const Color _navBlueLight = Color(0xFF1A65C8);
 
   @override
   void initState() {
@@ -124,16 +123,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
             if (_isLoading)
               const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 80),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
+                child: AppSkeletonLoader.card(count: 3),
               )
             else if (_errorMessage != null)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
-                  child: _buildErrorCard(),
+                  padding: const EdgeInsets.fromLTRB(4, 16, 4, 0),
+                  child: AppErrorWidget(
+                    title: 'Failed to load requests',
+                    message: _errorMessage ?? '-',
+                    onRetry: _loadDashboardData,
+                    retryLabel: 'Try Again',
+                  ),
                 ),
               )
             else
@@ -147,7 +148,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       16,
                 ),
                 sliver: _filteredRequests.isEmpty
-                    ? const SliverToBoxAdapter(child: _EmptyState())
+                    ? const SliverToBoxAdapter(
+                        child: AppEmptyStateWidget(
+                          icon: Icons.inbox_rounded,
+                          title: 'No requests found',
+                          subtitle:
+                              'There are no requests matching\nthis filter right now.',
+                        ),
+                      )
                     : SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (ctx, i) {
@@ -165,47 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildErrorCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: AppTheme.cardDecoration(),
-      child: Column(
-        children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: Colors.redAccent,
-            size: 42,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Failed to load requests',
-            style: GoogleFonts.poppins(
-              color: AppTheme.textPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            _errorMessage ?? '-',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              color: AppTheme.textSecondary,
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: 14),
-          ElevatedButton.icon(
-            onPressed: _loadDashboardData,
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Try Again'),
-          ),
-        ],
       ),
     );
   }
@@ -281,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [_navBlueDark, _navBlue, _navBlueLight],
+          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -378,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       PopupMenuButton<String>(
                         offset: const Offset(0, 60), // Menurunkan dropdown agar pas
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                         ),
                         onSelected: (value) async {
                           if (value == 'edit_profile') {
@@ -413,9 +380,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             value: 'edit_profile',
                             child: Row(
                               children: [
-                                Icon(Icons.person_outline, size: 20, color: Color(0xFF1E293B)),
+                                Icon(Icons.person_outline, size: 20, color: AppTheme.textPrimary),
                                 SizedBox(width: 12),
-                                Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF1E293B))),
+                                Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.textPrimary)),
                               ],
                             ),
                           ),
@@ -577,10 +544,10 @@ class _StatChip extends StatelessWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -632,10 +599,10 @@ class _FilterChip extends StatelessWidget {
           vertical: 5,
         ),
         decoration: BoxDecoration(
-          color: selected ? const Color(0xFF0D4AA3) : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
+          color: selected ? AppTheme.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: selected ? const Color(0xFF0D4AA3) : const Color(0xFFCBD5E1),
+            color: selected ? AppTheme.primary : AppTheme.cardBorder,
             width: 1.5,
           ),
         ),
@@ -647,51 +614,6 @@ class _FilterChip extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 60),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: Color(0xFFEEF2F6),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.inbox_rounded,
-              size: 48,
-              color: Color(0xFF0D4AA3),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No requests found',
-            style: GoogleFonts.poppins(
-              color: const Color(0xFF1E293B),
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'There are no requests matching\nthis filter right now.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              color: const Color(0xFF64748B),
-              fontSize: 13,
-            ),
-          ),
-        ],
       ),
     );
   }

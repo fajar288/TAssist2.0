@@ -4,6 +4,9 @@ import '../../../core/helpers/avatar_helper.dart';
 import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../../model/lecturer_recommendation_model.dart';
 import '../../../theme/app_theme.dart';
+import '../../../widgets/app_empty_state_widget.dart';
+import '../../../widgets/app_error_widget.dart';
+import '../../../widgets/app_loading_widget.dart';
 import '../../main_mahasiswa/navbar_mahasiswa.dart';
 import 'lecturer_detail_page.dart';
 import 'lecturers_page.dart';
@@ -64,10 +67,6 @@ class LecturerRecommendationView extends StatefulWidget {
 
 class _LecturerRecommendationViewState
     extends State<LecturerRecommendationView> {
-  static const double _radiusSm = 8;
-  static const double _radiusMd = 14;
-  static const double _radiusLg = 20;
-
   static const List<String> _sampleTopics = [
     'Deteksi Penyakit Tanaman Deep Learning',
     'Keamanan Jaringan dan Kriptografi',
@@ -156,7 +155,7 @@ class _LecturerRecommendationViewState
   Widget _buildSearchCard() {
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: AppTheme.cardDecoration(radius: _radiusLg),
+      decoration: AppTheme.cardDecoration(radius: AppTheme.radiusLg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -197,15 +196,15 @@ class _LecturerRecommendationViewState
                       vertical: 12,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(_radiusMd),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       borderSide: const BorderSide(color: AppTheme.cardBorder),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(_radiusMd),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       borderSide: const BorderSide(color: AppTheme.cardBorder),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(_radiusMd),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       borderSide: const BorderSide(
                         color: AppTheme.primary,
                         width: 1.5,
@@ -225,7 +224,7 @@ class _LecturerRecommendationViewState
                     vertical: 14,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(_radiusMd),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
                 ),
                 child: _isLoading
@@ -260,7 +259,7 @@ class _LecturerRecommendationViewState
                     backgroundColor: AppTheme.primaryGhost,
                     side: const BorderSide(color: AppTheme.infoBorder),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(_radiusSm),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     onPressed:
                         _isLoading ? null : () => _searchRecommendation(sample),
@@ -277,75 +276,24 @@ class _LecturerRecommendationViewState
   Widget _buildBody() {
     if (_isLoading) {
       return const Center(
-        child: CircularProgressIndicator(color: AppTheme.primary),
+        child: AppLoadingWidget(),
       );
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppTheme.declinedBg,
-              borderRadius: BorderRadius.circular(_radiusMd),
-              border: Border.all(color: AppTheme.declinedBorder),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.error_outline_rounded,
-                  color: AppTheme.declined,
-                  size: 36,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: () => _searchRecommendation(),
-                  child: const Text('Coba Lagi'),
-                ),
-              ],
-            ),
-          ),
-        ),
+      return AppErrorWidget(
+        message: _errorMessage!,
+        onRetry: () => _searchRecommendation(),
       );
     }
 
     final response = _response;
     if (response == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(
-                Icons.manage_search_rounded,
-                size: 54,
-                color: AppTheme.primaryLight,
-              ),
-              SizedBox(height: 12),
-              Text(
-                'Masukkan rencana topik Tugas Akhir Anda untuk mendapatkan peringkat dosen pembimbing terbaik.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppTheme.textSecondary,
-                  fontSize: 13,
-                ),
-              ),
-            ],
-          ),
-        ),
+      return const AppEmptyStateWidget(
+        icon: Icons.manage_search_rounded,
+        title: 'Cari Rekomendasi Pembimbing',
+        subtitle:
+            'Masukkan rencana topik Tugas Akhir Anda untuk mendapatkan peringkat dosen pembimbing terbaik.',
       );
     }
 
@@ -431,7 +379,7 @@ class _LecturerRecommendationViewState
               margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
                 color: AppTheme.warningBg,
-                borderRadius: BorderRadius.circular(_radiusMd),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 border: Border.all(color: AppTheme.warningBorder),
               ),
               child: Row(
@@ -492,10 +440,6 @@ class RecommendedLecturerCard extends StatelessWidget {
     required this.onTap,
   });
 
-  static const double _radiusSm = 8;
-  static const double _radiusMd = 14;
-  static const double _radiusLg = 20;
-
   final int rank;
   final RecommendedLecturerModel item;
   final VoidCallback onTap;
@@ -506,12 +450,12 @@ class RecommendedLecturerCard extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(_radiusLg),
+      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(_radiusLg),
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
             color: rank == 1 ? AppTheme.primaryLight : AppTheme.cardBorder,
             width: rank == 1 ? 1.4 : 1,
@@ -541,7 +485,7 @@ class RecommendedLecturerCard extends StatelessWidget {
                               color: rank == 1
                                   ? AppTheme.primary
                                   : AppTheme.primaryGhost,
-                              borderRadius: BorderRadius.circular(_radiusSm),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                             ),
                             child: Text(
                               '#$rank',
@@ -562,7 +506,7 @@ class RecommendedLecturerCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: AppTheme.acceptedBg,
-                              borderRadius: BorderRadius.circular(_radiusSm),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                               border: Border.all(
                                 color: AppTheme.acceptedBorder,
                               ),
@@ -584,7 +528,7 @@ class RecommendedLecturerCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: AppTheme.infoBg,
-                              borderRadius: BorderRadius.circular(_radiusSm),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                             ),
                             child: Text(
                               'Kuota ${item.sisaKuota}/${item.kuotaBimbingan}',
@@ -630,7 +574,7 @@ class RecommendedLecturerCard extends StatelessWidget {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: AppTheme.surfaceVariant,
-                borderRadius: BorderRadius.circular(_radiusMd),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 border: Border.all(color: AppTheme.cardBorder),
               ),
               child: Text(
@@ -685,7 +629,7 @@ class RecommendedLecturerCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: AppTheme.primaryGhost,
-                            borderRadius: BorderRadius.circular(_radiusSm),
+                            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                           ),
                           child: Text(
                             kw,
@@ -705,7 +649,7 @@ class RecommendedLecturerCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: AppTheme.acceptedBg,
-                        borderRadius: BorderRadius.circular(_radiusSm),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Text(
                         '${item.riwayatTopikCocok} riwayat TA relevan',
@@ -727,7 +671,7 @@ class RecommendedLecturerCard extends StatelessWidget {
 
   Widget _buildAvatar() {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(_radiusMd),
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: SizedBox(
         width: 56,
         height: 56,
@@ -789,7 +733,7 @@ class _ScoreBarItem extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           child: LinearProgressIndicator(
             value: clamped,
             minHeight: 5,
@@ -823,7 +767,7 @@ class _InfoChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
         border: Border.all(color: border),
       ),
       child: Row(
