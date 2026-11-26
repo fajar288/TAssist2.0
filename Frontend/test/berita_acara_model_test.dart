@@ -1,7 +1,7 @@
 // test/berita_acara_model_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/model/berita_acara_model.dart';
+import 'package:tassist/model/berita_acara_model.dart';
 
 void main() {
   group('BeritaAcaraModel Tests', () {

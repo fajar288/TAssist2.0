@@ -1,14 +1,14 @@
-// lib/screen/schedule_list_screen.dart
+// lib/features/dosen/view/schedule_list_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:produk/features/dosen/data/dosen_service.dart';
+import 'package:tassist/features/dosen/data/dosen_service.dart';
 
-import '../model/models.dart';
-import '../theme/app_theme.dart';
-import '../widgets/custom_bottom_nav.dart';
-import '../widgets/custom_meeting_card.dart';
-import '../features/dosen/view/availability_management_page.dart';
+import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/custom_bottom_nav.dart';
+import 'package:tassist/widgets/custom_meeting_card.dart';
+import 'availability_management_page.dart';
 import 'meeting_detail_screen.dart';
 
 class ScheduleListScreen extends StatefulWidget {

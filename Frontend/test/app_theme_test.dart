@@ -1,7 +1,7 @@
 // test/app_theme_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/theme/app_theme.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 void main() {
   // `AppTheme.lightTheme` builds its text theme through google_fonts, which

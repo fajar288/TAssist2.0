@@ -1,7 +1,7 @@
 // test/annotation_model_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/model/annotation_model.dart';
+import 'package:tassist/model/annotation_model.dart';
 
 void main() {
   group('AnnotationModel', () {

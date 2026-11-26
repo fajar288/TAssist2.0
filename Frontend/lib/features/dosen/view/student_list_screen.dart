@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:produk/features/analytics/data/analytics_service.dart';
-import 'package:produk/features/analytics/model/risk_snapshot_model.dart';
-import 'package:produk/features/dosen/data/dosen_service.dart';
-import 'package:produk/model/models.dart';
-import 'package:produk/widgets/custom_bottom_nav.dart';
-import 'package:produk/widgets/student_card.dart';
+import 'package:tassist/features/analytics/data/analytics_service.dart';
+import 'package:tassist/features/analytics/model/risk_snapshot_model.dart';
+import 'package:tassist/features/dosen/data/dosen_service.dart';
+import 'package:tassist/model/models.dart';
+import 'package:tassist/widgets/custom_bottom_nav.dart';
+import 'package:tassist/widgets/student_card.dart';
 
 import 'student_detail_screen.dart';
 

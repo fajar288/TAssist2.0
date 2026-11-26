@@ -1,7 +1,7 @@
 // test/chatbot_model_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/model/chatbot_model.dart';
+import 'package:tassist/model/chatbot_model.dart';
 
 void main() {
   group('ChatbotSumberModel', () {

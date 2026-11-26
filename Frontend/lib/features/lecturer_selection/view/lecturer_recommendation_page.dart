@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/helpers/avatar_helper.dart';
-import '../../../mahasiswa/data/mahasiswa_service.dart';
+import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../../model/lecturer_recommendation_model.dart';
 import '../../../theme/app_theme.dart';
 import '../../main_mahasiswa/navbar_mahasiswa.dart';

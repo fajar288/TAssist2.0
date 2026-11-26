@@ -1,8 +1,8 @@
 // test/risk_model_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/features/analytics/model/risk_snapshot_model.dart';
-import 'package:produk/theme/app_theme.dart';
+import 'package:tassist/features/analytics/model/risk_snapshot_model.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 void main() {
   group('RiskSnapshotModel Tests', () {

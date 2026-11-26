@@ -1,8 +1,8 @@
 // test/chatbot_service_test.dart
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/core/api_client.dart';
-import 'package:produk/features/chatbot/data/chatbot_service.dart';
+import 'package:tassist/core/api_client.dart';
+import 'package:tassist/features/chatbot/data/chatbot_service.dart';
 
 class FakeApiClient implements ApiClient {
   String? lastPath;

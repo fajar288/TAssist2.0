@@ -1,8 +1,7 @@
 // lib/widgets/student_card.dart
 
 import 'package:flutter/material.dart';
-import 'package:produk/data/dummy_data.dart';
-import 'package:produk/model/models.dart';
+import 'package:tassist/model/models.dart';
 import '../features/analytics/model/risk_snapshot_model.dart';
 import '../features/analytics/widgets/risk_badge_widget.dart';
 

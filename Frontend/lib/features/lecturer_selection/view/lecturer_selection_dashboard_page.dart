@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../app/app.dart';
 import '../../auth/data/auth_service.dart';
 import '../../notifikasi/widgets/notifikasi_bell_button.dart';
-import '../../../mahasiswa/data/mahasiswa_service.dart';
+import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../../theme/app_theme.dart';
 import 'lecturer_recommendation_page.dart';
 import 'lecturers_page.dart';

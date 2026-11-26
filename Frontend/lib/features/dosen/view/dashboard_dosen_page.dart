@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:produk/app/app.dart';
-import 'package:produk/theme/app_theme.dart';
-import 'package:produk/screen/home_screen.dart';
-import 'package:produk/widgets/custom_bottom_nav.dart';
-import 'package:produk/screen/schedule_list_screen.dart';
-import 'package:produk/screen/student_list_screen.dart';
+import 'package:tassist/app/app.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/features/dosen/view/home_screen.dart';
+import 'package:tassist/widgets/custom_bottom_nav.dart';
+import 'package:tassist/features/dosen/view/schedule_list_screen.dart';
+import 'package:tassist/features/dosen/view/student_list_screen.dart';
 
 class DashboardDosenPage extends StatefulWidget {
   const DashboardDosenPage({super.key});

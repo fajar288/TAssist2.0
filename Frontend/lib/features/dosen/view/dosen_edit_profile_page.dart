@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../data/dosen_service.dart';
-import 'package:produk/core/helpers/avatar_helper.dart';
+import 'package:tassist/core/helpers/avatar_helper.dart';
 
 class DosenEditProfilePage extends StatefulWidget {
   final Map<String, dynamic> initialProfile; // Passing data profil dari dashboard saat dipanggil

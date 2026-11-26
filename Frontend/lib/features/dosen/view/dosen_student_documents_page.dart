@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:produk/features/dosen/data/dosen_service.dart';
-import 'package:produk/model/models.dart';
+import 'package:tassist/features/dosen/data/dosen_service.dart';
+import 'package:tassist/model/models.dart';
 import '../../anotasi/view/annotation_viewer_page.dart';
 
 class DosenStudentDocumentsPage extends StatefulWidget {

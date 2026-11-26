@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/helpers/avatar_helper.dart';
 import '../../main_mahasiswa/navbar_mahasiswa.dart';
-import '../../../mahasiswa/data/mahasiswa_service.dart';
+import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../../theme/app_theme.dart';
 import 'lecturer_detail_page.dart';
 import 'lecturer_recommendation_page.dart';
