@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:produk/features/dosen/data/dosen_service.dart';
+import 'package:tassist/features/dosen/data/dosen_service.dart';
 
-import '../app/app.dart';
-import '../features/notifikasi/widgets/notifikasi_bell_button.dart';
-import '../features/dosen/view/dosen_edit_profile_page.dart';
-import '../model/models.dart';
-import '../theme/app_theme.dart';
-import '../widgets/custom_bottom_nav.dart';
-import '../widgets/custom_request_card.dart';
+import 'package:tassist/app/app.dart';
+import 'package:tassist/features/notifikasi/widgets/notifikasi_bell_button.dart';
+import 'dosen_edit_profile_page.dart';
+import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/custom_bottom_nav.dart';
+import 'package:tassist/widgets/custom_request_card.dart';
 import 'counseling_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {

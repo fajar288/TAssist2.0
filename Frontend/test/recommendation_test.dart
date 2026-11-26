@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/features/lecturer_selection/view/lecturer_recommendation_page.dart';
-import 'package:produk/features/lecturer_selection/view/lecturers_page.dart';
-import 'package:produk/model/lecturer_recommendation_model.dart';
-import 'package:produk/theme/app_theme.dart';
+import 'package:tassist/features/lecturer_selection/view/lecturer_recommendation_page.dart';
+import 'package:tassist/features/lecturer_selection/view/lecturers_page.dart';
+import 'package:tassist/model/lecturer_recommendation_model.dart';
+import 'package:tassist/theme/app_theme.dart';
 
 void main() {
   group('Wave 6 Topic-Based Supervisor Recommendation', () {

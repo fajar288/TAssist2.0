@@ -1,13 +1,13 @@
 // lib/features/dosen/view/student_detail_page.dart
 
 import 'package:flutter/material.dart';
-import 'package:produk/core/export_helper.dart';
-import 'package:produk/model/models.dart';
-import 'package:produk/widgets/student_info_card.dart';
-import 'package:produk/widgets/student_menu_title.dart';
-import 'package:produk/features/dosen/view/dosen_student_documents_page.dart';
-import 'package:produk/features/dosen/view/dosen_student_progress_page.dart';
-import '../features/berita_acara/view/berita_acara_management_page.dart';
+import 'package:tassist/core/export_helper.dart';
+import 'package:tassist/model/models.dart';
+import 'package:tassist/widgets/student_info_card.dart';
+import 'package:tassist/widgets/student_menu_title.dart';
+import 'package:tassist/features/dosen/view/dosen_student_documents_page.dart';
+import 'package:tassist/features/dosen/view/dosen_student_progress_page.dart';
+import 'package:tassist/features/berita_acara/view/berita_acara_management_page.dart';
 
 class StudentDetailPage extends StatefulWidget {
   final StudentModel student;

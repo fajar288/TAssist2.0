@@ -2,7 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/api_client.dart';
-import '../../../mahasiswa/data/mahasiswa_service.dart';
+import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../main_mahasiswa/navbar_mahasiswa.dart';
 import 'lecturers_page.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/core/fcm_service.dart';
-import 'package:produk/model/annotation_model.dart';
-import 'package:produk/model/models.dart';
+import 'package:tassist/core/fcm_service.dart';
+import 'package:tassist/model/annotation_model.dart';
+import 'package:tassist/model/models.dart';
 
 void main() {
   group('Wave 5 models and services', () {

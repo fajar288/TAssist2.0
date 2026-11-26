@@ -4,7 +4,7 @@ import '../../app/app.dart';
 import '../../theme/app_theme.dart';
 import 'navbar_mahasiswa.dart';
 import '../lecturer_selection/view/lecturer_selection_dashboard_page.dart';
-import '../../mahasiswa/data/mahasiswa_service.dart';
+import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import 'dashboard_main_mahasiswa_page.dart';
 import 'schedule_page.dart';
 import 'upload_document_page.dart';

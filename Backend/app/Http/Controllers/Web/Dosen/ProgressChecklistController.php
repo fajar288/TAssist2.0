@@ -216,23 +216,23 @@ class ProgressChecklistController extends Controller
             return back()->with('error', 'Tidak dapat menambahkan checklist pada bimbingan yang tidak aktif.');
         }
 
-        $latestProgress = $this->getLatestProgress($bimbingan);
-
-        if (!$latestProgress) {
-            $latestProgress = ProgresTA::create([
-                'bimbingan_id'     => $bimbingan->bimbingan_id,
-                'persentase'       => 0,
-                'status_progress'  => 'Target awal bimbingan',
-                'updated_dosen_id' => $dosenId,
-                'catatan'          => 'Progress awal dibuat otomatis untuk checklist target mahasiswa.',
-            ]);
-        }
-
         $isDone = $request->has('is_selesai')
             ? $request->boolean('is_selesai')
             : $request->boolean('tgl_selesai');
 
-        $checklist = DB::transaction(function () use ($request, $latestProgress, $isDone) {
+        $checklist = DB::transaction(function () use ($request, $bimbingan, $dosenId, $isDone) {
+            $latestProgress = $this->getLatestProgress($bimbingan);
+
+            if (!$latestProgress) {
+                $latestProgress = ProgresTA::create([
+                    'bimbingan_id'     => $bimbingan->bimbingan_id,
+                    'persentase'       => 0,
+                    'status_progress'  => 'Target awal bimbingan',
+                    'updated_dosen_id' => $dosenId,
+                    'catatan'          => 'Progress awal dibuat otomatis untuk checklist target mahasiswa.',
+                ]);
+            }
+
             $checklist = ChecklistProgress::create([
                 'progress_id'     => $latestProgress->progress_id,
                 'nama_item'       => $request->nama_item,

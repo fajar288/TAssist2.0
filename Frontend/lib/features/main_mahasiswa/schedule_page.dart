@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../mahasiswa/data/mahasiswa_service.dart';
+import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});

@@ -1,12 +1,12 @@
-// lib/screens/counseling_detail_screen.dart
+// lib/features/dosen/view/counseling_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:produk/features/dosen/data/dosen_service.dart';
+import 'package:tassist/features/dosen/data/dosen_service.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../model/models.dart';
-import '../theme/app_theme.dart';
-import '../widgets/custom_request_card.dart';
+import 'package:tassist/model/models.dart';
+import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/widgets/custom_request_card.dart';
 
 class CounselingDetailScreen extends StatefulWidget {
   final CounselingRequest request;

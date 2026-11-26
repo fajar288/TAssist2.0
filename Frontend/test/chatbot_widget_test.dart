@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/features/chatbot/widget/chat_bubble_widget.dart';
-import 'package:produk/features/chatbot/widget/typing_indicator_widget.dart';
-import 'package:produk/model/chatbot_model.dart';
+import 'package:tassist/features/chatbot/widget/chat_bubble_widget.dart';
+import 'package:tassist/features/chatbot/widget/typing_indicator_widget.dart';
+import 'package:tassist/model/chatbot_model.dart';
 
 void main() {
   group('ChatBubbleWidget', () {

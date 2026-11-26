@@ -6,7 +6,7 @@ import '../../app/app.dart';
 import '../../core/export_helper.dart';
 import '../auth/data/auth_service.dart';
 import '../notifikasi/widgets/notifikasi_bell_button.dart';
-import '../../mahasiswa/data/mahasiswa_service.dart';
+import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../informasi_ta/view/informasi_ta_page.dart';
 import '../berita_acara/view/berita_acara_list_page.dart';
 import '../../theme/app_theme.dart';

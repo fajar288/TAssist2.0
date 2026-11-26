@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 
-import '../../../core/api_client.dart';
-import '../../../model/lecturer_recommendation_model.dart';
+import 'package:tassist/core/api_client.dart';
+import 'package:tassist/model/lecturer_recommendation_model.dart';
 
 class MahasiswaService {
   final ApiClient _client = ApiClient.instance;

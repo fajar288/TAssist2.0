@@ -1,7 +1,7 @@
 // test/avatar_helper_test.dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/core/api_config.dart';
-import 'package:produk/core/helpers/avatar_helper.dart';
+import 'package:tassist/core/api_config.dart';
+import 'package:tassist/core/helpers/avatar_helper.dart';
 
 void main() {
   group('AvatarHelper.getAvatarUrl', () {

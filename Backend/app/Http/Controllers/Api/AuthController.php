@@ -128,12 +128,12 @@ class AuthController extends Controller
             return $this->errorResponse('Akun Anda tidak aktif. Hubungi administrator.', null, 403);
         }
 
-        // Hapus semua token lama sebelum buat yang baru
-        $user->tokens()->delete();
-
-        // Buat token baru dengan expired 1 jam
+        // Hapus semua token lama & buat token baru secara atomik
         $expiresAt = now()->addHour();
-        $token     = $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
+        $token = DB::transaction(function () use ($user, $expiresAt) {
+            $user->tokens()->delete();
+            return $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
+        });
 
         // Siapkan data profil berdasarkan role
         $profileData = $this->getProfileData($user);
@@ -245,12 +245,12 @@ class AuthController extends Controller
                 });
             }
 
-            // Hapus token lama sebelum buat token baru
-            $user->tokens()->delete();
-
-            // Buat token baru dengan expired 1 jam
+            // Rotasi token secara atomik
             $expiresAt = now()->addHour();
-            $token = $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
+            $token = DB::transaction(function () use ($user, $expiresAt) {
+                $user->tokens()->delete();
+                return $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
+            });
 
             $profileData = $this->getProfileData($user);
 
@@ -278,13 +278,15 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        // Nonaktifkan semua device token FCM milik user saat logout (T-42 / F-NOT-04)
-        \App\Models\DeviceToken::where('user_id', $user->user_id)
-            ->where('is_active', true)
-            ->update(['is_active' => false]);
+        DB::transaction(function () use ($user) {
+            // Nonaktifkan semua device token FCM milik user saat logout (T-42 / F-NOT-04)
+            \App\Models\DeviceToken::where('user_id', $user->user_id)
+                ->where('is_active', true)
+                ->update(['is_active' => false]);
 
-        // Hapus token aktif saat ini
-        $user->currentAccessToken()?->delete();
+            // Hapus token aktif saat ini
+            $user->currentAccessToken()?->delete();
+        });
 
         return $this->successResponse('Logout berhasil.');
     }
@@ -300,15 +302,17 @@ class AuthController extends Controller
     {
         $user         = $request->user();
         $currentToken = $request->user()->currentAccessToken();
+        $expiresAt    = now()->addHour();
 
-        // Hapus token lama (kalau yang dipakai memang token Sanctum).
-        if ($currentToken instanceof PersonalAccessToken) {
-            $currentToken->delete();
-        }
+        $token = DB::transaction(function () use ($user, $currentToken, $expiresAt) {
+            // Hapus token lama (kalau yang dipakai memang token Sanctum).
+            if ($currentToken instanceof PersonalAccessToken) {
+                $currentToken->delete();
+            }
 
-        // Buat token baru dengan expired 1 jam — sama persis dengan login.
-        $expiresAt = now()->addHour();
-        $token     = $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
+            // Buat token baru dengan expired 1 jam — sama persis dengan login.
+            return $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
+        });
 
         return $this->successResponse('Token berhasil diperbarui', [
             'token'      => $token,

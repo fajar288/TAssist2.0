@@ -10,6 +10,7 @@ use App\Models\Notifikasi;
 use App\Models\User;
 use App\Services\NotifikasiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InformasiTAController extends Controller
 {
@@ -143,25 +144,32 @@ class InformasiTAController extends Controller
                 : now()->toDateTimeString();
         }
 
-        $info->update([
-            'kategori'       => $request->kategori,
-            'judul'          => $request->judul,
-            'konten_or_file' => $request->konten_or_file,
-            'published_at'   => $publishedAt,
-        ]);
+        DB::transaction(function () use ($info, $request, $publishedAt, $wasPublished) {
+            $info->update([
+                'kategori'       => $request->kategori,
+                'judul'          => $request->judul,
+                'konten_or_file' => $request->konten_or_file,
+                'published_at'   => $publishedAt,
+            ]);
+
+            $info->refresh();
+            $nowPublished = $this->isPublishedNow($info);
+
+            if ($wasPublished && !$nowPublished) {
+                // Published -> Draft: hapus notifikasi agar tidak terekspos lagi.
+                $this->hapusNotifikasiInformasiTA($info);
+            } elseif ($wasPublished && $nowPublished) {
+                // Published -> Published: update isi notifikasi lama, jangan buat dobel.
+                $this->updateNotifikasiInformasiTA($info);
+            }
+        });
 
         $info->refresh();
         $nowPublished = $this->isPublishedNow($info);
 
         if (!$wasPublished && $nowPublished) {
-            // Draft -> Published: kirim notifikasi sekali.
+            // Draft -> Published: kirim notifikasi sekali setelah commit.
             $this->kirimNotifikasiInformasiTA($info);
-        } elseif ($wasPublished && !$nowPublished) {
-            // Published -> Draft: hapus notifikasi agar tidak terekspos lagi.
-            $this->hapusNotifikasiInformasiTA($info);
-        } elseif ($wasPublished && $nowPublished) {
-            // Published -> Published: update isi notifikasi lama, jangan buat dobel.
-            $this->updateNotifikasiInformasiTA($info);
         }
 
         return redirect()->route('admin.informasi-ta.index')
@@ -174,9 +182,10 @@ class InformasiTAController extends Controller
         $info = InformasiTA::findOrFail($id);
         $judul = $info->judul;
 
-        $this->hapusNotifikasiInformasiTA($info);
-
-        $info->delete();
+        DB::transaction(function () use ($info) {
+            $this->hapusNotifikasiInformasiTA($info);
+            $info->delete();
+        });
 
         return redirect()->route('admin.informasi-ta.index')
             ->with('success', "Informasi \"{$judul}\" berhasil dihapus.");
@@ -189,11 +198,13 @@ class InformasiTAController extends Controller
         $isPublished = $this->isPublishedNow($info);
 
         if ($isPublished) {
-            $info->update(['published_at' => null]);
-            $info->refresh();
+            DB::transaction(function () use ($info) {
+                $info->update(['published_at' => null]);
+                $info->refresh();
 
-            // Saat unpublish, notifikasi terkait ikut dihapus.
-            $this->hapusNotifikasiInformasiTA($info);
+                // Saat unpublish, notifikasi terkait ikut dihapus.
+                $this->hapusNotifikasiInformasiTA($info);
+            });
 
             return back()->with('success', "Informasi \"{$info->judul}\" berhasil di-unpublish.");
         }

@@ -1,6 +1,6 @@
 // test/api_config_test.dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:produk/core/api_config.dart';
+import 'package:tassist/core/api_config.dart';
 
 void main() {
   group('ApiConfig', () {
