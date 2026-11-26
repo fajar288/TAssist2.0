@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('bobot_kuota', 5, 4)->default(0.2500);
             $table->decimal('bobot_beban', 5, 4)->default(0.1500);
             $table->decimal('ambang_skor_rendah', 5, 4)->default(0.3000);
-            $table->unsignedInteger('updated_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
 
             $table->foreign('updated_by')
