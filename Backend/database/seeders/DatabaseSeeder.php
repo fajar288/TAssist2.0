@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             DosenSeeder::class,
             MahasiswaSeeder::class,
             RisikoKonfigurasiSeeder::class,
+            RekomendasiKonfigurasiSeeder::class,
         ]);
     }
 }
