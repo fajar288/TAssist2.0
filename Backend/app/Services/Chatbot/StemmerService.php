@@ -124,13 +124,13 @@ class StemmerService
     }
 
     /**
-     * Tokenize text, filter stopwords, and return array of stemmed root words.
+     * Tokenize text, filter stopwords, and return stemmed tokens preserving frequency.
      *
      * @param string $text
      * @param bool $removeStopwords
      * @return array<string>
      */
-    public function tokenizeAndStem(string $text, bool $removeStopwords = true): array
+    public function tokenizeTerms(string $text, bool $removeStopwords = true): array
     {
         $stemmed = $this->stem($text);
         if (empty($stemmed)) {
@@ -145,6 +145,18 @@ class StemmerService
             });
         }
 
-        return array_values(array_unique($tokens));
+        return array_values($tokens);
+    }
+
+    /**
+     * Tokenize text, filter stopwords, and return array of unique stemmed root words.
+     *
+     * @param string $text
+     * @param bool $removeStopwords
+     * @return array<string>
+     */
+    public function tokenizeAndStem(string $text, bool $removeStopwords = true): array
+    {
+        return array_values(array_unique($this->tokenizeTerms($text, $removeStopwords)));
     }
 }

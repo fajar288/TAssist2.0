@@ -15,6 +15,7 @@ use App\Http\Controllers\Web\Admin\AnalyticsController as AdminAnalyticsWebContr
 use App\Http\Controllers\Web\Admin\RiskConfigController as AdminRiskConfigWebController;
 use App\Http\Controllers\Web\Admin\BasisPengetahuanWebController;
 use App\Http\Controllers\Web\Admin\ChatbotAnalyticsWebController;
+use App\Http\Controllers\Web\Admin\RekomendasiConfigController as AdminRekomendasiConfigWebController;
 
 // Dosen Controllers
 use App\Http\Controllers\Web\Dosen\AuthController as DosenAuthController;
@@ -110,6 +111,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Analitik Chatbot (T-36)
         Route::get('/chatbot-analytics', [ChatbotAnalyticsWebController::class, 'index'])->name('chatbot-analytics.index');
+
+        // Konfigurasi & Log Rekomendasi Dosen (T-47, T-52)
+        Route::prefix('rekomendasi')->name('rekomendasi.')->group(function () {
+            Route::get('/konfigurasi', [AdminRekomendasiConfigWebController::class, 'index'])->name('index');
+            Route::put('/konfigurasi', [AdminRekomendasiConfigWebController::class, 'update'])->name('update');
+        });
     });
 });
 

@@ -55,6 +55,12 @@ class Dosen extends Model
                     ->where('status_bimbingan', 'aktif');
     }
 
+    public function bimbinganSelesai()
+    {
+        return $this->hasMany(Bimbingan::class, 'dosen_id', 'dosen_id')
+                    ->where('status_bimbingan', 'selesai');
+    }
+
     public function ketersediaan()
     {
         return $this->hasMany(DosenKetersediaan::class, 'dosen_id', 'dosen_id');

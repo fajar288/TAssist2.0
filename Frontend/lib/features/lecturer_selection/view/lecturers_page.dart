@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import '../../../core/helpers/avatar_helper.dart';
 import '../../main_mahasiswa/navbar_mahasiswa.dart';
 import '../../../mahasiswa/data/mahasiswa_service.dart';
+import '../../../theme/app_theme.dart';
 import 'lecturer_detail_page.dart';
+import 'lecturer_recommendation_page.dart';
 
 class LecturersPage extends StatefulWidget {
   const LecturersPage({
@@ -28,6 +30,7 @@ class _LecturersPageState extends State<LecturersPage> {
 
   bool _showFilterDropdown = false;
   bool _showViewDropdown = false;
+  bool _isRecommendationMode = false;
 
   List<LecturerModel> _allLecturers = [];
   bool _isLoading = true;
@@ -204,20 +207,28 @@ class _LecturersPageState extends State<LecturersPage> {
                     child: Column(
                       children: [
                         _buildHeader(context),
-                        const SizedBox(height: 26),
-                        _buildTopControls(),
-                        const SizedBox(height: 18),
-                        Expanded(
-                          child: _isLoading
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : _errorMessage != null
-                                  ? _buildErrorState()
-                                  : lecturers.isEmpty
-                                      ? _buildEmptyState()
-                                      : _buildLecturerGrid(lecturers),
-                        ),
+                        const SizedBox(height: 14),
+                        _buildModeSwitcher(),
+                        const SizedBox(height: 14),
+                        if (_isRecommendationMode)
+                          const Expanded(
+                            child: LecturerRecommendationView(),
+                          )
+                        else ...[
+                          _buildTopControls(),
+                          const SizedBox(height: 18),
+                          Expanded(
+                            child: _isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : _errorMessage != null
+                                    ? _buildErrorState()
+                                    : lecturers.isEmpty
+                                        ? _buildEmptyState()
+                                        : _buildLecturerGrid(lecturers),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -280,6 +291,47 @@ class _LecturersPageState extends State<LecturersPage> {
               color: Color(0xFF2D3238),
               fontSize: 24,
               fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModeSwitcher() {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.cardBorder),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _ModeTabButton(
+              icon: Icons.grid_view_rounded,
+              label: 'Semua Dosen',
+              isSelected: !_isRecommendationMode,
+              onTap: () {
+                setState(() {
+                  _isRecommendationMode = false;
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: _ModeTabButton(
+              icon: Icons.auto_awesome_rounded,
+              label: 'Rekomendasi Topik',
+              isSelected: _isRecommendationMode,
+              onTap: () {
+                setState(() {
+                  _isRecommendationMode = true;
+                  _showFilterDropdown = false;
+                  _showViewDropdown = false;
+                });
+              },
             ),
           ),
         ],
@@ -855,5 +907,57 @@ extension LecturerViewTypeX on LecturerViewType {
       case LecturerViewType.standard:
         return 'Standard List';
     }
+  }
+}
+
+class _ModeTabButton extends StatelessWidget {
+  const _ModeTabButton({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isSelected ? AppTheme.surface : AppTheme.textSecondary,
+            ),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: isSelected ? AppTheme.surface : AppTheme.textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

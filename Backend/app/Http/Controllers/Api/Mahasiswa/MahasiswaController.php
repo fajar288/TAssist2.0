@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Mahasiswa\UpdateMahasiswaProfileRequest;
 use App\Models\Mahasiswa;
 use App\Models\Dosen;
+use App\Services\SupervisorRecommendationService;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\JsonResponse;
@@ -164,5 +165,25 @@ class MahasiswaController extends Controller
         });
 
         return $this->successResponse('Daftar dosen berhasil diambil', $data);
+    }
+
+    /**
+     * Topic-based supervisor recommendation (Wave 6: T-48, T-49, T-50, F-SUP-06).
+     * GET /api/v1/mahasiswa/dosen/rekomendasi?topik={text}
+     */
+    public function rekomendasiDosen(Request $request, SupervisorRecommendationService $recommendationService): JsonResponse
+    {
+        $validated = $request->validate([
+            'topik' => ['required', 'string', 'min:1', 'max:500'],
+            'limit' => ['nullable', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $result = $recommendationService->recommend(
+            topic: $validated['topik'],
+            logLowScore: true,
+            limit: isset($validated['limit']) ? (int) $validated['limit'] : null,
+        );
+
+        return $this->successResponse('Rekomendasi dosen pembimbing berhasil dihitung', $result);
     }
 }

@@ -43,6 +43,7 @@ use App\Http\Controllers\Api\Admin\AdminDosenController;
 use App\Http\Controllers\Api\Admin\InformasiTAController;
 use App\Http\Controllers\Api\Admin\AdminMonitoringController;
 use App\Http\Controllers\Api\Admin\RisikoKonfigurasiController;
+use App\Http\Controllers\Api\Admin\RekomendasiKonfigurasiController;
 use App\Http\Controllers\Api\Admin\AdminAnalyticsController;
 use App\Http\Controllers\Api\Admin\BasisPengetahuanController;
 use App\Http\Controllers\Api\Admin\ChatbotAnalyticsController;
@@ -117,8 +118,9 @@ Route::prefix('v1')->group(function () {
                 // Update profil mahasiswa (topik_ta, judul_ta)
                 Route::put('/profile', [MahasiswaController::class, 'updateProfile']);
 
-                // Lihat daftar dosen & ketersediaan (T-39)
+                // Lihat daftar dosen, rekomendasi topik (T-48), & ketersediaan (T-39)
                 Route::get('/dosen', [MahasiswaController::class, 'daftarDosen']);
+                Route::get('/dosen/rekomendasi', [MahasiswaController::class, 'rekomendasiDosen']);
                 Route::get('/dosen/{id}/ketersediaan', [MahasiswaKetersediaanController::class, 'index']);
 
                 // Permohonan bimbingan
@@ -290,6 +292,13 @@ Route::prefix('v1')->group(function () {
                 Route::prefix('chatbot/analytics')->group(function () {
                     Route::get('/top-questions', [ChatbotAnalyticsController::class, 'topQuestions']);
                     Route::get('/unanswered',    [ChatbotAnalyticsController::class, 'unanswered']);
+                });
+
+                // Konfigurasi & Log Rekomendasi Dosen (T-47, T-52, F-SUP-06)
+                Route::prefix('rekomendasi')->group(function () {
+                    Route::get('/konfigurasi',   [RekomendasiKonfigurasiController::class, 'show']);
+                    Route::put('/konfigurasi',   [RekomendasiKonfigurasiController::class, 'update']);
+                    Route::get('/log-pencarian', [RekomendasiKonfigurasiController::class, 'logs']);
                 });
 
                 // Manajemen Mahasiswa
