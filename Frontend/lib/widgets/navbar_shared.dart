@@ -5,8 +5,13 @@ import 'package:tassist/theme/app_theme.dart';
 
 class NavItem {
   final IconData icon;
+  final IconData? activeIcon;
   final String label;
-  const NavItem({required this.icon, required this.label});
+  const NavItem({
+    required this.icon,
+    this.activeIcon,
+    required this.label,
+  });
 }
 
 class NavbarShell extends StatelessWidget {
@@ -44,12 +49,13 @@ class NavbarShell extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(outerRadius),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 padding: const EdgeInsets.all(5),
                 decoration: AppTheme.glassDecorationOf(
                   context,
                   radius: outerRadius,
+                  color: AppTheme.surfaceOf(context).withValues(alpha: 0.92),
                   borderWidth: 1.4,
                 ),
                 child: Row(
@@ -105,34 +111,25 @@ class _NavbarItemWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
-          item.icon,
-          size: isActive ? 22 : 24,
+          isActive ? (item.activeIcon ?? item.icon) : item.icon,
+          size: 22,
           color: isActive ? Colors.white : inactiveIconColor,
         ),
-        if (isActive) ...[
-          const SizedBox(height: 2),
-          Text(
-            item.label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 11.5,
-              fontWeight: FontWeight.w600,
-              height: 1.1,
-            ),
+        const SizedBox(height: 2),
+        Text(
+          item.label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isActive ? Colors.white : inactiveIconColor,
+            fontSize: 11.5,
+            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+            height: 1.1,
           ),
-        ],
+        ),
       ],
     );
-
-    if (isActive && labelAnimation != null) {
-      content = FadeTransition(
-        opacity: labelAnimation!,
-        child: content,
-      );
-    }
 
     if (scaleAnimation != null) {
       content = AnimatedBuilder(

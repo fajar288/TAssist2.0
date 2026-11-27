@@ -63,9 +63,21 @@ class _CustomBottomNavState extends State<CustomBottomNav>
   late List<Animation<double>> _labelAnimations;
 
   static const List<NavItem> _items = [
-    NavItem(icon: Icons.home_rounded, label: 'home'),
-    NavItem(icon: Icons.calendar_month_rounded, label: 'schedule'),
-    NavItem(icon: Icons.person_rounded, label: 'students'),
+    NavItem(
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
+      label: 'Beranda',
+    ),
+    NavItem(
+      icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month_rounded,
+      label: 'Jadwal',
+    ),
+    NavItem(
+      icon: Icons.groups_outlined,
+      activeIcon: Icons.groups_rounded,
+      label: 'Mahasiswa',
+    ),
   ];
 
   @override

@@ -21,10 +21,22 @@ class _NavbarMahasiswaState extends State<NavbarMahasiswa>
   late List<Animation<double>> _scaleAnimations;
   late List<Animation<double>> _labelAnimations;
 
-  final List<NavItem> _items = [
-    const NavItem(icon: Icons.home_rounded, label: 'home'),
-    const NavItem(icon: Icons.calendar_month_rounded, label: 'schedule'),
-    const NavItem(icon: Icons.upload_file_rounded, label: 'upload'),
+  final List<NavItem> _items = const [
+    NavItem(
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
+      label: 'Beranda',
+    ),
+    NavItem(
+      icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month_rounded,
+      label: 'Jadwal',
+    ),
+    NavItem(
+      icon: Icons.upload_file_outlined,
+      activeIcon: Icons.upload_file_rounded,
+      label: 'Unggah',
+    ),
   ];
 
   @override

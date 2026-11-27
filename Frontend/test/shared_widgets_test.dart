@@ -202,13 +202,25 @@ void main() {
 
   group('NavbarShell & CustomBottomNav', () {
     const items = [
-      NavItem(icon: Icons.home_rounded, label: 'home'),
-      NavItem(icon: Icons.more_time_rounded, label: 'schedule'),
-      NavItem(icon: Icons.file_upload_outlined, label: 'upload'),
+      NavItem(
+        icon: Icons.home_outlined,
+        activeIcon: Icons.home_rounded,
+        label: 'Beranda',
+      ),
+      NavItem(
+        icon: Icons.calendar_month_outlined,
+        activeIcon: Icons.calendar_month_rounded,
+        label: 'Jadwal',
+      ),
+      NavItem(
+        icon: Icons.upload_file_outlined,
+        activeIcon: Icons.upload_file_rounded,
+        label: 'Unggah',
+      ),
     ];
 
     testWidgets(
-      'renders frosted glass capsule, active navy pill with label, and inactive icons only',
+      'renders frosted glass capsule, active navy pill with filled icon, and labels on all tabs',
       (tester) async {
         tester.view.physicalSize = const Size(320, 640);
         tester.view.devicePixelRatio = 1.0;
@@ -238,16 +250,18 @@ void main() {
 
         expect(tester.takeException(), isNull);
         expect(find.byType(BackdropFilter), findsOneWidget);
-        expect(find.text('home'), findsOneWidget);
-        expect(find.text('schedule'), findsNothing);
-        expect(find.text('upload'), findsNothing);
+        expect(find.text('Beranda'), findsOneWidget);
+        expect(find.text('Jadwal'), findsOneWidget);
+        expect(find.text('Unggah'), findsOneWidget);
+        expect(find.byIcon(Icons.home_rounded), findsOneWidget);
+        expect(find.byIcon(Icons.calendar_month_outlined), findsOneWidget);
 
-        await tester.tap(find.byIcon(Icons.more_time_rounded));
+        await tester.tap(find.byIcon(Icons.calendar_month_outlined));
         await tester.pumpAndSettle();
 
         expect(currentIndex, 1);
-        expect(find.text('schedule'), findsOneWidget);
-        expect(find.text('home'), findsNothing);
+        expect(find.byIcon(Icons.calendar_month_rounded), findsOneWidget);
+        expect(find.byIcon(Icons.home_outlined), findsOneWidget);
       },
     );
 
@@ -284,15 +298,15 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.byType(NavbarShell), findsOneWidget);
-      expect(find.text('home'), findsOneWidget);
-      expect(find.text('students'), findsNothing);
+      expect(find.text('Beranda'), findsOneWidget);
+      expect(find.text('Jadwal'), findsOneWidget);
+      expect(find.text('Mahasiswa'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.person_rounded));
+      await tester.tap(find.byIcon(Icons.groups_outlined));
       await tester.pumpAndSettle();
 
       expect(selected, 2);
-      expect(find.text('students'), findsOneWidget);
-      expect(find.text('home'), findsNothing);
+      expect(find.byIcon(Icons.groups_rounded), findsOneWidget);
     });
   });
 

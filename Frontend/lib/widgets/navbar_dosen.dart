@@ -21,11 +21,23 @@ class _NavbarDosenState extends State<NavbarDosen>
   late List<Animation<double>> _scaleAnimations;
   late List<Animation<double>> _labelAnimations;
 
-  // ── 3 tab dosen: Home / Manage Schedule / Manage Mahasiswa ──
-  final List<NavItem> _items = [
-    NavItem(icon: Icons.home_rounded,              label: 'home'),
-    NavItem(icon: Icons.edit_calendar_rounded,     label: 'jadwal'),
-    NavItem(icon: Icons.supervisor_account_rounded, label: 'mahasiswa'),
+  // ── 3 tab dosen: Beranda / Jadwal / Mahasiswa ──
+  final List<NavItem> _items = const [
+    NavItem(
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
+      label: 'Beranda',
+    ),
+    NavItem(
+      icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month_rounded,
+      label: 'Jadwal',
+    ),
+    NavItem(
+      icon: Icons.groups_outlined,
+      activeIcon: Icons.groups_rounded,
+      label: 'Mahasiswa',
+    ),
   ];
 
   @override
