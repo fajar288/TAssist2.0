@@ -132,12 +132,12 @@ class RiskSnapshotModel {
   IconData get icon {
     switch (level.toLowerCase()) {
       case 'berisiko':
-        return Icons.error_rounded;
+        return Icons.error_outline;
       case 'perlu_perhatian':
-        return Icons.warning_amber_rounded;
+        return Icons.warning_amber_outlined;
       case 'aman':
       default:
-        return Icons.check_circle_rounded;
+        return Icons.check_circle_outline;
     }
   }
 }

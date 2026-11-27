@@ -115,7 +115,7 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
               ),
               IconButton(
                 onPressed: _lines.isEmpty ? null : _clear,
-                icon: const Icon(Icons.refresh, size: 20),
+                icon: const Icon(Icons.refresh_outlined, size: 20),
                 tooltip: 'Bersihkan',
                 color: textSecondary,
               ),
@@ -199,7 +199,7 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : const Icon(Icons.check, size: 18),
+                      : const Icon(Icons.check_outlined, size: 18),
                   label: const Text('Gunakan Tanda Tangan', style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),

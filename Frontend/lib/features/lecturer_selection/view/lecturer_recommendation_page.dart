@@ -32,7 +32,8 @@ class LecturerRecommendationPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Rekomendasi Dosen'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          tooltip: 'Kembali',
+          icon: const Icon(Icons.arrow_back_ios_new_outlined, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -299,7 +300,7 @@ class _LecturerRecommendationViewState
     final response = _response;
     if (response == null) {
       return const AppEmptyStateWidget(
-        icon: Icons.manage_search_rounded,
+        icon: Icons.manage_search_outlined,
         title: 'Cari Rekomendasi Pembimbing',
         subtitle:
             'Masukkan rencana topik Tugas Akhir Anda untuk mendapatkan peringkat dosen pembimbing terbaik.',
@@ -314,7 +315,7 @@ class _LecturerRecommendationViewState
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.person_off_rounded,
+                Icons.person_off_outlined,
                 size: 46,
                 color: AppTheme.textMutedOf(context),
               ),
@@ -400,7 +401,7 @@ class _LecturerRecommendationViewState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Icon(
-                    Icons.info_outline_rounded,
+                    Icons.info_outline,
                     color: AppTheme.warning,
                     size: 18,
                   ),
@@ -431,7 +432,7 @@ class _LecturerRecommendationViewState
               ),
               if (response.totalDosenDikecualikanKuotaHabis > 0)
                 _InfoChip(
-                  icon: Icons.block_rounded,
+                  icon: Icons.block_outlined,
                   label:
                       '${response.totalDosenDikecualikanKuotaHabis} kuota penuh dikecualikan',
                   bg: AppTheme.surfaceVariantOf(context),

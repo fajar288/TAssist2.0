@@ -44,26 +44,13 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   String get _statusLabel {
     switch (student.status) {
       case 'active':
-        return 'Active';
+        return 'Aktif';
       case 'warning':
-        return 'Needs Attention';
+        return 'Perlu Perhatian';
       case 'completed':
-        return 'Completed';
+        return 'Selesai';
       default:
         return student.status;
-    }
-  }
-
-  Color get _avatarColor {
-    switch (student.status) {
-      case 'active':
-        return AppTheme.primaryLight;
-      case 'warning':
-        return AppTheme.pending;
-      case 'completed':
-        return AppTheme.accepted;
-      default:
-        return AppTheme.textSecondary;
     }
   }
 
@@ -176,34 +163,16 @@ class _StudentDetailPageState extends State<StudentDetailPage>
     return SliverAppBar(
       expandedHeight: 240,
       pinned: true,
-      backgroundColor: _avatarColor,
-      leading: GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-          ),
-          child: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Colors.white, size: 16),
+      backgroundColor: AppTheme.primaryDark,
+      leading: IconButton(
+        tooltip: 'Kembali',
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(
+          Icons.arrow_back_ios_new_outlined,
+          color: Colors.white,
+          size: 20,
         ),
       ),
-      actions: [
-        Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-          ),
-          child: IconButton(
-            icon: const Icon(Icons.more_vert_rounded,
-                color: Colors.white, size: 20),
-            onPressed: () => _showBottomSheet(context),
-            padding: EdgeInsets.zero,
-          ),
-        ),
-      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
           color: AppTheme.primaryDark,
@@ -284,7 +253,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                               Text(
                                 student.nim,
                                 style: TextStyle(
-                                  color: Colors.white.withOpacity(0.7),
+                                  color: Colors.white.withValues(alpha: 0.78),
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -315,9 +284,9 @@ class _StudentDetailPageState extends State<StudentDetailPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Overall Progress',
+                'Progres Keseluruhan',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       fontSize: 14,
                     ),
               ),
@@ -344,14 +313,14 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           const SizedBox(height: 14),
           Row(
             children: [
-              _miniStat(context, '${student.meetingCount}', 'Meetings',
-                  Icons.calendar_today_rounded, AppTheme.primaryLight),
+              _miniStat(context, '${student.meetingCount}', 'Pertemuan',
+                  Icons.calendar_today_outlined, AppTheme.primaryLight),
               _divider(),
               _miniStat(context, '${student.taskCompleted}/${student.taskCount}',
-                  'Tasks Done', Icons.task_alt_rounded, AppTheme.accepted),
+                  'Tugas Selesai', Icons.task_alt_outlined, AppTheme.accepted),
               _divider(),
-              _miniStat(context, student.counselingSince, 'Since',
-                  Icons.access_time_rounded, AppTheme.pending),
+              _miniStat(context, student.counselingSince, 'Sejak',
+                  Icons.schedule_outlined, AppTheme.pending),
             ],
           ),
         ],
@@ -369,7 +338,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           Text(
             value,
             style: const TextStyle(
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
               fontSize: 13,
             ),
             textAlign: TextAlign.center,
@@ -378,7 +347,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
             label,
             style: TextStyle(
               fontSize: 11,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              color: AppTheme.textSecondaryOf(context),
             ),
           ),
         ],
@@ -406,25 +375,25 @@ class _StudentDetailPageState extends State<StudentDetailPage>
         StudentInfoCard(
           label: 'NIM',
           value: student.nim,
-          icon: Icons.badge_rounded,
+          icon: Icons.badge_outlined,
           accentColor: AppTheme.primaryLight,
         ),
         StudentInfoCard(
-          label: 'Major',
+          label: 'Program Studi',
           value: student.major,
-          icon: Icons.school_rounded,
+          icon: Icons.school_outlined,
           accentColor: AppTheme.info,
         ),
         StudentInfoCard(
-          label: 'Batch Year',
+          label: 'Angkatan',
           value: student.year,
-          icon: Icons.calendar_month_rounded,
+          icon: Icons.calendar_month_outlined,
           accentColor: AppTheme.pending,
         ),
         StudentInfoCard(
-          label: 'Counseling Since',
+          label: 'Mulai Bimbingan',
           value: student.counselingSince,
-          icon: Icons.handshake_rounded,
+          icon: Icons.handshake_outlined,
           accentColor: AppTheme.accepted,
         ),
       ],
@@ -435,7 +404,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
     return Text(
       title,
       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             fontSize: 15,
             letterSpacing: -0.2,
           ),
@@ -443,48 +412,35 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   }
 
   Widget _buildMenuActions(BuildContext context) {
+    final primary = AppTheme.primaryOf(context);
     return Column(
       children: [
         StudentMenuTile(
-          title: 'Progress',
-          subtitle: 'View and update thesis progress',
-          icon: Icons.trending_up_rounded,
-          iconColor: AppTheme.primaryLight,
+          title: 'Progres & Checklist',
+          subtitle: 'Pantau persentase progres dan item checklist TA',
+          icon: Icons.trending_up_outlined,
+          iconColor: primary,
           onTap: _openProgressPage,
         ),
         StudentMenuTile(
-          title: 'Checklist',
-          subtitle: 'Manage thesis checklist items',
-          icon: Icons.checklist_rounded,
-          iconColor: AppTheme.accepted,
-          onTap: _openProgressPage,
-        ),
-        StudentMenuTile(
-          title: 'Meetings',
-          subtitle: '${student.meetingCount} sessions recorded',
-          icon: Icons.video_call_rounded,
-          iconColor: AppTheme.info,
-          onTap: () => _showSnackBar(context, 'Meetings feature coming soon'),
-        ),
-        StudentMenuTile(
-          title: 'Documents',
-          subtitle: 'Uploaded files & feedback',
-          icon: Icons.folder_rounded,
-          iconColor: AppTheme.pending,
+          title: 'Dokumen TA',
+          subtitle: 'Berkas unggahan, anotasi & masukan dosen',
+          icon: Icons.folder_outlined,
+          iconColor: primary,
           onTap: _openDocumentsPage,
         ),
         StudentMenuTile(
           title: 'Berita Acara',
-          subtitle: 'Generate & approve supervision minutes',
-          icon: Icons.assignment_turned_in_rounded,
-          iconColor: AppTheme.primary,
+          subtitle: 'Buat & sahkan catatan resmi bimbingan',
+          icon: Icons.fact_check_outlined,
+          iconColor: primary,
           onTap: _openBeritaAcaraPage,
         ),
         StudentMenuTile(
-          title: 'Export Riwayat (PDF / Excel)',
-          subtitle: 'Download meetings, versions & progress summary',
+          title: 'Ekspor Riwayat (PDF / Excel)',
+          subtitle: 'Unduh ringkasan jadwal, versi & progres',
           icon: Icons.file_download_outlined,
-          iconColor: AppTheme.info,
+          iconColor: primary,
           onTap: () {
             final bimbinganId = student.bimbinganIdAsInt;
             if (bimbinganId == null) {
@@ -498,8 +454,8 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.picture_as_pdf_rounded),
-                      title: const Text('Export PDF'),
+                      leading: const Icon(Icons.picture_as_pdf_outlined),
+                      title: const Text('Ekspor PDF'),
                       onTap: () {
                         Navigator.pop(ctx);
                         ExportHelper.exportBimbinganHistory(
@@ -511,8 +467,8 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                       },
                     ),
                     ListTile(
-                      leading: const Icon(Icons.table_view_rounded),
-                      title: const Text('Export Excel (.xlsx)'),
+                      leading: const Icon(Icons.table_chart_outlined),
+                      title: const Text('Ekspor Excel (.xlsx)'),
                       onTap: () {
                         Navigator.pop(ctx);
                         ExportHelper.exportBimbinganHistory(
@@ -534,25 +490,22 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   }
 
   Widget _buildContactSection(BuildContext context) {
+    final primary = AppTheme.primaryOf(context);
     return Column(
       children: [
         StudentMenuTile(
           title: 'Email',
           subtitle: student.email,
-          icon: Icons.email_rounded,
-          iconColor: AppTheme.primaryLight,
-          onTap: () => _showSnackBar(context, 'Opening email...'),
-          trailing: Icon(Icons.open_in_new_rounded,
-              size: 14, color: AppTheme.textMutedOf(context)),
+          icon: Icons.email_outlined,
+          iconColor: primary,
+          onTap: () {},
         ),
         StudentMenuTile(
-          title: 'Phone',
+          title: 'Telepon',
           subtitle: student.phone,
-          icon: Icons.phone_rounded,
-          iconColor: AppTheme.accepted,
-          onTap: () => _showSnackBar(context, 'Calling ${student.name}...'),
-          trailing: const Icon(Icons.call_rounded,
-              size: 16, color: AppTheme.accepted),
+          icon: Icons.phone_outlined,
+          iconColor: primary,
+          onTap: () {},
         ),
       ],
     );
@@ -563,22 +516,22 @@ class _StudentDetailPageState extends State<StudentDetailPage>
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.declinedBg,
+        color: AppTheme.declinedBgOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.declinedBorder, width: 1),
+        border: Border.all(color: AppTheme.declinedBorderOf(context), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.warning_amber_rounded,
+              const Icon(Icons.warning_amber_outlined,
                   color: AppTheme.declined, size: 18),
               const SizedBox(width: 7),
               Text(
-                'Danger Zone',
+                'Zona Berbahaya',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       color: AppTheme.declined,
                       fontSize: 14,
                     ),
@@ -587,10 +540,10 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           ),
           const SizedBox(height: 8),
           Text(
-            'Ending counseling will permanently remove this student from your active advisee list. This action cannot be undone.',
+            'Mengakhiri bimbingan akan menghapus mahasiswa ini dari daftar bimbingan aktif Anda secara permanen.',
             style: TextStyle(
               fontSize: 12,
-              color: AppTheme.declined.withValues(alpha: 0.75),
+              color: AppTheme.textPrimaryOf(context),
               height: 1.5,
             ),
           ),
@@ -599,8 +552,8 @@ class _StudentDetailPageState extends State<StudentDetailPage>
             width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => _confirmEndCounseling(context),
-              icon: const Icon(Icons.link_off_rounded, size: 16),
-              label: const Text('End Counseling'),
+              icon: const Icon(Icons.link_off_outlined, size: 16),
+              label: const Text('Akhiri Bimbingan'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppTheme.declined,
                 side: const BorderSide(color: AppTheme.declined, width: 1.5),
@@ -612,56 +565,6 @@ class _StudentDetailPageState extends State<StudentDetailPage>
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
-      ),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppTheme.cardBorderOf(ctx),
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.edit_rounded),
-              title: const Text('Edit Student Info'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _showSnackBar(context, 'Edit feature coming soon');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.share_rounded),
-              title: const Text('Share Profile'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _showSnackBar(context, 'Share feature coming soon');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.print_rounded),
-              title: const Text('Print Report'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _showSnackBar(context, 'Print feature coming soon');
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

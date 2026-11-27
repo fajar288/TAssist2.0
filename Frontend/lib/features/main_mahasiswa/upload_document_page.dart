@@ -145,30 +145,30 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
   IconData _documentIcon(String extension) {
     switch (extension.toLowerCase()) {
       case 'pdf':
-        return Icons.picture_as_pdf_rounded;
+        return Icons.picture_as_pdf_outlined;
       case 'doc':
       case 'docx':
-        return Icons.article_rounded;
+        return Icons.article_outlined;
       case 'ppt':
       case 'pptx':
-        return Icons.slideshow_rounded;
+        return Icons.slideshow_outlined;
       case 'zip':
-        return Icons.folder_zip_rounded;
+        return Icons.folder_zip_outlined;
       default:
-        return Icons.description_rounded;
+        return Icons.description_outlined;
     }
   }
 
   String _formatStatus(String? status) {
     switch (status?.toLowerCase()) {
       case 'draft':
-        return 'Draft';
+        return 'Draf';
       case 'diajukan':
-        return 'Submitted';
+        return 'Diajukan';
       case 'direvisi':
-        return 'Needs Revision';
+        return 'Perlu Revisi';
       case 'disetujui':
-        return 'Approved';
+        return 'Disetujui';
       default:
         return status ?? '-';
     }
@@ -869,8 +869,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     child: versions.isEmpty
                         ? const AppEmptyStateWidget(
                             compact: true,
-                            icon: Icons.history_rounded,
-                            title: 'No version history yet.',
+                            icon: Icons.history_outlined,
+                            title: 'Belum ada riwayat versi.',
                           )
                         : ListView.builder(
                             itemCount: versions.length,
@@ -939,7 +939,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Dosen Pembimbing Comments',
+                    'Komentar Dosen Pembimbing',
                     style: TextStyle(
                       color: AppTheme.textPrimaryOf(context),
                       fontSize: 20,
@@ -959,8 +959,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     child: comments.isEmpty
                         ? const AppEmptyStateWidget(
                             compact: true,
-                            icon: Icons.chat_bubble_outline_rounded,
-                            title: 'No feedback yet.',
+                            icon: Icons.chat_bubble_outline,
+                            title: 'Belum ada masukan.',
                           )
                         : ListView.builder(
                             itemCount: comments.length,

@@ -83,7 +83,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.error_outline), findsOneWidget);
       expect(find.text('Gagal Memuat'), findsOneWidget);
       expect(find.text('Koneksi bermasalah'), findsOneWidget);
 
@@ -143,16 +143,16 @@ void main() {
       await tester.pump();
       expect(find.text('Berhasil disimpan'), findsOneWidget);
       expect(find.text('Sukses'), findsOneWidget);
-      expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.check_circle_outlined), findsOneWidget);
 
       AppSnackBars.error(capturedContext, 'Terjadi kesalahan');
       await tester.pump();
       expect(find.text('Berhasil disimpan'), findsNothing);
       expect(find.text('Terjadi kesalahan'), findsOneWidget);
-      expect(find.byIcon(Icons.error_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.error_outline), findsOneWidget);
 
       // Tap close icon to dismiss
-      await tester.tap(find.byIcon(Icons.close_rounded));
+      await tester.tap(find.byIcon(Icons.close_outlined));
       await tester.pump();
       expect(find.text('Terjadi kesalahan'), findsNothing);
 

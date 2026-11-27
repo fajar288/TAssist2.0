@@ -281,8 +281,9 @@ class _LecturersPageState extends State<LecturersPage> {
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
+              tooltip: 'Kembali',
               icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
+                Icons.arrow_back_ios_new_outlined,
                 color: textPrimary,
                 size: 22,
               ),
@@ -290,7 +291,7 @@ class _LecturersPageState extends State<LecturersPage> {
             ),
           ),
           Text(
-            'Lecturers',
+            'Daftar Dosen',
             style: TextStyle(
               color: textPrimary,
               fontSize: 22,
@@ -314,7 +315,7 @@ class _LecturersPageState extends State<LecturersPage> {
         children: [
           Expanded(
             child: _ModeTabButton(
-              icon: Icons.grid_view_rounded,
+              icon: Icons.grid_view_outlined,
               label: 'Semua Dosen',
               isSelected: !_isRecommendationMode,
               onTap: () {
@@ -349,7 +350,7 @@ class _LecturersPageState extends State<LecturersPage> {
     final dividerColor = AppTheme.cardBorderOf(context);
 
     return Container(
-      height: 46,
+      height: 48,
       decoration: BoxDecoration(
         color: AppTheme.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -373,7 +374,7 @@ class _LecturersPageState extends State<LecturersPage> {
               child: Row(
                 children: [
                   Icon(
-                    Icons.search_rounded,
+                    Icons.search_outlined,
                     size: 20,
                     color: textPrimary,
                   ),
@@ -384,7 +385,7 @@ class _LecturersPageState extends State<LecturersPage> {
                       onChanged: (_) => setState(() {}),
                       style: TextStyle(fontSize: 14, color: textPrimary),
                       decoration: InputDecoration(
-                        hintText: 'Search name, expertise, or NID',
+                        hintText: 'Cari nama, keahlian, atau NID',
                         hintStyle: TextStyle(
                           color: textMuted,
                           fontSize: 14,
@@ -403,16 +404,16 @@ class _LecturersPageState extends State<LecturersPage> {
           ),
           _buildControlTab(
             flex: 2,
-            icon: Icons.tune_rounded,
-            label: 'Filters',
+            icon: Icons.tune_outlined,
+            label: 'Filter',
             onTap: _toggleFilterDropdown,
             showBadge: _activeFilterCount > 0,
             hasBorder: true,
           ),
           _buildControlTab(
             flex: 2,
-            icon: Icons.view_agenda_rounded,
-            label: 'View',
+            icon: Icons.view_agenda_outlined,
+            label: 'Tampilan',
             onTap: _toggleViewDropdown,
           ),
         ],
@@ -588,17 +589,17 @@ class _LecturersPageState extends State<LecturersPage> {
 
   Widget _buildEmptyState() {
     return const AppEmptyStateWidget(
-      icon: Icons.person_search_rounded,
-      title: 'No lecturers found.',
+      icon: Icons.person_search_outlined,
+      title: 'Dosen tidak ditemukan.',
       subtitle: 'Coba ubah kata kunci pencarian atau filter bidang keahlian.',
     );
   }
 
   Widget _buildErrorState() {
     return AppErrorWidget(
-      title: 'Failed to load lecturers',
+      title: 'Gagal memuat daftar dosen',
       message: _errorMessage ?? '-',
-      retryLabel: 'Try Again',
+      retryLabel: 'Coba Lagi',
       onRetry: _loadLecturers,
     );
   }

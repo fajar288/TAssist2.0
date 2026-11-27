@@ -39,26 +39,18 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
         slivers: [
           SliverAppBar(
             pinned: true,
-            backgroundColor: AppTheme.primary,
-            leading: Padding(
-              padding: const EdgeInsets.all(8),
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
+            backgroundColor: AppTheme.primaryDark,
+            leading: IconButton(
+              tooltip: 'Kembali',
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: Colors.white,
+                size: 20,
               ),
             ),
             title: Text(
-              'Meeting Request',
+              'Pengajuan Jadwal',
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 17,
@@ -181,13 +173,13 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             child: Row(
               children: [
                 const Icon(
-                  Icons.event_rounded,
+                  Icons.event_outlined,
                   color: Colors.white,
                   size: 18,
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Proposed Schedule',
+                  'Jadwal yang Diajukan',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 13.5,
@@ -205,8 +197,8 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                   children: [
                     Expanded(
                       child: _ScheduleBlock(
-                        icon: Icons.calendar_today_rounded,
-                        topLabel: 'Date',
+                        icon: Icons.calendar_today_outlined,
+                        topLabel: 'Tanggal',
                         mainValue: widget.request.meetingDate.day.toString(),
                         subValue:
                             '${_monthName(widget.request.meetingDate.month)} ${widget.request.meetingDate.year}',
@@ -221,18 +213,18 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     ),
                     Expanded(
                       child: _ScheduleBlock(
-                        icon: Icons.access_time_rounded,
-                        topLabel: 'Time',
+                        icon: Icons.schedule_outlined,
+                        topLabel: 'Waktu',
                         mainValue: widget.request.meetingTime,
                         subValue: '',
-                        bottomLabel: 'WIB (Local Time)',
+                        bottomLabel: 'WIB (Waktu Lokal)',
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 18),
                 _InfoTile(
-                  icon: Icons.place_rounded,
+                  icon: Icons.place_outlined,
                   label: 'Mode',
                   value: _formatMode(widget.request.mode),
                 ),
@@ -252,7 +244,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Meeting Mode',
+            'Mode Bimbingan',
             style: GoogleFonts.poppins(
               color: AppTheme.textPrimaryOf(context),
               fontSize: 14.5,
@@ -264,8 +256,8 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             children: [
               Expanded(
                 child: _ModeOption(
-                  label: 'Online',
-                  icon: Icons.videocam_rounded,
+                  label: 'Daring',
+                  icon: Icons.videocam_outlined,
                   selected: _selectedMode == 'online',
                   onTap: () => setState(() => _selectedMode = 'online'),
                 ),
@@ -273,8 +265,8 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: _ModeOption(
-                  label: 'Offline',
-                  icon: Icons.meeting_room_rounded,
+                  label: 'Tatap Muka',
+                  icon: Icons.meeting_room_outlined,
                   selected: _selectedMode == 'offline',
                   onTap: () => setState(() => _selectedMode = 'offline'),
                 ),
@@ -302,14 +294,14 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
                 child: Icon(
-                  Icons.description_rounded,
+                  Icons.description_outlined,
                   size: 16,
                   color: AppTheme.primaryOf(context),
                 ),
               ),
               const SizedBox(width: 10),
               Text(
-                'Note / Description',
+                'Catatan / Deskripsi',
                 style: GoogleFonts.poppins(
                   color: AppTheme.textPrimaryOf(context),
                   fontSize: 14.5,
@@ -345,8 +337,8 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
       decoration: AppTheme.cardDecorationOf(context),
       padding: const EdgeInsets.all(18),
       child: _InfoTile(
-        icon: Icons.person_pin_circle_rounded,
-        label: 'Proposed By',
+        icon: Icons.person_pin_circle_outlined,
+        label: 'Diajukan Oleh',
         value: '${widget.request.pengajuName} (${widget.request.pengajuRole})',
       ),
     );
@@ -359,8 +351,8 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: _isProcessing ? null : () => _handleAccept(context),
-            icon: const Icon(Icons.check_circle_outline_rounded, size: 20),
-            label: Text(_isProcessing ? 'Processing...' : 'Accept Meeting'),
+            icon: const Icon(Icons.check_circle_outline, size: 20),
+            label: Text(_isProcessing ? 'Memproses...' : 'Terima Jadwal'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.accepted,
               foregroundColor: Colors.white,
@@ -381,8 +373,8 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: _isProcessing ? null : () => _handleDecline(context),
-            icon: const Icon(Icons.close_rounded, size: 20),
-            label: Text(_isProcessing ? 'Processing...' : 'Decline Meeting'),
+            icon: const Icon(Icons.close_outlined, size: 20),
+            label: Text(_isProcessing ? 'Memproses...' : 'Tolak Jadwal'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppTheme.declined,
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -414,29 +406,29 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
     String text;
 
     if (isAccepted) {
-      bgColor = AppTheme.acceptedBg;
-      borderColor = AppTheme.acceptedBorder;
+      bgColor = AppTheme.acceptedBgOf(context);
+      borderColor = AppTheme.acceptedBorderOf(context);
       textColor = AppTheme.accepted;
-      icon = Icons.event_available_rounded;
-      text = 'Meeting has been confirmed.';
+      icon = Icons.event_available_outlined;
+      text = 'Jadwal telah dikonfirmasi.';
     } else if (isDeclined) {
-      bgColor = AppTheme.declinedBg;
-      borderColor = AppTheme.declinedBorder;
+      bgColor = AppTheme.declinedBgOf(context);
+      borderColor = AppTheme.declinedBorderOf(context);
       textColor = AppTheme.declined;
-      icon = Icons.event_busy_rounded;
-      text = 'Meeting has been declined.';
+      icon = Icons.event_busy_outlined;
+      text = 'Jadwal telah ditolak.';
     } else if (isWaitingStudent) {
-      bgColor = AppTheme.warningBg;
-      borderColor = AppTheme.warningBorder;
+      bgColor = AppTheme.warningBgOf(context);
+      borderColor = AppTheme.warningBorderOf(context);
       textColor = AppTheme.warning;
-      icon = Icons.hourglass_top_rounded;
-      text = 'Waiting for student confirmation.';
+      icon = Icons.hourglass_top_outlined;
+      text = 'Menunggu konfirmasi mahasiswa.';
     } else {
-      bgColor = AppTheme.warningBg;
-      borderColor = AppTheme.warningBorder;
+      bgColor = AppTheme.warningBgOf(context);
+      borderColor = AppTheme.warningBorderOf(context);
       textColor = AppTheme.warning;
-      icon = Icons.info_outline_rounded;
-      text = 'This meeting is pending.';
+      icon = Icons.info_outline;
+      text = 'Jadwal ini masih menunggu konfirmasi.';
     }
 
     return Container(

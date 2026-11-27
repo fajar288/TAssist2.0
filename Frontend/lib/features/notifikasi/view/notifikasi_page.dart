@@ -254,10 +254,10 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
 
               _buildDetailRow(
                 icon: isRead
-                    ? Icons.mark_email_read_rounded
-                    : Icons.mark_email_unread_rounded,
+                    ? Icons.mark_email_read_outlined
+                    : Icons.mark_email_unread_outlined,
                 label: 'Status',
-                value: isRead ? 'Read' : 'Unread',
+                value: isRead ? 'Sudah dibaca' : 'Belum dibaca',
               ),
 
               const SizedBox(height: 22),
@@ -275,7 +275,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                     ),
                   ),
                   child: const Text(
-                    'Close',
+                    'Tutup',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
@@ -346,13 +346,35 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
   IconData _iconForType(String? type) {
     final value = type?.toLowerCase() ?? '';
 
-    if (value.contains('dokumen')) return Icons.description_rounded;
-    if (value.contains('feedback')) return Icons.comment_rounded;
-    if (value.contains('jadwal')) return Icons.event_rounded;
-    if (value.contains('permohonan')) return Icons.person_add_alt_1_rounded;
-    if (value.contains('progres')) return Icons.check_circle_rounded;
+    if (value.contains('dokumen')) return Icons.description_outlined;
+    if (value.contains('feedback')) return Icons.chat_bubble_outline;
+    if (value.contains('jadwal')) return Icons.event_outlined;
+    if (value.contains('permohonan')) return Icons.person_add_outlined;
+    if (value.contains('progres')) return Icons.check_circle_outline;
 
-    return Icons.notifications_rounded;
+    return Icons.notifications_outlined;
+  }
+
+  String _formatDateLabel(String raw) {
+    final dt = DateTime.tryParse(raw)?.toLocal();
+    if (dt == null) return raw;
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
+    ];
+    final h = dt.hour.toString().padLeft(2, '0');
+    final m = dt.minute.toString().padLeft(2, '0');
+    return '${dt.day} ${months[dt.month - 1]} ${dt.year}, $h:$m';
   }
 
   Color _iconColorForType(String? type) {
@@ -379,23 +401,9 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
         foregroundColor: AppTheme.textPrimaryOf(context),
         actions: [
           IconButton(
-            tooltip: _isUnreadOnly ? 'Tampilkan semua' : 'Tampilkan belum dibaca',
-            onPressed: () {
-              setState(() {
-                _isUnreadOnly = !_isUnreadOnly;
-              });
-              _loadNotifikasi();
-            },
-            icon: Icon(
-              _isUnreadOnly
-                  ? Icons.mark_email_read_outlined
-                  : Icons.mark_email_unread_outlined,
-            ),
-          ),
-          IconButton(
             tooltip: 'Tandai semua dibaca',
             onPressed: _unreadCount > 0 ? _markAllAsRead : null,
-            icon: const Icon(Icons.done_all_rounded),
+            icon: const Icon(Icons.done_all_outlined),
           ),
         ],
       ),
@@ -430,13 +438,22 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
     if (_notifikasi.isEmpty) {
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
-          const SizedBox(height: 80),
+          _buildHeader(),
+          const SizedBox(height: 48),
           AppEmptyStateWidget(
-            icon: Icons.notifications_none_rounded,
+            icon: Icons.notifications_off_outlined,
             title: _isUnreadOnly
                 ? 'Belum ada notifikasi yang belum dibaca.'
                 : 'Belum ada notifikasi.',
+            actionLabel: _isUnreadOnly ? 'Tampilkan Semua' : null,
+            onAction: _isUnreadOnly
+                ? () {
+                    setState(() => _isUnreadOnly = false);
+                    _loadNotifikasi();
+                  }
+                : null,
           ),
         ],
       );
@@ -457,51 +474,99 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
   }
 
   Widget _buildHeader() {
+    final primary = AppTheme.primaryOf(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryGhostOf(context),
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            ),
-            child: Icon(
-              Icons.notifications_active_rounded,
-              color: AppTheme.primaryOf(context),
-            ),
+          Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryGhostOf(context),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                ),
+                child: Icon(
+                  Icons.notifications_active_outlined,
+                  color: primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _unreadCount > 0
+                          ? '$_unreadCount belum dibaca'
+                          : 'Semua sudah dibaca',
+                      style: TextStyle(
+                        color: AppTheme.textPrimaryOf(context),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _isUnreadOnly
+                          ? 'Menampilkan notifikasi yang belum dibaca.'
+                          : 'Menampilkan semua notifikasi terbaru.',
+                      style: TextStyle(
+                        color: AppTheme.textSecondaryOf(context),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _unreadCount > 0
-                      ? '$_unreadCount belum dibaca'
-                      : 'Semua sudah dibaca',
-                  style: TextStyle(
-                    color: AppTheme.textPrimaryOf(context),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              FilterChip(
+                label: const Text('Semua'),
+                selected: !_isUnreadOnly,
+                onSelected: (_) {
+                  if (!_isUnreadOnly) return;
+                  setState(() => _isUnreadOnly = false);
+                  _loadNotifikasi();
+                },
+                selectedColor: AppTheme.primaryGhostOf(context),
+                checkmarkColor: primary,
+                labelStyle: TextStyle(
+                  color: !_isUnreadOnly
+                      ? primary
+                      : AppTheme.textSecondaryOf(context),
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  _isUnreadOnly
-                      ? 'Menampilkan notifikasi yang belum dibaca.'
-                      : 'Menampilkan semua notifikasi terbaru.',
-                  style: TextStyle(
-                    color: AppTheme.textSecondaryOf(context),
-                    fontSize: 12,
-                  ),
+              ),
+              const SizedBox(width: 8),
+              FilterChip(
+                label: const Text('Belum Dibaca'),
+                selected: _isUnreadOnly,
+                onSelected: (_) {
+                  if (_isUnreadOnly) return;
+                  setState(() => _isUnreadOnly = true);
+                  _loadNotifikasi();
+                },
+                selectedColor: AppTheme.primaryGhostOf(context),
+                checkmarkColor: primary,
+                labelStyle: TextStyle(
+                  color: _isUnreadOnly
+                      ? primary
+                      : AppTheme.textSecondaryOf(context),
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -534,7 +599,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
               border: Border.all(
                 color: isRead
                     ? AppTheme.cardBorderOf(context)
-                    : AppTheme.infoBorderOf(context),
+                    : AppTheme.infoBorderOf(context).withValues(alpha: 0.35),
               ),
               boxShadow: AppTheme.cardShadowOf(context),
             ),
@@ -584,9 +649,9 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                             ),
                           const SizedBox(width: 8),
                           Icon(
-                            Icons.chevron_right_rounded,
+                            Icons.chevron_right_outlined,
                             color: textMuted,
-                            size: 24,
+                            size: 20,
                           ),
                         ],
                       ),
@@ -604,13 +669,13 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                         Row(
                           children: [
                             Icon(
-                              Icons.access_time_rounded,
+                              Icons.schedule_outlined,
                               size: 14,
                               color: textMuted,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              createdAt,
+                              _formatDateLabel(createdAt),
                               style: TextStyle(
                                 color: textMuted,
                                 fontSize: 12,

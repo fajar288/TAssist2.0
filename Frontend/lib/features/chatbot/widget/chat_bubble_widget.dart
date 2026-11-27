@@ -41,7 +41,7 @@ class ChatBubbleWidget extends StatelessWidget {
                       color: AppTheme.chatCitationBg,
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
-                    child: const Icon(Icons.menu_book_rounded, color: AppTheme.chatCitation, size: 20),
+                    child: const Icon(Icons.menu_book_outlined, color: AppTheme.chatCitation, size: 20),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -182,7 +182,7 @@ class ChatBubbleWidget extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.info_outline_rounded, size: 14, color: AppTheme.chatRefusal),
+                            const Icon(Icons.info_outline, size: 14, color: AppTheme.chatRefusal),
                             const SizedBox(width: 6),
                             Text(
                               'Di Luar Cakupan Asisten TA',
@@ -227,7 +227,7 @@ class ChatBubbleWidget extends StatelessWidget {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.menu_book_rounded, size: 12, color: AppTheme.chatCitation),
+                                    const Icon(Icons.menu_book_outlined, size: 12, color: AppTheme.chatCitation),
                                     const SizedBox(width: 4),
                                     ConstrainedBox(
                                       constraints: const BoxConstraints(maxWidth: 200),

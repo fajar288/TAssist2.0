@@ -514,115 +514,145 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   Widget _buildInitialButton() {
-    return GestureDetector(
-      onTap: () => setState(() => _currentState = ScheduleState.expanded),
-      child: Container(
-        width: double.infinity,
-        decoration: _cardDecoration(),
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                color: AppTheme.primary,
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+    return Container(
+      width: double.infinity,
+      decoration: _cardDecoration(),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton.icon(
+              onPressed: () =>
+                  setState(() => _currentState = ScheduleState.expanded),
+              icon: const Icon(Icons.event_available_outlined, size: 20),
+              label: const Text(
+                'Ajukan Jadwal Bimbingan',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
-              alignment: Alignment.center,
-              child: const Text(
-                'Set Meeting schedule',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 48,
+            child: TextButton.icon(
+              onPressed: () =>
+                  setState(() => _currentState = ScheduleState.expanded),
+              icon: const Icon(Icons.keyboard_arrow_down_outlined, size: 20),
+              label: const Text('Buka formulir pengajuan'),
+              style: TextButton.styleFrom(
+                foregroundColor: AppTheme.primaryOf(context),
+                textStyle: const TextStyle(
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            const Icon(
-              Icons.keyboard_arrow_down,
-              color: AppTheme.primary,
-              size: 30,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildScheduleForm() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: _cardDecoration(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Set Date',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: _cardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Pilih Tanggal',
+            style: TextStyle(
+              color: textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
             ),
-            const SizedBox(height: 10),
-            _buildDateField(),
-            const SizedBox(height: 20),
-            const Text(
-              'Set Time',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          ),
+          const SizedBox(height: 10),
+          _buildDateField(),
+          const SizedBox(height: 18),
+          Text(
+            'Atur Waktu',
+            style: TextStyle(
+              color: textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
             ),
+          ),
+          const SizedBox(height: 10),
+          _buildTimePicker(),
+          if (_hasPublishedAvailability) ...[
+            const SizedBox(height: 14),
+            _buildAvailabilityHintCard(),
+          ],
+          if (_isOutsidePublishedAvailability) ...[
             const SizedBox(height: 10),
-            _buildTimePicker(),
-            if (_hasPublishedAvailability) ...[
-              const SizedBox(height: 14),
-              _buildAvailabilityHintCard(),
-            ],
-            if (_isOutsidePublishedAvailability) ...[
-              const SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppTheme.warningBgOf(context),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                  border: Border.all(color: AppTheme.warningBorderOf(context)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.info_outline_rounded, color: AppTheme.warning, size: 18),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Di luar ketersediaan yang dipublikasikan dosen. Anda tetap dapat mengajukan jadwal ini.',
-                        style: TextStyle(
-                          color: AppTheme.textPrimaryOf(context),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.warningBgOf(context),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                border: Border.all(color: AppTheme.warningBorderOf(context)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.info_outline,
+                    color: AppTheme.warning,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Di luar ketersediaan yang dipublikasikan dosen. Anda tetap dapat mengajukan jadwal ini.',
+                      style: TextStyle(
+                        color: AppTheme.textPrimaryOf(context),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-            const SizedBox(height: 20),
-            const Text(
-              'Selected Lecturer',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             ),
-            const SizedBox(height: 10),
-            _buildAdvisorField(),
-            const SizedBox(height: 20),
-            const Text(
-              'Meeting Mode',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          ],
+          const SizedBox(height: 18),
+          Text(
+            'Dosen Pembimbing',
+            style: TextStyle(
+              color: textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
             ),
-            const SizedBox(height: 10),
-            _buildModeSelector(),
-            const SizedBox(height: 20),
-            const Text(
-              'Add Description',
+          ),
+          const SizedBox(height: 10),
+          _buildAdvisorField(),
+          const SizedBox(height: 18),
+          Text(
+            'Mode Bimbingan',
+            style: TextStyle(
+              color: textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
+          ),
+          const SizedBox(height: 10),
+          _buildModeSelector(),
+          const SizedBox(height: 18),
+          Text(
+            'Catatan / Agenda',
               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             ),
             const SizedBox(height: 10),
@@ -647,31 +677,42 @@ class _SchedulePageState extends State<SchedulePage> {
                       ),
                     )
                   : const Text(
-                      'Set Meeting Schedule',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      'Kirim Pengajuan Jadwal',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 12),
             Center(
-              child: GestureDetector(
-                onTap: () =>
-                    setState(() => _currentState = ScheduleState.initial),
-                child: const Icon(
-                  Icons.keyboard_arrow_up,
-                  color: AppTheme.primary,
-                  size: 30,
+              child: SizedBox(
+                height: 48,
+                child: TextButton.icon(
+                  onPressed: () =>
+                      setState(() => _currentState = ScheduleState.initial),
+                  icon: const Icon(Icons.keyboard_arrow_up_outlined, size: 20),
+                  label: const Text('Tutup formulir'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppTheme.primaryOf(context),
+                    textStyle: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildDateField() {
     return InkWell(
       onTap: _pickDate,
+      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         decoration: BoxDecoration(
@@ -684,7 +725,7 @@ class _SchedulePageState extends State<SchedulePage> {
           children: [
             Text(
               _selectedDate == null
-                  ? 'DD/MM/YYYY'
+                  ? 'HH/BB/TTTT'
                   : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
               style: TextStyle(
                 color: _selectedDate == null
@@ -693,7 +734,8 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
             ),
             Icon(
-              Icons.calendar_today,
+              Icons.calendar_today_outlined,
+              size: 20,
               color: AppTheme.primaryOf(context),
             ),
           ],
@@ -706,7 +748,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return Column(
       children: [
         _buildTimePickerBlock(
-          title: 'Start Time',
+          title: 'Jam Mulai',
           hourController: _startHourController,
           minuteController: _startMinuteController,
           onHourChanged: (value) {
@@ -718,7 +760,7 @@ class _SchedulePageState extends State<SchedulePage> {
         ),
         const SizedBox(height: 18),
         _buildTimePickerBlock(
-          title: 'End Time',
+          title: 'Jam Selesai',
           hourController: _endHourController,
           minuteController: _endMinuteController,
           onHourChanged: (value) {
@@ -849,10 +891,10 @@ class _SchedulePageState extends State<SchedulePage> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const Icon(
-            Icons.lock_outline_rounded,
+          Icon(
+            Icons.lock_outline,
             size: 18,
-            color: Colors.grey,
+            color: AppTheme.textMutedOf(context),
           ),
         ],
       ),
@@ -864,17 +906,17 @@ class _SchedulePageState extends State<SchedulePage> {
       children: [
         Expanded(
           child: _buildModeOption(
-            label: 'Online',
+            label: 'Daring',
             value: 'online',
-            icon: Icons.videocam_rounded,
+            icon: Icons.videocam_outlined,
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: _buildModeOption(
-            label: 'Offline',
+            label: 'Tatap Muka',
             value: 'offline',
-            icon: Icons.meeting_room_rounded,
+            icon: Icons.meeting_room_outlined,
           ),
         ),
       ],
@@ -933,7 +975,7 @@ class _SchedulePageState extends State<SchedulePage> {
       maxLines: 3,
       maxLength: 1000,
       decoration: InputDecoration(
-        hintText: 'Topic or agenda for this meeting...',
+        hintText: 'Topik atau agenda untuk pertemuan ini...',
         filled: true,
         fillColor: AppTheme.surfaceVariantOf(context),
         counterStyle: TextStyle(
@@ -965,10 +1007,12 @@ class _SchedulePageState extends State<SchedulePage> {
         width: double.infinity,
         padding: const EdgeInsets.all(18),
         decoration: _cardDecoration(),
-        child: const AppEmptyStateWidget(
+        child: AppEmptyStateWidget(
           compact: true,
-          icon: Icons.event_busy_rounded,
-          title: 'No meeting schedule has been submitted yet.',
+          icon: Icons.event_busy_outlined,
+          title: 'Belum ada jadwal bimbingan yang diajukan.',
+          actionLabel: 'Ajukan Jadwal',
+          onAction: () => setState(() => _currentState = ScheduleState.expanded),
         ),
       );
     }
@@ -990,57 +1034,79 @@ class _SchedulePageState extends State<SchedulePage> {
     final status = schedule['status_konfirmasi']?.toString();
     final mode = schedule['mode']?.toString() ?? '-';
 
-    return GestureDetector(
-      onTap: () => _showDetailOptions(schedule),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.all(15),
-        decoration: _cardDecoration(),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: AppTheme.primary,
-              child: Text(
-                _initials(dosenName),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _showDetailOptions(schedule),
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(14),
+          decoration: _cardDecoration(),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor: AppTheme.primaryGhostOf(context),
+                child: Text(
+                  _initials(dosenName),
+                  style: TextStyle(
+                    color: AppTheme.primaryOf(context),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _formatStatus(status),
-                    style: TextStyle(
-                      color: _statusColor(status),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${_formatDisplayDate(tanggal)}, ${_formatDisplayTime(mulai)} - ${_formatDisplayTime(selesai)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppTheme.textPrimaryOf(context),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Meet with Mr. $dosenName',
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: AppTheme.textPrimaryOf(context)),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    '${_formatDisplayDate(tanggal)} at ${_formatDisplayTime(mulai)} - ${_formatDisplayTime(selesai)} • $mode',
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: AppTheme.textSecondaryOf(context),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                    const SizedBox(height: 3),
+                    Text(
+                      '$mode dengan $dosenName',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppTheme.textSecondaryOf(context),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _statusColor(status).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                  border: Border.all(
+                    color: _statusColor(status).withValues(alpha: 0.35),
+                  ),
+                ),
+                child: Text(
+                  _formatStatus(status),
+                  style: TextStyle(
+                    color: _statusColor(status),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1071,25 +1137,25 @@ class _SchedulePageState extends State<SchedulePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Opsi Jadwal',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'Detail Jadwal Bimbingan',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.info_outline),
-                title: const Text('Lihat Info Detail'),
+                title: const Text('Waktu Pelaksanaan'),
                 subtitle: Text(
-                  '${_formatDisplayDate(tanggal)} at ${_formatDisplayTime(mulai)} - ${_formatDisplayTime(selesai)}',
+                  '${_formatDisplayDate(tanggal)}, ${_formatDisplayTime(mulai)} - ${_formatDisplayTime(selesai)}',
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.person_outline),
-                title: Text('Mr. $dosenName'),
+                title: Text(dosenName),
                 subtitle: Text('Mode: $mode • Status: ${_formatStatus(status)}'),
               ),
               if (catatan != null && catatan.isNotEmpty)
                 ListTile(
-                  leading: const Icon(Icons.notes_rounded),
+                  leading: const Icon(Icons.notes_outlined),
                   title: const Text('Catatan'),
                   subtitle: Text(catatan),
                 ),
@@ -1105,7 +1171,7 @@ class _SchedulePageState extends State<SchedulePage> {
                     ),
                   ),
                   child: const Text(
-                    'Close',
+                    'Tutup',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -1118,6 +1184,6 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   BoxDecoration _cardDecoration() {
-    return AppTheme.cardDecoration(radius: AppTheme.radiusLg);
+    return AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg);
   }
 }

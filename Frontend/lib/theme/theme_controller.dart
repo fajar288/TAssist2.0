@@ -24,9 +24,9 @@ class ThemeController extends ChangeNotifier {
       };
 
   IconData get icon => switch (_themeMode) {
-        ThemeMode.light => Icons.light_mode_rounded,
-        ThemeMode.dark => Icons.dark_mode_rounded,
-        ThemeMode.system => Icons.brightness_auto_rounded,
+        ThemeMode.light => Icons.light_mode_outlined,
+        ThemeMode.dark => Icons.dark_mode_outlined,
+        ThemeMode.system => Icons.brightness_auto_outlined,
       };
 
   /// Loads the persisted theme preference from [SharedPreferences].
@@ -141,7 +141,7 @@ class ThemeController extends ChangeNotifier {
                       ),
                       if (selected)
                         Icon(
-                          Icons.check_circle_rounded,
+                          Icons.check_circle_outlined,
                           color: accent,
                           size: 20,
                         ),
@@ -179,7 +179,7 @@ class ThemeController extends ChangeNotifier {
                     style: TextStyle(
                       color: textPrimary,
                       fontSize: 17,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -193,21 +193,21 @@ class ThemeController extends ChangeNotifier {
                   const SizedBox(height: 16),
                   optionTile(
                     mode: ThemeMode.system,
-                    iconData: Icons.brightness_auto_rounded,
+                    iconData: Icons.brightness_auto_outlined,
                     title: 'Ikuti Sistem',
                     subtitle: 'Menyesuaikan pengaturan perangkat secara otomatis',
                   ),
                   const SizedBox(height: 10),
                   optionTile(
                     mode: ThemeMode.light,
-                    iconData: Icons.light_mode_rounded,
+                    iconData: Icons.light_mode_outlined,
                     title: 'Mode Terang',
                     subtitle: 'Latar cerah dengan kontras tinggi',
                   ),
                   const SizedBox(height: 10),
                   optionTile(
                     mode: ThemeMode.dark,
-                    iconData: Icons.dark_mode_rounded,
+                    iconData: Icons.dark_mode_outlined,
                     title: 'Mode Gelap',
                     subtitle: 'Latar gelap nyaman di pencahayaan minim',
                   ),

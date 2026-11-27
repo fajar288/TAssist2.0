@@ -201,7 +201,7 @@ class RiskDetailSheet extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(
-                              isHigh ? Icons.warning_amber_rounded : Icons.check_circle_outline,
+                              isHigh ? Icons.warning_amber_outlined : Icons.check_circle_outline,
                               size: 18,
                               color: isHigh ? AppTheme.riskAttention : AppTheme.riskSafe,
                             ),

@@ -307,35 +307,35 @@ class AppTheme {
     color: notificationInfo,
     bg: notificationInfoBg,
     border: notificationInfoBorder,
-    icon: Icons.info_outline_rounded,
+    icon: Icons.info_outlined,
   );
 
   static const NotificationStyle notificationSuccessStyle = NotificationStyle(
     color: notificationSuccess,
     bg: notificationSuccessBg,
     border: notificationSuccessBorder,
-    icon: Icons.check_circle_outline_rounded,
+    icon: Icons.check_circle_outlined,
   );
 
   static const NotificationStyle notificationWarningStyle = NotificationStyle(
     color: notificationWarning,
     bg: notificationWarningBg,
     border: notificationWarningBorder,
-    icon: Icons.warning_amber_rounded,
+    icon: Icons.warning_amber_outlined,
   );
 
   static const NotificationStyle notificationErrorStyle = NotificationStyle(
     color: notificationError,
     bg: notificationErrorBg,
     border: notificationErrorBorder,
-    icon: Icons.error_outline_rounded,
+    icon: Icons.error_outline,
   );
 
   static const NotificationStyle notificationNeutralStyle = NotificationStyle(
     color: notificationNeutral,
     bg: notificationNeutralBg,
     border: notificationNeutralBorder,
-    icon: Icons.notifications_none_rounded,
+    icon: Icons.notifications_outlined,
   );
 
   // ─── Context-Aware Token Helpers (T-68) ──────────────────────────────────────
@@ -769,9 +769,9 @@ extension RequestStatusStyle on RequestStatus {
 
   IconData get icon {
     switch (this) {
-      case RequestStatus.pending:  return Icons.schedule_rounded;
-      case RequestStatus.accepted: return Icons.check_circle_rounded;
-      case RequestStatus.declined: return Icons.cancel_rounded;
+      case RequestStatus.pending:  return Icons.schedule_outlined;
+      case RequestStatus.accepted: return Icons.check_circle_outlined;
+      case RequestStatus.declined: return Icons.cancel_outlined;
     }
   }
 }

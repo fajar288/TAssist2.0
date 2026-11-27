@@ -74,8 +74,8 @@ class StudentMenuTile extends StatelessWidget {
                   ),
                   trailing ??
                       Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
+                        Icons.chevron_right_outlined,
+                        size: 20,
                         color: AppTheme.textMutedOf(context),
                       ),
                 ],

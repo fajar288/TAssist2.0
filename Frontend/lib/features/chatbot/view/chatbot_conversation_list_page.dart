@@ -150,7 +150,8 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
         backgroundColor: AppTheme.surfaceOf(context),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 20),
+          tooltip: 'Kembali',
+          icon: Icon(Icons.arrow_back_ios_new_outlined, color: textPrimary, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -163,7 +164,7 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh_rounded, color: primary),
+            icon: Icon(Icons.refresh_outlined, color: primary),
             tooltip: 'Segarkan',
             onPressed: _loadConversations,
           ),
@@ -172,8 +173,8 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppTheme.primary,
         foregroundColor: Colors.white,
-        icon: const Icon(Icons.add_comment_rounded),
-        label: const Text('Percakapan Baru', style: TextStyle(fontWeight: FontWeight.bold)),
+        icon: const Icon(Icons.add_comment_outlined),
+        label: const Text('Percakapan Baru', style: TextStyle(fontWeight: FontWeight.w600)),
         onPressed: _startNewConversation,
       ),
       body: _buildBody(),
@@ -194,7 +195,7 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
 
     if (_conversations.isEmpty) {
       return AppEmptyStateWidget(
-        icon: Icons.chat_bubble_outline_rounded,
+        icon: Icons.chat_bubble_outline,
         title: 'Belum Ada Riwayat',
         subtitle:
             'Mulai tanyakan seputar informasi dan alur Tugas Akhir Anda kepada Asisten TA.',
@@ -265,7 +266,7 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
                       ),
                       IconButton(
                         icon: Icon(
-                          Icons.delete_outline_rounded,
+                          Icons.delete_outline,
                           color: AppTheme.textMutedOf(context),
                           size: 20,
                         ),

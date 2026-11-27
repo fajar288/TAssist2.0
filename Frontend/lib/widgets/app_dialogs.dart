@@ -100,7 +100,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
                 border: Border.all(color: AppTheme.acceptedBorderOf(ctx), width: 1.5),
               ),
               child: const Icon(
-                Icons.check_rounded,
+                Icons.check_outlined,
                 color: AppTheme.accepted,
                 size: 42,
               ),
@@ -116,7 +116,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
 
             const SizedBox(height: 24),
             Text(
-              'Request Accepted!',
+              'Permohonan Diterima!',
               style: GoogleFonts.poppins(
                 color: AppTheme.textPrimaryOf(ctx),
                 fontSize: 20,
@@ -125,7 +125,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
             ),
             const SizedBox(height: 10),
             Text(
-              'The counseling request has been\nsuccessfully accepted. The student\nwill be notified shortly.',
+              'Permohonan bimbingan berhasil disetujui.\nMahasiswa akan segera menerima notifikasi.',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 color: AppTheme.textSecondaryOf(ctx),
@@ -147,7 +147,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
                   elevation: 0,
                 ),
                 child: Text(
-                  'Great, Thanks!',
+                  'Tutup',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -184,7 +184,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
                 border: Border.all(color: AppTheme.declinedBorderOf(ctx), width: 1.5),
               ),
               child: const Icon(
-                Icons.warning_amber_rounded,
+                Icons.warning_amber_outlined,
                 color: AppTheme.declined,
                 size: 38,
               ),
@@ -195,7 +195,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
 
             const SizedBox(height: 20),
             Text(
-              'Decline Request?',
+              'Tolak Permohonan?',
               style: GoogleFonts.poppins(
                 color: AppTheme.textPrimaryOf(ctx),
                 fontSize: 19,
@@ -204,7 +204,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
             ),
             const SizedBox(height: 10),
             Text(
-              'Are you sure you want to decline\nthis counseling request? This action\ncannot be undone.',
+              'Apakah Anda yakin ingin menolak permohonan bimbingan ini? Tindakan ini tidak dapat dibatalkan.',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 color: AppTheme.textSecondaryOf(ctx),
@@ -228,7 +228,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
                       ),
                     ),
                     child: Text(
-                      'Cancel',
+                      'Batal',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -250,7 +250,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
                       elevation: 0,
                     ),
                     child: Text(
-                      'Decline',
+                      'Tolak',
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -292,7 +292,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
                   child: Icon(
-                    Icons.mail_outline_rounded,
+                    Icons.mail_outline,
                     color: AppTheme.primaryOf(ctx),
                     size: 20,
                   ),
@@ -302,7 +302,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Send Apology',
+                      'Kirim Alasan',
                       style: GoogleFonts.poppins(
                         color: AppTheme.textPrimaryOf(ctx),
                         fontSize: 17,
@@ -310,7 +310,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                       ),
                     ),
                     Text(
-                      'Provide a reason for declining',
+                      'Berikan catatan alasan penolakan',
                       style: GoogleFonts.poppins(
                         color: AppTheme.textMutedOf(ctx),
                         fontSize: 12,
@@ -334,7 +334,7 @@ Future<String?> showApologyDialog(BuildContext context) {
               ),
               decoration: InputDecoration(
                 hintText:
-                    'e.g., I sincerely apologize, but I have a scheduling conflict at this time. Please submit another request and I will do my best to accommodate you.',
+                    'Contoh: Maaf, kuota bimbingan penuh pada topik ini. Silakan ajukan ke dosen dengan bidang terkait.',
                 hintStyle: GoogleFonts.poppins(
                   color: AppTheme.textMutedOf(ctx),
                   fontSize: 12.5,
@@ -372,7 +372,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                       ),
                     ),
                     child: Text(
-                      'Skip',
+                      'Lewati',
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -391,10 +391,10 @@ Future<String?> showApologyDialog(BuildContext context) {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.send_rounded, size: 16),
+                        const Icon(Icons.send_outlined, size: 16),
                         const SizedBox(width: 8),
                         Text(
-                          'Send Message',
+                          'Kirim Pesan',
                           style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                         ),
                       ],

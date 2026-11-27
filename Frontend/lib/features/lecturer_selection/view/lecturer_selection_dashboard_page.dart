@@ -27,33 +27,33 @@ class _LecturerSelectionDashboardPageState
   final MahasiswaService _mahasiswaService = MahasiswaService();
   final AuthService _authService = AuthService();
 
-  String _studentName = 'Student';
+  String _studentName = 'Mahasiswa';
   String? _userAvatar;
   Map<String, dynamic>? _profileData;
 
   final List<LecturerCategory> categories = const [
     LecturerCategory(
-      title: 'AI & Machine Learning Lecturers',
+      title: 'Dosen AI & Machine Learning',
       keyword: 'Kecerdasan Buatan',
       icon: Icons.psychology_outlined,
     ),
     LecturerCategory(
-      title: 'Software Engineering Lecturers',
+      title: 'Dosen Rekayasa Perangkat Lunak',
       keyword: 'Rekayasa Perangkat Lunak',
-      icon: Icons.code_rounded,
+      icon: Icons.code_outlined,
     ),
     LecturerCategory(
-      title: 'Network & Cybersecurity Lecturers',
+      title: 'Dosen Jaringan & Keamanan Siber',
       keyword: 'Jaringan Komputer',
       icon: Icons.security_outlined,
     ),
     LecturerCategory(
-      title: 'Information Systems & Database Lecturers',
+      title: 'Dosen Sistem Informasi & Basis Data',
       keyword: 'Sistem Informasi',
-      icon: Icons.storage_rounded,
+      icon: Icons.storage_outlined,
     ),
     LecturerCategory(
-      title: 'Computer Vision Lecturers',
+      title: 'Dosen Computer Vision',
       keyword: 'Computer Vision',
       icon: Icons.visibility_outlined,
     ),
@@ -238,11 +238,11 @@ class _LecturerSelectionDashboardPageState
   String _formatStatus(String status) {
     switch (status.toLowerCase()) {
       case 'menunggu':
-        return 'Waiting';
+        return 'Menunggu';
       case 'diterima':
-        return 'Accepted';
+        return 'Diterima';
       case 'ditolak':
-        return 'Rejected';
+        return 'Ditolak';
       default:
         return status;
     }
@@ -261,12 +261,18 @@ class _LecturerSelectionDashboardPageState
             children: [
               _buildHeader(),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 100),
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 112),
                 child: Column(
                   children: [
-                    _buildTopCard(),
-                    const SizedBox(height: 18),
-                    _buildBottomRequestList(),
+                    if (_permohonanList.isNotEmpty) ...[
+                      _buildBottomRequestList(),
+                      const SizedBox(height: 16),
+                      _buildTopCard(),
+                    ] else ...[
+                      _buildTopCard(),
+                      const SizedBox(height: 16),
+                      _buildBottomRequestList(),
+                    ],
                     const SizedBox(height: 20),
                   ],
                 ),
@@ -299,7 +305,7 @@ class _LecturerSelectionDashboardPageState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Welcome back,',
+                      'Selamat datang,',
                       style: GoogleFonts.poppins(
                         color: AppTheme.accentGoldOnDark,
                         fontSize: 13.5,
@@ -320,7 +326,7 @@ class _LecturerSelectionDashboardPageState
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Welcome to TAssist',
+                      'Selamat datang di TAssist',
                       style: GoogleFonts.poppins(
                         color: Colors.white.withValues(alpha: 0.78),
                         fontSize: 12,
@@ -356,11 +362,11 @@ class _LecturerSelectionDashboardPageState
                     iconColor: Colors.white,
                     backgroundColor: AppTheme.glassSurfaceOnDark,
                     borderColor: AppTheme.glassBorderOnDark,
-                    pageTitle: 'Notifications',
+                    pageTitle: 'Notifikasi',
                   ),
                   const SizedBox(width: 8),
                   PopupMenuButton<String>(
-                    tooltip: 'Account menu',
+                    tooltip: 'Menu akun',
                     onSelected: (value) {
                       if (value == 'edit_profile') {
                         _navigateToEditProfile();
@@ -378,7 +384,7 @@ class _LecturerSelectionDashboardPageState
                             value: 'edit_profile',
                             child: Row(
                               children: [
-                                Icon(Icons.edit_rounded, size: 20, color: primary),
+                                Icon(Icons.edit_outlined, size: 20, color: primary),
                                 const SizedBox(width: 12),
                                 const Text(
                                   'Edit Profil',
@@ -404,7 +410,7 @@ class _LecturerSelectionDashboardPageState
                           value: 'logout',
                           child: Row(
                             children: [
-                              Icon(Icons.logout_rounded, size: 20, color: AppTheme.declined),
+                              Icon(Icons.logout_outlined, size: 20, color: AppTheme.declined),
                               SizedBox(width: 12),
                               Text(
                                 'Keluar',
@@ -537,7 +543,7 @@ class _LecturerSelectionDashboardPageState
                     ),
                   ),
                   Icon(
-                    Icons.chevron_right_rounded,
+                    Icons.chevron_right_outlined,
                     size: 20,
                     color: primary,
                   ),
@@ -565,9 +571,9 @@ class _LecturerSelectionDashboardPageState
   Widget _buildViewAllButton() {
     return TextButton.icon(
       onPressed: () => _openLecturersPage(),
-      icon: const Icon(Icons.chevron_right_rounded, size: 18),
+      icon: const Icon(Icons.chevron_right_outlined, size: 18),
       iconAlignment: IconAlignment.end,
-      label: const Text('View all lecturers'),
+      label: const Text('Lihat semua dosen'),
       style: TextButton.styleFrom(
         foregroundColor: AppTheme.primaryOf(context),
         minimumSize: const Size(44, 44),
@@ -595,10 +601,10 @@ class _LecturerSelectionDashboardPageState
                   ? AppEmptyStateWidget(
                       compact: true,
                       icon: Icons.assignment_outlined,
-                      title: 'No supervisor requests yet',
+                      title: 'Belum ada permohonan pembimbing',
                       subtitle:
-                          'Select a lecturer by topic or expertise above to submit a request.',
-                      actionLabel: 'Explore Lecturers',
+                          'Pilih dosen berdasarkan topik atau bidang keahlian di atas untuk mengajukan bimbingan.',
+                      actionLabel: 'Cari Dosen',
                       onAction: () => _openLecturersPage(),
                     )
                   : Column(
@@ -617,8 +623,8 @@ class _LecturerSelectionDashboardPageState
   Widget _buildRequestError() {
     return AppErrorWidget(
       compact: true,
-      message: _permohonanError ?? 'Failed to load request.',
-      retryLabel: 'Try Again',
+      message: _permohonanError ?? 'Gagal memuat permohonan.',
+      retryLabel: 'Coba Lagi',
       onRetry: _loadPermohonan,
     );
   }
@@ -660,9 +666,8 @@ class _LecturerSelectionDashboardPageState
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: AppTheme.surfaceOf(context),
+            color: AppTheme.surfaceVariantOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            border: Border.all(color: AppTheme.cardBorderOf(context)),
           ),
           child: Row(
             children: [
@@ -704,7 +709,7 @@ class _LecturerSelectionDashboardPageState
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'with Mr. $namaDosen',
+                      namaDosen,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -727,7 +732,7 @@ class _LecturerSelectionDashboardPageState
                 ),
               ),
               Icon(
-                Icons.chevron_right_rounded,
+                Icons.chevron_right_outlined,
                 color: AppTheme.textMutedOf(context),
                 size: 20,
               ),
@@ -807,7 +812,7 @@ class _LecturerCategoryRow extends StatelessWidget {
                 ),
               ),
               Icon(
-                Icons.chevron_right_rounded,
+                Icons.chevron_right_outlined,
                 color: AppTheme.textMutedOf(context),
                 size: 20,
               ),

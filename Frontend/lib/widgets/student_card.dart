@@ -47,13 +47,13 @@ class StudentCard extends StatelessWidget {
   IconData _statusIcon() {
     switch (student.status) {
       case 'active':
-        return Icons.check_circle_rounded;
+        return Icons.check_circle_outlined;
       case 'warning':
-        return Icons.warning_amber_rounded;
+        return Icons.warning_amber_outlined;
       case 'completed':
-        return Icons.verified_rounded;
+        return Icons.verified_outlined;
       default:
-        return Icons.circle;
+        return Icons.circle_outlined;
     }
   }
 
@@ -168,7 +168,7 @@ class StudentCard extends StatelessWidget {
 
                   const SizedBox(width: 8),
                   Icon(
-                    Icons.chevron_right_rounded,
+                    Icons.chevron_right_outlined,
                     color: AppTheme.textMutedOf(context),
                     size: 20,
                   ),

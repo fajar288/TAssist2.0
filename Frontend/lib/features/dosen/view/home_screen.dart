@@ -13,6 +13,7 @@ import 'package:tassist/widgets/app_error_widget.dart';
 import 'package:tassist/widgets/app_skeleton_loader.dart';
 import 'package:tassist/widgets/custom_bottom_nav.dart';
 import 'package:tassist/widgets/custom_request_card.dart';
+import 'package:tassist/widgets/user_avatar_circle.dart';
 import 'counseling_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<CounselingRequest> _requests = [];
 
-  String _selectedFilter = 'All';
-  final _filters = ['All', 'Pending', 'Accepted', 'Declined'];
+  String _selectedFilter = 'Semua';
+  final _filters = ['Semua', 'Menunggu', 'Diterima', 'Ditolak'];
 
   @override
   void initState() {
@@ -82,13 +83,35 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<CounselingRequest> get _filteredRequests {
-    if (_selectedFilter == 'All') return _requests;
+    switch (_selectedFilter) {
+      case 'Menunggu':
+        return _requests
+            .where((r) => r.status == RequestStatus.pending)
+            .toList();
+      case 'Diterima':
+        return _requests
+            .where((r) => r.status == RequestStatus.accepted)
+            .toList();
+      case 'Ditolak':
+        return _requests
+            .where((r) => r.status == RequestStatus.declined)
+            .toList();
+      default:
+        return _requests;
+    }
+  }
 
-    final status = RequestStatus.values.firstWhere(
-      (s) => s.label == _selectedFilter,
-    );
-
-    return _requests.where((r) => r.status == status).toList();
+  int _countByFilter(String filter) {
+    switch (filter) {
+      case 'Menunggu':
+        return _countByStatus(RequestStatus.pending);
+      case 'Diterima':
+        return _countByStatus(RequestStatus.accepted);
+      case 'Ditolak':
+        return _countByStatus(RequestStatus.declined);
+      default:
+        return _requests.length;
+    }
   }
 
   int _countByStatus(RequestStatus status) {
@@ -115,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 nama: _headerData.nama,
                 subtitle: _headerData.subtitle,
-                avatarText: _headerData.avatarText,
+                avatarUrl: _headerData.avatarUrl,
               ),
             ),
 
@@ -130,10 +153,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(4, 16, 4, 0),
                   child: AppErrorWidget(
-                    title: 'Failed to load requests',
+                    title: 'Gagal memuat permohonan',
                     message: _errorMessage ?? '-',
                     onRetry: _loadDashboardData,
-                    retryLabel: 'Try Again',
+                    retryLabel: 'Coba Lagi',
                   ),
                 ),
               )
@@ -150,10 +173,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 sliver: _filteredRequests.isEmpty
                     ? const SliverToBoxAdapter(
                         child: AppEmptyStateWidget(
-                          icon: Icons.inbox_rounded,
-                          title: 'No requests found',
+                          icon: Icons.inbox_outlined,
+                          title: 'Belum ada permohonan',
                           subtitle:
-                              'There are no requests matching\nthis filter right now.',
+                              'Tidak ada permohonan bimbingan yang sesuai filter saat ini.',
                         ),
                       )
                     : SliverList(
@@ -215,11 +238,13 @@ class _HomeScreenState extends State<HomeScreen> {
         : 'Dosen Pembimbing';
 
     final avatarText = _getInitials(nama);
+    final avatarUrl = user?['avatar']?.toString();
 
     return _DosenHeaderData(
       nama: nama,
       subtitle: subtitle,
       avatarText: avatarText,
+      avatarUrl: avatarUrl,
     );
   }
 
@@ -243,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
     BuildContext context, {
     required String nama,
     required String subtitle,
-    required String avatarText,
+    String? avatarUrl,
   }) {
     return Container(
       decoration: const BoxDecoration(
@@ -255,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 26),
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -267,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome back,',
+                          'Selamat datang,',
                           style: GoogleFonts.poppins(
                             color: Colors.white.withValues(alpha: 0.82),
                             fontSize: 13.5,
@@ -327,11 +352,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         iconColor: Colors.white,
                         backgroundColor: AppTheme.glassSurfaceOnDark,
                         borderColor: AppTheme.glassBorderOnDark,
-                        pageTitle: 'Notifications',
+                        pageTitle: 'Notifikasi',
                       ),
                       const SizedBox(width: 8),
                       PopupMenuButton<String>(
-                        tooltip: 'Account menu',
+                        tooltip: 'Menu akun',
                         offset: const Offset(0, 60),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -393,59 +418,24 @@ class _HomeScreenState extends State<HomeScreen> {
                               value: 'logout',
                               child: Row(
                                 children: [
-                                  Icon(Icons.logout_rounded, size: 20, color: Colors.red),
+                                  Icon(Icons.logout_outlined, size: 20, color: AppTheme.declined),
                                   SizedBox(width: 12),
-                                  Text('Keluar', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600)),
+                                  Text('Keluar', style: TextStyle(color: AppTheme.declined, fontWeight: FontWeight.w600)),
                                 ],
                               ),
                             ),
                           ];
                         },
-                        child: Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppTheme.glassSurfaceOnDark,
-                            border: Border.all(
-                              color: AppTheme.accentGoldOnDark.withValues(alpha: 0.75),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              avatarText,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                        child: UserAvatarCircle(
+                          name: nama,
+                          avatar: avatarUrl,
+                          size: 48,
+                          borderColor: AppTheme.accentGoldOnDark.withValues(alpha: 0.75),
+                          borderWidth: 1.5,
+                          showShadow: false,
                         ),
                       ),
                     ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _StatChip(
-                    label: 'Pending',
-                    count: _countByStatus(RequestStatus.pending),
-                    color: AppTheme.accentGoldOnDark,
-                  ),
-                  _StatChip(
-                    label: 'Accepted',
-                    count: _countByStatus(RequestStatus.accepted),
-                    color: const Color(0xFF34D399),
-                  ),
-                  _StatChip(
-                    label: 'Declined',
-                    count: _countByStatus(RequestStatus.declined),
-                    color: const Color(0xFFF87171),
                   ),
                 ],
               ),
@@ -458,33 +448,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildFilterRow() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Counseling Requests',
-            style: GoogleFonts.poppins(
-              color: AppTheme.textPrimaryOf(context),
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Permohonan Bimbingan',
+              style: GoogleFonts.poppins(
+                color: AppTheme.textPrimaryOf(context),
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _filters
-                .map(
-                  (f) => _FilterChip(
-                    label: f,
-                    selected: _selectedFilter == f,
-                    onTap: () => setState(() {
-                      _selectedFilter = _selectedFilter == f ? 'All' : f;
-                    }),
-                  ),
-                )
-                .toList(),
+          SizedBox(
+            height: 44,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              scrollDirection: Axis.horizontal,
+              itemCount: _filters.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final f = _filters[index];
+                return _FilterChip(
+                  label: f,
+                  count: _countByFilter(f),
+                  selected: _selectedFilter == f,
+                  onTap: () => setState(() {
+                    _selectedFilter = _selectedFilter == f ? 'Semua' : f;
+                  }),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -512,73 +510,25 @@ class _DosenHeaderData {
   final String nama;
   final String subtitle;
   final String avatarText;
+  final String? avatarUrl;
 
   const _DosenHeaderData({
     required this.nama,
     required this.subtitle,
     required this.avatarText,
+    this.avatarUrl,
   });
-}
-
-class _StatChip extends StatelessWidget {
-  final String label;
-  final int count;
-  final Color color;
-
-  const _StatChip({
-    required this.label,
-    required this.count,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 11,
-        vertical: 7,
-      ),
-      decoration: BoxDecoration(
-        color: AppTheme.glassSurfaceOnDark,
-        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-        border: Border.all(
-          color: AppTheme.glassBorderOnDark,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            '$count $label',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _FilterChip extends StatelessWidget {
   final String label;
+  final int count;
   final bool selected;
   final VoidCallback onTap;
 
   const _FilterChip({
     required this.label,
+    required this.count,
     required this.selected,
     required this.onTap,
   });
@@ -588,7 +538,7 @@ class _FilterChip extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: 'Filter $label',
+      label: 'Filter $label ($count)',
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -612,14 +562,43 @@ class _FilterChip extends StatelessWidget {
                   width: 1,
                 ),
               ),
-              child: Text(
-                label,
-                style: GoogleFonts.poppins(
-                  color:
-                      selected ? Colors.white : AppTheme.textSecondaryOf(context),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: GoogleFonts.poppins(
+                      color: selected
+                          ? Colors.white
+                          : AppTheme.textSecondaryOf(context),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? Colors.white.withValues(alpha: 0.25)
+                          : AppTheme.surfaceVariantOf(context),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                    ),
+                    child: Text(
+                      '$count',
+                      style: GoogleFonts.poppins(
+                        color: selected
+                            ? Colors.white
+                            : AppTheme.textSecondaryOf(context),
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

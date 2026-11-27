@@ -242,8 +242,9 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       pinned: true,
       backgroundColor: AppTheme.primary,
       leading: IconButton(
+        tooltip: 'Kembali',
         icon: const Icon(
-          Icons.arrow_back_ios_new_rounded,
+          Icons.arrow_back_ios_new_outlined,
           color: Colors.white,
           size: 20,
         ),
@@ -260,7 +261,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                   right: 20,
                   top: 54,
                   child: const Text(
-                    'Progress & Checklist',
+                    'Progres & Checklist',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -322,7 +323,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                           child: Row(
                             children: [
                               Icon(
-                                Icons.article_rounded,
+                                Icons.article_outlined,
                                 color: Colors.white.withValues(alpha: 0.85),
                                 size: 15,
                               ),
@@ -408,14 +409,14 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
           ),
           const SizedBox(height: 16),
           _InfoLine(
-            icon: Icons.flag_rounded,
+            icon: Icons.flag_outlined,
             label: 'Status',
             value: status,
           ),
           if (catatan != null && catatan.trim().isNotEmpty) ...[
             const SizedBox(height: 10),
             _InfoLine(
-              icon: Icons.notes_rounded,
+              icon: Icons.notes_outlined,
               label: 'Catatan',
               value: catatan,
             ),
@@ -423,8 +424,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
           if (updatedAt != null) ...[
             const SizedBox(height: 10),
             _InfoLine(
-              icon: Icons.update_rounded,
-              label: 'Last Update',
+              icon: Icons.update_outlined,
+              label: 'Pembaruan Terakhir',
               value: _formatDateTime(updatedAt),
             ),
           ],
@@ -439,8 +440,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         Expanded(
           child: ElevatedButton.icon(
             onPressed: _isSubmitting ? null : _showUpdateProgressSheet,
-            icon: const Icon(Icons.trending_up_rounded),
-            label: const Text('Update Progress'),
+            icon: const Icon(Icons.trending_up_outlined),
+            label: const Text('Perbarui Progres'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primary,
               foregroundColor: Colors.white,
@@ -455,11 +456,11 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         Expanded(
           child: OutlinedButton.icon(
             onPressed: _isSubmitting ? null : () => _showChecklistSheet(),
-            icon: const Icon(Icons.playlist_add_check_rounded),
-            label: const Text('Add Checklist'),
+            icon: const Icon(Icons.playlist_add_check_outlined),
+            label: const Text('Tambah Checklist'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppTheme.primary,
-              side: const BorderSide(color: AppTheme.primary, width: 1.4),
+              foregroundColor: AppTheme.primaryOf(context),
+              side: BorderSide(color: AppTheme.primaryOf(context), width: 1.4),
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -485,7 +486,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             children: [
               Expanded(
                 child: Text(
-                  'Latest Checklist',
+                  'Checklist Terbaru',
                   style: TextStyle(
                     color: AppTheme.textPrimaryOf(context),
                     fontSize: 15,
@@ -505,13 +506,13 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
           const SizedBox(height: 12),
           if (_latestProgress == null)
             _emptyMessage(
-              icon: Icons.checklist_rounded,
-              message: 'No checklist yet. Add a checklist to create an initial 0% progress target.',
+              icon: Icons.checklist_outlined,
+              message: 'Belum ada checklist. Tambahkan checklist untuk membuat target progres awal 0%.',
             )
           else if (checklist.isEmpty)
             _emptyMessage(
-              icon: Icons.checklist_rounded,
-              message: 'No checklist item yet.',
+              icon: Icons.checklist_outlined,
+              message: 'Belum ada item checklist.',
             )
           else
             ...checklist.map(_buildChecklistItem),
@@ -626,7 +627,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Progress History',
+            'Riwayat Progres',
             style: TextStyle(
               color: AppTheme.textPrimaryOf(context),
               fontSize: 15,
@@ -636,8 +637,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
           const SizedBox(height: 12),
           if (_progressList.isEmpty)
             _emptyMessage(
-              icon: Icons.history_rounded,
-              message: 'No progress history yet.',
+              icon: Icons.history_outlined,
+              message: 'Belum ada riwayat progres.',
             )
           else
             ..._progressList.map(_buildHistoryItem),

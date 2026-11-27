@@ -104,10 +104,11 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                   decoration: InputDecoration(
                     hintText: 'Cari informasi TA...',
                     hintStyle: TextStyle(color: textMuted, fontSize: 14),
-                    prefixIcon: Icon(Icons.search, color: textMuted),
+                    prefixIcon: Icon(Icons.search_outlined, color: textMuted),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, size: 18),
+                            tooltip: 'Hapus pencarian',
+                            icon: const Icon(Icons.close_outlined, size: 18),
                             onPressed: () {
                               _searchController.clear();
                               _loadData();
