@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Google\Client as GoogleClient;
 use Laravel\Sanctum\PersonalAccessToken;
 use Throwable;
@@ -220,7 +221,7 @@ class AuthController extends Controller
 
                 $user->update([
                     'google_id'         => $user->google_id ?? $googleId,
-                    'avatar'            => $avatar,
+                    'avatar'            => $user->avatar ?: $avatar,
                     'email_verified_at' => $user->email_verified_at ?? now(),
                 ]);
             }
@@ -328,11 +329,16 @@ class AuthController extends Controller
         $user        = $request->user();
         $profileData = $this->getProfileData($user);
 
+        $avatarUrl = $user->avatar
+            ? (preg_match('/^https?:\/\//i', $user->avatar) ? $user->avatar : Storage::url($user->avatar))
+            : null;
+
         return $this->successResponse('Data profil berhasil diambil', [
             'user' => [
                 'user_id'     => $user->user_id,
                 'nama'        => $user->nama,
                 'email'       => $user->email,
+                'avatar'      => $avatarUrl,
                 'role'        => $user->role,
                 'status_akun' => $user->status_akun,
                 'created_at'  => $user->created_at?->format('Y-m-d H:i:s'),

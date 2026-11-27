@@ -37,10 +37,14 @@ class NavbarShell extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 // Warna dibuat lebih transparan agar konten di belakang terlihat samar
-                color: Colors.white.withValues(alpha: 0.12),
+                color: AppTheme.isDark(context)
+                    ? AppTheme.darkSurface.withValues(alpha: 0.72)
+                    : Colors.white.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2), // Border putih tipis memperkuat kesan kaca
+                  color: AppTheme.isDark(context)
+                      ? AppTheme.darkCardBorder.withValues(alpha: 0.8)
+                      : Colors.white.withOpacity(0.2), // Border putih tipis memperkuat kesan kaca
                   width: 1.5,
                 ),
                 boxShadow: [
@@ -90,10 +94,10 @@ class _NavbarItemWidget extends StatelessWidget {
   });
 
   static const Color _activeColor = AppTheme.primary;
-  static const Color _inactiveColor = AppTheme.textPrimary; // Sedikit lebih soft dibanding hitam pekat
 
   @override
   Widget build(BuildContext context) {
+    final inactiveColor = AppTheme.textPrimaryOf(context);
     return AnimatedBuilder(
       animation: Listenable.merge([scaleAnimation, labelAnimation]),
       builder: (context, _) {
@@ -123,7 +127,7 @@ class _NavbarItemWidget extends StatelessWidget {
                   Icon(
                     item.icon,
                     size: 24,
-                    color: isActive ? Colors.white : _inactiveColor,
+                    color: isActive ? Colors.white : inactiveColor,
                   ),
                   if (isActive) 
                     Flexible(

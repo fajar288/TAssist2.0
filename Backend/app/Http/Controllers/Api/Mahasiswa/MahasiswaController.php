@@ -10,6 +10,7 @@ use App\Models\Dosen;
 use App\Services\SupervisorRecommendationService;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -94,7 +95,16 @@ class MahasiswaController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($request, $mahasiswa) {
+            DB::transaction(function () use ($request, $user, $mahasiswa) {
+                if ($request->hasFile('avatar')) {
+                    if ($user->avatar && !preg_match('/^https?:\/\//i', $user->avatar)) {
+                        Storage::disk('public')->delete($user->avatar);
+                    }
+                    $path = $request->file('avatar')->store('avatars', 'public');
+                    $user->avatar = $path;
+                    $user->save();
+                }
+
                 $mahasiswaFields = array_filter([
                     'topik_ta' => $request->topik_ta,
                     'judul_ta' => $request->judul_ta,
@@ -105,9 +115,20 @@ class MahasiswaController extends Controller
                 }
             });
 
+            $user->refresh();
             $mahasiswa->refresh();
 
+            $avatarUrl = $user->avatar
+                ? (preg_match('/^https?:\/\//i', $user->avatar) ? $user->avatar : Storage::url($user->avatar))
+                : null;
+
             return $this->successResponse('Profil mahasiswa berhasil diperbarui', [
+                'user' => [
+                    'user_id' => $user->user_id,
+                    'nama'    => $user->nama,
+                    'email'   => $user->email,
+                    'avatar'  => $avatarUrl,
+                ],
                 'profile' => [
                     'mahasiswa_id' => $mahasiswa->mahasiswa_id,
                     'nim'          => $mahasiswa->nim,

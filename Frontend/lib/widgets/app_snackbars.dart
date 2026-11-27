@@ -89,7 +89,7 @@ class AppSnackBars {
   }) {
     if (!context.mounted) return;
 
-    final style = _styleFor(tone);
+    final style = _styleFor(context, tone);
     final overlay = Overlay.maybeOf(context, rootOverlay: true);
 
     if (overlay == null) {
@@ -134,29 +134,30 @@ class AppSnackBars {
     });
   }
 
-  static _BannerStyle _styleFor(_BannerTone tone) => switch (tone) {
-        _BannerTone.success => const _BannerStyle(
+  static _BannerStyle _styleFor(BuildContext context, _BannerTone tone) =>
+      switch (tone) {
+        _BannerTone.success => _BannerStyle(
             accent: AppTheme.accepted,
-            bg: AppTheme.acceptedBg,
-            border: AppTheme.acceptedBorder,
+            bg: AppTheme.acceptedBgOf(context),
+            border: AppTheme.acceptedBorderOf(context),
             icon: Icons.check_circle_rounded,
           ),
-        _BannerTone.error => const _BannerStyle(
+        _BannerTone.error => _BannerStyle(
             accent: AppTheme.declined,
-            bg: AppTheme.declinedBg,
-            border: AppTheme.declinedBorder,
+            bg: AppTheme.declinedBgOf(context),
+            border: AppTheme.declinedBorderOf(context),
             icon: Icons.error_rounded,
           ),
-        _BannerTone.info => const _BannerStyle(
+        _BannerTone.info => _BannerStyle(
             accent: AppTheme.info,
-            bg: AppTheme.infoBg,
-            border: AppTheme.infoBorder,
+            bg: AppTheme.infoBgOf(context),
+            border: AppTheme.infoBorderOf(context),
             icon: Icons.info_rounded,
           ),
-        _BannerTone.warning => const _BannerStyle(
+        _BannerTone.warning => _BannerStyle(
             accent: AppTheme.warning,
-            bg: AppTheme.warningBg,
-            border: AppTheme.warningBorder,
+            bg: AppTheme.warningBgOf(context),
+            border: AppTheme.warningBorderOf(context),
             icon: Icons.warning_amber_rounded,
           ),
       };
@@ -233,20 +234,20 @@ class _TopFloatingBanner extends StatelessWidget {
                           if (title != null && title!.trim().isNotEmpty) ...[
                             Text(
                               title!,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
-                                color: AppTheme.textPrimary,
+                                color: AppTheme.textPrimaryOf(context),
                               ),
                             ),
                             const SizedBox(height: 2),
                           ],
                           Text(
                             message,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
-                              color: AppTheme.textPrimary,
+                              color: AppTheme.textPrimaryOf(context),
                               height: 1.35,
                             ),
                           ),
@@ -257,12 +258,12 @@ class _TopFloatingBanner extends StatelessWidget {
                     InkWell(
                       onTap: onClose,
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                      child: const Padding(
-                        padding: EdgeInsets.all(4),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
                         child: Icon(
                           Icons.close_rounded,
                           size: 18,
-                          color: AppTheme.textSecondary,
+                          color: AppTheme.textSecondaryOf(context),
                         ),
                       ),
                     ),

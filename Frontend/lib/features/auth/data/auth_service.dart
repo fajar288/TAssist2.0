@@ -9,14 +9,18 @@ import '../../../core/api_config.dart';
 import '../../../core/fcm_service.dart';
 
 class AuthService {
-  AuthService() {
+  AuthService({
+    ApiClient? client,
+    FlutterSecureStorage? storage,
+  })  : _client = client ?? ApiClient.instance,
+        _storage = storage ?? const FlutterSecureStorage() {
     // On an unrecoverable 401 the ApiClient clears the session itself; this
     // hook keeps the previous behaviour of also signing out of Google.
-    ApiClient.instance.onSessionExpired = _signOutGoogleQuietly;
+    _client.onSessionExpired = _signOutGoogleQuietly;
   }
 
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  final ApiClient _client = ApiClient.instance;
+  final FlutterSecureStorage _storage;
+  final ApiClient _client;
 
   static bool _isGoogleInitialized = false;
   static Future<void>? _googleInitFuture;
@@ -315,6 +319,9 @@ class AuthService {
   Future<AuthResult> updateMahasiswaProfile({
     String? topikTa,
     String? judulTa,
+    List<int>? avatarBytes,
+    String? avatarFilename,
+    String? avatarPath,
   }) async {
     final token = await getToken();
 
@@ -326,21 +333,63 @@ class AuthService {
     }
 
     try {
-      final data = await _client.put(
-        '/mahasiswa/profile',
-        body: {
-          'topik_ta': topikTa?.trim().isEmpty == true ? null : topikTa?.trim(),
-          'judul_ta': judulTa?.trim().isEmpty == true ? null : judulTa?.trim(),
-        },
-      );
+      final normalizedTopik =
+          topikTa?.trim().isEmpty == true ? null : topikTa?.trim();
+      final normalizedJudul =
+          judulTa?.trim().isEmpty == true ? null : judulTa?.trim();
+
+      final hasAvatarFile = (avatarBytes != null && avatarBytes.isNotEmpty) ||
+          (avatarPath != null && avatarPath.isNotEmpty);
+
+      final Map<String, dynamic> data;
+      if (hasAvatarFile) {
+        final files = <ApiFile>[
+          if (avatarBytes != null && avatarBytes.isNotEmpty)
+            ApiFile.fromBytes(
+              'avatar',
+              avatarBytes,
+              avatarFilename ?? 'avatar.jpg',
+            )
+          else if (avatarPath != null && avatarPath.isNotEmpty)
+            ApiFile.fromPath(
+              'avatar',
+              avatarPath,
+              avatarFilename ?? 'avatar.jpg',
+            ),
+        ];
+
+        data = await _client.multipart(
+          'POST',
+          '/mahasiswa/profile',
+          fields: {
+            '_method': 'PUT',
+            if (normalizedTopik != null) 'topik_ta': normalizedTopik,
+            if (normalizedJudul != null) 'judul_ta': normalizedJudul,
+          },
+          files: files,
+        );
+      } else {
+        data = await _client.put(
+          '/mahasiswa/profile',
+          body: {
+            'topik_ta': normalizedTopik,
+            'judul_ta': normalizedJudul,
+          },
+        );
+      }
 
       final responseData = data['data'];
 
       Map<String, dynamic>? profile;
+      String? avatarUrl;
 
-      if (responseData is Map<String, dynamic> &&
-          responseData['profile'] is Map<String, dynamic>) {
-        profile = Map<String, dynamic>.from(responseData['profile']);
+      if (responseData is Map<String, dynamic>) {
+        if (responseData['profile'] is Map<String, dynamic>) {
+          profile = Map<String, dynamic>.from(responseData['profile']);
+        }
+        if (responseData['user'] is Map<String, dynamic>) {
+          avatarUrl = responseData['user']['avatar']?.toString();
+        }
       }
 
       return AuthResult(
@@ -349,6 +398,7 @@ class AuthService {
             'Profil mahasiswa berhasil diperbarui.',
         role: 'mahasiswa',
         profile: profile,
+        avatar: avatarUrl,
       );
     } on ApiException catch (e) {
       return AuthResult(
@@ -409,6 +459,7 @@ class AuthResult {
   final int? userId;
   final String? nama;
   final String? email;
+  final String? avatar;
   final Map<String, dynamic>? profile;
 
   const AuthResult({
@@ -419,6 +470,7 @@ class AuthResult {
     this.userId,
     this.nama,
     this.email,
+    this.avatar,
     this.profile,
   });
 

@@ -27,9 +27,9 @@ class AppErrorWidget extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 420),
           padding: EdgeInsets.all(compact ? 16 : 22),
           decoration: BoxDecoration(
-            color: AppTheme.surface,
+            color: AppTheme.surfaceOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-            border: Border.all(color: AppTheme.declinedBorder),
+            border: Border.all(color: AppTheme.declinedBorderOf(context)),
             boxShadow: AppTheme.subtleShadow,
           ),
           child: Column(
@@ -39,7 +39,7 @@ class AppErrorWidget extends StatelessWidget {
                 width: compact ? 44 : 54,
                 height: compact ? 44 : 54,
                 decoration: BoxDecoration(
-                  color: AppTheme.declinedBg,
+                  color: AppTheme.declinedBgOf(context),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 child: Icon(
@@ -55,17 +55,17 @@ class AppErrorWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: compact ? 14 : 16,
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.textPrimary,
+                  color: AppTheme.textPrimaryOf(context),
                 ),
               ),
               const SizedBox(height: 6),
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   height: 1.45,
-                  color: AppTheme.textSecondary,
+                  color: AppTheme.textSecondaryOf(context),
                 ),
               ),
               if (onRetry != null) ...[
@@ -76,7 +76,7 @@ class AppErrorWidget extends StatelessWidget {
                   label: Text(retryLabel),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
-                    foregroundColor: AppTheme.surface,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),

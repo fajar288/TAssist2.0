@@ -121,11 +121,15 @@ class CounselingRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
-        decoration: AppTheme.cardDecoration(),
+        decoration: AppTheme.cardDecorationOf(context, withBorder: AppTheme.isDark(context)),
         child: Padding(
           padding: const EdgeInsets.all(18),
           child: Row(
@@ -147,7 +151,7 @@ class CounselingRequestCard extends StatelessWidget {
                     Text(
                       request.studentName,
                       style: GoogleFonts.poppins(
-                        color: AppTheme.textPrimary,
+                        color: textPrimary,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
@@ -156,7 +160,7 @@ class CounselingRequestCard extends StatelessWidget {
                     Text(
                       request.major,
                       style: GoogleFonts.poppins(
-                        color: AppTheme.textSecondary,
+                        color: textSecondary,
                         fontSize: 12.5,
                         fontWeight: FontWeight.w400,
                       ),
@@ -165,7 +169,7 @@ class CounselingRequestCard extends StatelessWidget {
                     Text(
                       'NIM: ${request.nim}',
                       style: GoogleFonts.poppins(
-                        color: AppTheme.textMuted,
+                        color: textMuted,
                         fontSize: 11.5,
                       ),
                     ),
@@ -176,7 +180,7 @@ class CounselingRequestCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.poppins(
-                          color: AppTheme.textSecondary,
+                          color: textSecondary,
                           fontSize: 12,
                           height: 1.5,
                         ),
@@ -195,13 +199,13 @@ class CounselingRequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGhost,
+                      color: AppTheme.primaryGhostOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 12,
-                      color: AppTheme.primary,
+                      color: AppTheme.primaryOf(context),
                     ),
                   ),
                 ],

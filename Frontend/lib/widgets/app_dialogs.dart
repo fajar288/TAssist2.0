@@ -32,10 +32,10 @@ class _GlassDialogShell extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppTheme.surface.withValues(alpha: 0.92),
+                    color: AppTheme.surfaceOf(context).withValues(alpha: 0.94),
                     borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                     border: Border.all(
-                      color: AppTheme.surface.withValues(alpha: 0.6),
+                      color: AppTheme.cardBorderOf(context).withValues(alpha: 0.8),
                       width: 1.5,
                     ),
                     boxShadow: [
@@ -141,7 +141,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
             Text(
               'Request Accepted!',
               style: GoogleFonts.poppins(
-                color: AppTheme.textPrimary,
+                color: AppTheme.textPrimaryOf(ctx),
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
@@ -151,7 +151,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
               'The counseling request has been\nsuccessfully accepted. The student\nwill be notified shortly.',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
-                color: AppTheme.textSecondary,
+                color: AppTheme.textSecondaryOf(ctx),
                 fontSize: 13.5,
                 height: 1.6,
               ),
@@ -202,9 +202,9 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: AppTheme.declinedBg,
+                color: AppTheme.declinedBgOf(ctx),
                 shape: BoxShape.circle,
-                border: Border.all(color: AppTheme.declinedBorder, width: 1.5),
+                border: Border.all(color: AppTheme.declinedBorderOf(ctx), width: 1.5),
               ),
               child: const Icon(
                 Icons.warning_amber_rounded,
@@ -220,7 +220,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
             Text(
               'Decline Request?',
               style: GoogleFonts.poppins(
-                color: AppTheme.textPrimary,
+                color: AppTheme.textPrimaryOf(ctx),
                 fontSize: 19,
                 fontWeight: FontWeight.w700,
               ),
@@ -230,7 +230,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
               'Are you sure you want to decline\nthis counseling request? This action\ncannot be undone.',
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
-                color: AppTheme.textSecondary,
+                color: AppTheme.textSecondaryOf(ctx),
                 fontSize: 13.5,
                 height: 1.6,
               ),
@@ -243,8 +243,8 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
                   child: OutlinedButton(
                     onPressed: () => Navigator.of(ctx).pop(false),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.textSecondary,
-                      side: const BorderSide(color: AppTheme.cardBorder, width: 1.5),
+                      foregroundColor: AppTheme.textSecondaryOf(ctx),
+                      side: BorderSide(color: AppTheme.cardBorderOf(ctx), width: 1.5),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -311,12 +311,12 @@ Future<String?> showApologyDialog(BuildContext context) {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppTheme.surfaceVariant,
+                    color: AppTheme.surfaceVariantOf(ctx),
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.mail_outline_rounded,
-                    color: AppTheme.primary,
+                    color: AppTheme.primaryOf(ctx),
                     size: 20,
                   ),
                 ),
@@ -327,7 +327,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                     Text(
                       'Send Apology',
                       style: GoogleFonts.poppins(
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.textPrimaryOf(ctx),
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
                       ),
@@ -335,7 +335,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                     Text(
                       'Provide a reason for declining',
                       style: GoogleFonts.poppins(
-                        color: AppTheme.textMuted,
+                        color: AppTheme.textMutedOf(ctx),
                         fontSize: 12,
                       ),
                     ),
@@ -351,7 +351,7 @@ Future<String?> showApologyDialog(BuildContext context) {
               maxLines: 4,
               autofocus: true,
               style: GoogleFonts.poppins(
-                color: AppTheme.textPrimary,
+                color: AppTheme.textPrimaryOf(ctx),
                 fontSize: 13.5,
                 height: 1.6,
               ),
@@ -359,20 +359,20 @@ Future<String?> showApologyDialog(BuildContext context) {
                 hintText:
                     'e.g., I sincerely apologize, but I have a scheduling conflict at this time. Please submit another request and I will do my best to accommodate you.',
                 hintStyle: GoogleFonts.poppins(
-                  color: AppTheme.textMuted,
+                  color: AppTheme.textMutedOf(ctx),
                   fontSize: 12.5,
                   height: 1.6,
                 ),
                 filled: true,
-                fillColor: AppTheme.background,
+                fillColor: AppTheme.backgroundOf(ctx),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                  borderSide: const BorderSide(
-                    color: AppTheme.primary,
+                  borderSide: BorderSide(
+                    color: AppTheme.primaryOf(ctx),
                     width: 2,
                   ),
                 ),
@@ -387,8 +387,8 @@ Future<String?> showApologyDialog(BuildContext context) {
                   child: OutlinedButton(
                     onPressed: () => Navigator.of(ctx).pop(null),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.textSecondary,
-                      side: const BorderSide(color: AppTheme.cardBorder),
+                      foregroundColor: AppTheme.textSecondaryOf(ctx),
+                      side: BorderSide(color: AppTheme.cardBorderOf(ctx)),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusMd),

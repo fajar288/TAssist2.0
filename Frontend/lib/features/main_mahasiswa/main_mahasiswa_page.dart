@@ -44,10 +44,10 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
     });
   }
 
-  Widget _buildLockedFeaturePage() {
-    return const Scaffold(
-      backgroundColor: AppTheme.background,
-      body: AppEmptyStateWidget(
+  Widget _buildLockedFeaturePage(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.backgroundOf(context),
+      body: const AppEmptyStateWidget(
         icon: Icons.lock_outline_rounded,
         title: 'Fitur Belum Tersedia',
         subtitle:
@@ -56,18 +56,18 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
     );
   }
 
-  Widget _buildLoadingPage() {
-    return const Scaffold(
-      backgroundColor: AppTheme.background,
-      body: Center(
+  Widget _buildLoadingPage(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppTheme.backgroundOf(context),
+      body: const Center(
         child: AppLoadingWidget(),
       ),
     );
   }
 
-  Widget _buildErrorPage(Object error) {
+  Widget _buildErrorPage(BuildContext context, Object error) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: AppErrorWidget(
         title: 'Failed to load student dashboard',
         message: error.toString().replaceFirst('Exception: ', ''),
@@ -83,11 +83,11 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
       future: _hasActiveBimbinganFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildLoadingPage();
+          return _buildLoadingPage(context);
         }
 
         if (snapshot.hasError) {
-          return _buildErrorPage(snapshot.error!);
+          return _buildErrorPage(context, snapshot.error!);
         }
 
         final bool hasActiveBimbingan = snapshot.data ?? false;
@@ -100,8 +100,8 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
               ]
             : [
                 const LecturerSelectionDashboardPage(),
-                _buildLockedFeaturePage(),
-                _buildLockedFeaturePage(),
+                _buildLockedFeaturePage(context),
+                _buildLockedFeaturePage(context),
               ];
 
         return Scaffold(

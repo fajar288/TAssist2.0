@@ -205,13 +205,17 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
   @override
   Widget build(BuildContext context) {
+    final surface = AppTheme.surfaceOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.textPrimary, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         titleSpacing: 0,
@@ -220,10 +224,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
             Container(
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGhost,
+                color: AppTheme.primaryGhostOf(context),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.smart_toy_rounded, color: AppTheme.primary, size: 22),
+              child: Icon(Icons.smart_toy_rounded, color: AppTheme.primaryOf(context), size: 22),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -234,10 +238,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     _title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimary,
+                      color: textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -252,11 +256,11 @@ class _ChatbotPageState extends State<ChatbotPage> {
                         ),
                       ),
                       const SizedBox(width: 5),
-                      const Text(
+                      Text(
                         'Asisten Resmi TA • RAG Aktif',
                         style: TextStyle(
                           fontSize: 11,
-                          color: AppTheme.textSecondary,
+                          color: textSecondary,
                         ),
                       ),
                     ],
@@ -268,12 +272,12 @@ class _ChatbotPageState extends State<ChatbotPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_comment_outlined, color: AppTheme.primary),
+            icon: Icon(Icons.add_comment_outlined, color: AppTheme.primaryOf(context)),
             tooltip: 'Percakapan Baru',
             onPressed: _resetToNewChat,
           ),
           IconButton(
-            icon: const Icon(Icons.history_rounded, color: AppTheme.textPrimary),
+            icon: Icon(Icons.history_rounded, color: textPrimary),
             tooltip: 'Riwayat Percakapan',
             onPressed: _openHistory,
           ),
@@ -378,9 +382,9 @@ class _ChatbotPageState extends State<ChatbotPage> {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: AppTheme.surface,
+                color: AppTheme.surfaceOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                border: Border.all(color: AppTheme.cardBorder),
+                border: Border.all(color: AppTheme.cardBorderOf(context)),
                 boxShadow: AppTheme.subtleShadow,
               ),
               child: Column(
@@ -388,34 +392,34 @@ class _ChatbotPageState extends State<ChatbotPage> {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGhost,
+                      color: AppTheme.primaryGhostOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
-                    child: const Icon(Icons.school_rounded, color: AppTheme.primary, size: 36),
+                    child: Icon(Icons.school_rounded, color: AppTheme.primaryOf(context), size: 36),
                   ),
                   const SizedBox(height: 14),
-                  const Text(
+                  Text(
                     'Halo! Saya Asisten Tugas Akhir',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimaryOf(context)),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     'Tanyakan apa saja seputar alur Tugas Akhir, format penulisan, jadwal sidang, atau panduan bimbingan Anda.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13, color: AppTheme.textSecondary, height: 1.4),
+                    style: TextStyle(fontSize: 13, color: AppTheme.textSecondaryOf(context), height: 1.4),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 28),
             Row(
-              children: const [
-                Icon(Icons.lightbulb_outline_rounded, color: AppTheme.primary, size: 18),
-                SizedBox(width: 8),
+              children: [
+                Icon(Icons.lightbulb_outline_rounded, color: AppTheme.primaryOf(context), size: 18),
+                const SizedBox(width: 8),
                 Text(
                   'Saran Pertanyaan:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimary),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimaryOf(context)),
                 ),
               ],
             ),
@@ -430,21 +434,21 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: AppTheme.surface,
+                      color: AppTheme.surfaceOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      border: Border.all(color: AppTheme.cardBorder),
+                      border: Border.all(color: AppTheme.cardBorderOf(context)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.chat_bubble_outline_rounded, size: 16, color: AppTheme.primary),
+                        Icon(Icons.chat_bubble_outline_rounded, size: 16, color: AppTheme.primaryOf(context)),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             prompt,
-                            style: const TextStyle(fontSize: 13, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+                            style: TextStyle(fontSize: 13, color: AppTheme.textPrimaryOf(context), fontWeight: FontWeight.w500),
                           ),
                         ),
-                        const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppTheme.textMuted),
+                        Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppTheme.textMutedOf(context)),
                       ],
                     ),
                   ),
@@ -480,6 +484,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
   Widget _buildSuggestedChipsBar() {
     if (_messages.isEmpty) return const SizedBox.shrink();
 
+    final surface = AppTheme.surfaceOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+
     return Container(
       height: 42,
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -490,11 +498,11 @@ class _ChatbotPageState extends State<ChatbotPage> {
         itemBuilder: (context, index) {
           final p = _suggestedPrompts[index];
           return ActionChip(
-            backgroundColor: Colors.white,
-            side: const BorderSide(color: AppTheme.cardBorder),
+            backgroundColor: surface,
+            side: BorderSide(color: border),
             label: Text(
               p,
-              style: const TextStyle(fontSize: 11, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 11, color: textPrimary, fontWeight: FontWeight.w500),
             ),
             onPressed: _isSending ? null : () => _sendMessage(p),
           );
@@ -504,12 +512,16 @@ class _ChatbotPageState extends State<ChatbotPage> {
   }
 
   Widget _buildInputBar() {
+    final surface = AppTheme.surfaceOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+
     return Container(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: surface,
         border: Border(
-          top: BorderSide(color: AppTheme.cardBorder),
+          top: BorderSide(color: border),
         ),
       ),
       child: SafeArea(
@@ -519,9 +531,9 @@ class _ChatbotPageState extends State<ChatbotPage> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceVariant,
+                  color: AppTheme.surfaceVariantOf(context),
                   borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                  border: Border.all(color: AppTheme.cardBorder),
+                  border: Border.all(color: border),
                 ),
                 child: TextField(
                   controller: _textController,
@@ -531,12 +543,12 @@ class _ChatbotPageState extends State<ChatbotPage> {
                   maxLines: 4,
                   textInputAction: TextInputAction.send,
                   onSubmitted: (_) => _sendMessage(),
-                  style: const TextStyle(fontSize: 14, color: AppTheme.textPrimary),
-                  decoration: const InputDecoration(
+                  style: TextStyle(fontSize: 14, color: textPrimary),
+                  decoration: InputDecoration(
                     hintText: 'Tanyakan sesuatu tentang Tugas Akhir...',
-                    hintStyle: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                    hintStyle: TextStyle(color: AppTheme.textMutedOf(context), fontSize: 13),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
                 ),
               ),

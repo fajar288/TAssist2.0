@@ -57,9 +57,9 @@ class AppSkeletonLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final skeletonBody = switch (_variant) {
-      _SkeletonVariant.card => _buildCardSkeletons(),
-      _SkeletonVariant.list => _buildListSkeletons(),
-      _SkeletonVariant.profile => _buildProfileSkeleton(),
+      _SkeletonVariant.card => _buildCardSkeletons(context),
+      _SkeletonVariant.list => _buildListSkeletons(context),
+      _SkeletonVariant.profile => _buildProfileSkeleton(context),
       _SkeletonVariant.custom => child ??
           _SkeletonBox(
             width: width ?? double.infinity,
@@ -74,12 +74,12 @@ class AppSkeletonLoader extends StatelessWidget {
           .animate(onPlay: (controller) => controller.repeat())
           .shimmer(
             duration: 1200.ms,
-            color: AppTheme.surface.withValues(alpha: 0.72),
+            color: AppTheme.surfaceOf(context).withValues(alpha: 0.72),
           ),
     );
   }
 
-  Widget _buildCardSkeletons() {
+  Widget _buildCardSkeletons(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(count, (index) {
@@ -88,9 +88,9 @@ class AppSkeletonLoader extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppTheme.surface,
+              color: AppTheme.surfaceOf(context),
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(color: AppTheme.cardBorder),
+              border: Border.all(color: AppTheme.cardBorderOf(context)),
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +128,7 @@ class AppSkeletonLoader extends StatelessWidget {
     );
   }
 
-  Widget _buildListSkeletons() {
+  Widget _buildListSkeletons(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(count, (index) {
@@ -137,9 +137,9 @@ class AppSkeletonLoader extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: AppTheme.surface,
+              color: AppTheme.surfaceOf(context),
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              border: Border.all(color: AppTheme.cardBorder),
+              border: Border.all(color: AppTheme.cardBorderOf(context)),
             ),
             child: const Row(
               children: [
@@ -165,13 +165,13 @@ class AppSkeletonLoader extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileSkeleton() {
+  Widget _buildProfileSkeleton(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: AppTheme.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorderOf(context)),
       ),
       child: const Column(
         mainAxisSize: MainAxisSize.min,
@@ -223,7 +223,7 @@ class _SkeletonBox extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppTheme.cardBorder,
+        color: AppTheme.cardBorderOf(context),
         borderRadius: BorderRadius.circular(radius),
       ),
     );

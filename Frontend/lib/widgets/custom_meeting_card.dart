@@ -20,11 +20,17 @@ class MeetingRequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primary = AppTheme.primaryOf(context);
+    final primaryGhost = AppTheme.primaryGhostOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
-        decoration: AppTheme.cardDecoration(),
+        decoration: AppTheme.cardDecorationOf(context),
         child: Column(
           children: [
             // ── Schedule Banner ──────────────────────────────────────────────
@@ -33,8 +39,8 @@ class MeetingRequestCard extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppTheme.primary.withOpacity(0.06),
-                    AppTheme.primaryLight.withOpacity(0.03),
+                    primary.withOpacity(0.08),
+                    AppTheme.primaryLight.withOpacity(0.04),
                   ],
                 ),
                 borderRadius: const BorderRadius.only(
@@ -47,13 +53,13 @@ class MeetingRequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGhost,
+                      color: primaryGhost,
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.calendar_today_rounded,
                       size: 16,
-                      color: AppTheme.primary,
+                      color: primary,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -64,7 +70,7 @@ class MeetingRequestCard extends StatelessWidget {
                         Text(
                           'Scheduled on ${request.dayName}',
                           style: GoogleFonts.poppins(
-                            color: AppTheme.primary,
+                            color: primary,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
@@ -72,7 +78,7 @@ class MeetingRequestCard extends StatelessWidget {
                         Text(
                           '${request.formattedDate}  •  ${request.meetingTime}',
                           style: GoogleFonts.poppins(
-                            color: AppTheme.textSecondary,
+                            color: textSecondary,
                             fontSize: 11.5,
                           ),
                         ),
@@ -85,7 +91,7 @@ class MeetingRequestCard extends StatelessWidget {
             ),
 
             // Thin divider
-            Divider(height: 1, color: AppTheme.background.withOpacity(0.8)),
+            Divider(height: 1, color: AppTheme.cardBorderOf(context).withOpacity(0.8)),
 
             // ── Student Info ──────────────────────────────────────────────────
             Padding(
@@ -106,7 +112,7 @@ class MeetingRequestCard extends StatelessWidget {
                         Text(
                           request.studentName,
                           style: GoogleFonts.poppins(
-                            color: AppTheme.textPrimary,
+                            color: textPrimary,
                             fontSize: 14.5,
                             fontWeight: FontWeight.w700,
                           ),
@@ -115,7 +121,7 @@ class MeetingRequestCard extends StatelessWidget {
                         Text(
                           '${request.major}  ·  ${request.nim}',
                           style: GoogleFonts.poppins(
-                            color: AppTheme.textMuted,
+                            color: textMuted,
                             fontSize: 11.5,
                           ),
                         ),
@@ -125,7 +131,7 @@ class MeetingRequestCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            color: AppTheme.textSecondary,
+                            color: textSecondary,
                             fontSize: 12,
                             height: 1.5,
                           ),
@@ -137,13 +143,13 @@ class MeetingRequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGhost,
+                      color: primaryGhost,
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 12,
-                      color: AppTheme.primary,
+                      color: primary,
                     ),
                   ),
                 ],

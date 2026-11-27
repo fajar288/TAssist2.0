@@ -8,6 +8,7 @@ import 'package:tassist/features/notifikasi/widgets/notifikasi_bell_button.dart'
 import 'dosen_edit_profile_page.dart';
 import 'package:tassist/model/models.dart';
 import 'package:tassist/theme/app_theme.dart';
+import 'package:tassist/theme/theme_controller.dart';
 import 'package:tassist/widgets/app_empty_state_widget.dart';
 import 'package:tassist/widgets/app_error_widget.dart';
 import 'package:tassist/widgets/app_skeleton_loader.dart';
@@ -102,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: RefreshIndicator(
         onRefresh: _loadDashboardData,
         child: CustomScrollView(
@@ -371,32 +372,47 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (result == true && mounted) {
                               _loadDashboardData();
                             }
+                          } else if (value == 'theme') {
+                            await ThemeController.showThemeSelectorSheet(context);
                           } else if (value == 'logout') {
                             _logout();
                           }
                         },
-                        itemBuilder: (BuildContext context) => [
-                          const PopupMenuItem<String>(
-                            value: 'edit_profile',
-                            child: Row(
-                              children: [
-                                Icon(Icons.person_outline, size: 20, color: AppTheme.textPrimary),
-                                SizedBox(width: 12),
-                                Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.textPrimary)),
-                              ],
+                        itemBuilder: (BuildContext context) {
+                          final menuTextColor = AppTheme.textPrimaryOf(context);
+                          return [
+                            PopupMenuItem<String>(
+                              value: 'edit_profile',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.person_outline, size: 20, color: menuTextColor),
+                                  const SizedBox(width: 12),
+                                  Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600, color: menuTextColor)),
+                                ],
+                              ),
                             ),
-                          ),
-                          const PopupMenuItem<String>(
-                            value: 'logout',
-                            child: Row(
-                              children: [
-                                Icon(Icons.logout_rounded, size: 20, color: Colors.red),
-                                SizedBox(width: 12),
-                                Text('Keluar', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600)),
-                              ],
+                            PopupMenuItem<String>(
+                              value: 'theme',
+                              child: Row(
+                                children: [
+                                  Icon(ThemeController.instance.icon, size: 20, color: AppTheme.primaryOf(context)),
+                                  const SizedBox(width: 12),
+                                  Text('Tema: ${ThemeController.instance.label}', style: TextStyle(fontWeight: FontWeight.w600, color: menuTextColor)),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            const PopupMenuItem<String>(
+                              value: 'logout',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.logout_rounded, size: 20, color: Colors.red),
+                                  SizedBox(width: 12),
+                                  Text('Keluar', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600)),
+                                ],
+                              ),
+                            ),
+                          ];
+                        },
                         // UI Container asli
                         child: Container(
                           decoration: BoxDecoration(
@@ -476,7 +492,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text(
               'Counseling Requests',
               style: GoogleFonts.poppins(
-                color: AppTheme.textPrimary,
+                color: AppTheme.textPrimaryOf(context),
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
               ),
@@ -602,14 +618,14 @@ class _FilterChip extends StatelessWidget {
           color: selected ? AppTheme.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
-            color: selected ? AppTheme.primary : AppTheme.cardBorder,
+            color: selected ? AppTheme.primary : AppTheme.cardBorderOf(context),
             width: 1.5,
           ),
         ),
         child: Text(
           label,
           style: GoogleFonts.poppins(
-            color: selected ? Colors.white : AppTheme.textSecondary,
+            color: selected ? Colors.white : AppTheme.textSecondaryOf(context),
             fontSize: 11,
             fontWeight: FontWeight.w600,
           ),

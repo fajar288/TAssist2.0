@@ -8,16 +8,16 @@ class NotifikasiBellButton extends StatefulWidget {
   const NotifikasiBellButton({
     super.key,
     this.size = 50,
-    this.iconColor = AppTheme.primary,
-    this.backgroundColor = AppTheme.surface,
+    this.iconColor,
+    this.backgroundColor,
     this.borderColor,
     this.badgeColor = AppTheme.declined,
     this.pageTitle = 'Notifications',
   });
 
   final double size;
-  final Color iconColor;
-  final Color backgroundColor;
+  final Color? iconColor;
+  final Color? backgroundColor;
   final Color? borderColor;
   final Color badgeColor;
   final String pageTitle;
@@ -95,9 +95,10 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
               height: widget.size,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.backgroundColor,
+                color: widget.backgroundColor ?? AppTheme.surfaceOf(context),
                 border: Border.all(
-                  color: widget.borderColor ?? Colors.black.withOpacity(0.05),
+                  color: widget.borderColor ??
+                      AppTheme.cardBorderOf(context).withOpacity(0.5),
                   width: 1.5,
                 ),
                 boxShadow: [
@@ -110,7 +111,7 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
               ),
               child: Icon(
                 Icons.notifications_rounded,
-                color: widget.iconColor,
+                color: widget.iconColor ?? AppTheme.primaryOf(context),
                 size: widget.size * 0.48,
               ),
             ),

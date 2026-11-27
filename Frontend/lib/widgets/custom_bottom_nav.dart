@@ -135,10 +135,14 @@ class _CustomBottomNavState extends State<CustomBottomNav>
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.12),
+                color: AppTheme.isDark(context)
+                    ? AppTheme.darkSurface.withValues(alpha: 0.72)
+                    : Colors.white.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+                  color: AppTheme.isDark(context)
+                      ? AppTheme.darkCardBorder.withValues(alpha: 0.8)
+                      : Colors.white.withOpacity(0.2),
                   width: 1.5,
                 ),
                 boxShadow: [
@@ -183,7 +187,6 @@ class _NavItemWidget extends StatelessWidget {
 
   // Warna identik dengan NavbarShell
   static const Color _activeColor   = AppTheme.primary;
-  static const Color _inactiveColor = AppTheme.textPrimary;
 
   const _NavItemWidget({
     required this.item,
@@ -194,6 +197,7 @@ class _NavItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inactiveColor = AppTheme.textPrimaryOf(context);
     return AnimatedBuilder(
       animation: Listenable.merge([scaleAnimation, labelAnimation]),
       builder: (context, _) {
@@ -224,7 +228,7 @@ class _NavItemWidget extends StatelessWidget {
                   Icon(
                     item.icon,
                     size: 24,
-                    color: isActive ? Colors.white : _inactiveColor,
+                    color: isActive ? Colors.white : inactiveColor,
                   ),
                   if (isActive)
                     Flexible(

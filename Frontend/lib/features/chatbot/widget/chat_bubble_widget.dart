@@ -113,6 +113,10 @@ class ChatBubbleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isUser = message.isUser;
     final bool isRefused = message.isRefused;
+    final bool dark = AppTheme.isDark(context);
+    final assistantBg = dark ? AppTheme.darkSurface : AppTheme.chatAssistantBubble;
+    final assistantText = dark ? AppTheme.darkTextPrimary : AppTheme.chatAssistantText;
+    final refusalBg = dark ? AppTheme.darkPendingBg : AppTheme.chatRefusalBg;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -126,11 +130,11 @@ class ChatBubbleWidget extends StatelessWidget {
               if (!isUser) ...[
                 CircleAvatar(
                   radius: 14,
-                  backgroundColor: isRefused ? AppTheme.chatRefusalBg : AppTheme.primaryLight.withOpacity(0.15),
+                  backgroundColor: isRefused ? refusalBg : AppTheme.primaryLight.withOpacity(0.15),
                   child: Icon(
                     isRefused ? Icons.shield_outlined : Icons.smart_toy_rounded,
                     size: 16,
-                    color: isRefused ? AppTheme.chatRefusal : AppTheme.primary,
+                    color: isRefused ? AppTheme.chatRefusal : AppTheme.primaryOf(context),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -144,7 +148,7 @@ class ChatBubbleWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isUser
                         ? AppTheme.chatUserBubble
-                        : (isRefused ? AppTheme.chatRefusalBg : AppTheme.chatAssistantBubble),
+                        : (isRefused ? refusalBg : assistantBg),
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(AppTheme.radiusMd),
                       topRight: const Radius.circular(AppTheme.radiusMd),
@@ -153,7 +157,7 @@ class ChatBubbleWidget extends StatelessWidget {
                     ),
                     border: isRefused
                         ? Border.all(color: AppTheme.chatRefusal, width: 1.2)
-                        : (isUser ? null : Border.all(color: AppTheme.cardBorder, width: 0.8)),
+                        : (isUser ? null : Border.all(color: AppTheme.cardBorderOf(context), width: 0.8)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.04),
@@ -191,7 +195,7 @@ class ChatBubbleWidget extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           height: 1.45,
-                          color: isUser ? AppTheme.chatUserText : AppTheme.chatAssistantText,
+                          color: isUser ? AppTheme.chatUserText : assistantText,
                         ),
                       ),
 
