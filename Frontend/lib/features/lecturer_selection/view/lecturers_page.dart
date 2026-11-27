@@ -243,7 +243,7 @@ class _LecturersPageState extends State<LecturersPage> {
                 child: GestureDetector(
                   onTap: _closeAllDropdowns,
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
                       color: Colors.black.withValues(alpha: 0.1),
                     ),

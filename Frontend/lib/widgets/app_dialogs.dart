@@ -27,11 +27,12 @@ class _GlassDialogShell extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusXl),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   decoration: AppTheme.glassDecorationOf(
                     context,
                     radius: AppTheme.radiusXl,
+                    color: AppTheme.surfaceOf(context).withValues(alpha: 0.92),
                     borderWidth: 1.2,
                     boxShadow: AppTheme.cardShadow,
                   ),

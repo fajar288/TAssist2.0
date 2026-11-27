@@ -310,9 +310,9 @@ void main() {
     });
   });
 
-  group('LoginPage visual layout & gold caps', () {
+  group('LoginPage visual layout & glass sheet', () {
     testWidgets(
-      'renders full-height navy backdrop, centered Sign in header, gold caps, and frosted form without overflow',
+      'renders navy backdrop, brand card without eyebrow pill, Indonesian form, and frosted glass without overflow',
       (tester) async {
         tester.view.physicalSize = const Size(360, 720);
         tester.view.devicePixelRatio = 1.0;
@@ -330,36 +330,31 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(tester.takeException(), isNull);
-        expect(find.text('KAMPUS DIGITAL'), findsOneWidget);
+        expect(find.text('KAMPUS DIGITAL'), findsNothing);
         expect(find.text('TAssist'), findsOneWidget);
         expect(find.text('Sistem Bimbingan Tugas Akhir'), findsOneWidget);
-        expect(find.text('Sign in'), findsOneWidget);
+        expect(find.text('Masuk'), findsOneWidget);
         expect(find.text('Email'), findsOneWidget);
-        expect(find.text('Password'), findsOneWidget);
-        expect(find.text('Continue'), findsOneWidget);
+        expect(find.text('Kata Sandi'), findsOneWidget);
+        expect(find.text('Lanjutkan'), findsOneWidget);
         expect(find.byType(BackdropFilter), findsAtLeastNWidgets(2));
 
-        // Verify Sign in sits at the top of the bottom form above Email
+        // Verify Masuk sits at the top of the bottom form above Email
         expect(
-          tester.getTopLeft(find.text('Sign in')).dy,
+          tester.getTopLeft(find.text('Masuk')).dy,
           lessThan(tester.getTopLeft(find.text('Email')).dy),
         );
         expect(
           tester.getTopLeft(find.text('TAssist')).dy,
-          lessThan(tester.getTopLeft(find.text('Sign in')).dy),
+          lessThan(tester.getTopLeft(find.text('Masuk')).dy),
         );
 
-        // Verify decorative scattered graduation caps are gold-tinted (never white)
-        final capIcons = tester
+        // Verify decorative scattered graduation caps were removed
+        final decorativeCaps = tester
             .widgetList<Icon>(find.byIcon(Icons.school_outlined))
             .where((icon) => icon.size != null && icon.size! >= 30)
             .toList();
-        expect(capIcons.length, greaterThanOrEqualTo(6));
-        for (final icon in capIcons) {
-          expect(icon.color, isNotNull);
-          expect(icon.color!.toARGB32() & 0x00FFFFFF,
-              AppTheme.accentGoldOnDark.toARGB32() & 0x00FFFFFF);
-        }
+        expect(decorativeCaps, isEmpty);
       },
     );
   });
