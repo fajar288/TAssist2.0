@@ -338,15 +338,13 @@ class _DashboardMainMahasiswaPageState
                 children: [
                   _buildHeader(),
                   const SizedBox(height: 18),
-                  _buildInformasiTACard(),
-                  const SizedBox(height: 12),
-                  _buildBeritaAcaraCard(),
-                  const SizedBox(height: 12),
-                  _buildExportHistoryCard(),
+                  _buildAdvisorCard(),
+                  const SizedBox(height: 14),
+                  _buildQuickActionGrid(),
                   const SizedBox(height: 12),
                   _buildChatbotCard(),
-                  const SizedBox(height: 18),
-                  _buildAdvisorCard(),
+                  const SizedBox(height: 12),
+                  _buildExportHistoryCard(),
                   const SizedBox(height: 18),
                   _buildMeetingSchedule(),
                   const SizedBox(height: 18),
@@ -390,7 +388,7 @@ class _DashboardMainMahasiswaPageState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hi, $_studentName!',
+                  'Hi, $_studentName',
                   style: TextStyle(
                     color: textPrimary,
                     fontSize: 22,
@@ -421,25 +419,26 @@ class _DashboardMainMahasiswaPageState
                 shape: CircleBorder(
                   side: BorderSide(color: AppTheme.cardBorderOf(context)),
                 ),
-                minimumSize: const Size(38, 38),
-                fixedSize: const Size(38, 38),
+                minimumSize: const Size(44, 44),
+                fixedSize: const Size(44, 44),
                 padding: EdgeInsets.zero,
               ),
-              icon: const Icon(Icons.chat_bubble_outline, size: 19),
+              icon: const Icon(Icons.chat_bubble_outline, size: 20),
               onPressed: () {
                 Navigator.pushNamed(context, TAssistApp.chatbotRoute);
               },
             ),
             const SizedBox(width: 8),
             NotifikasiBellButton(
-              size: 38,
+              size: 44,
               iconColor: primary,
               backgroundColor: surface,
               borderColor: AppTheme.cardBorderOf(context),
               pageTitle: 'Notifications',
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             PopupMenuButton<String>(
+              tooltip: 'Account menu',
               onSelected: (value) {
                 if (value == 'edit_profile') {
                   _navigateToEditProfile();
@@ -533,122 +532,107 @@ class _DashboardMainMahasiswaPageState
     );
   }
 
-  Widget _buildInformasiTACard() {
-    final textPrimary = AppTheme.textPrimaryOf(context);
-    final textSecondary = AppTheme.textSecondaryOf(context);
-    final textMuted = AppTheme.textMutedOf(context);
-
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const InformasiTAPage()),
-        );
-      },
-      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
-        child: Row(
-          children: [
-            _buildMenuIconBox(Icons.campaign_rounded),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Informasi & Pengumuman TA',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Cek jadwal sidang, panduan format & syarat TA',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: textMuted,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBeritaAcaraCard() {
+  Widget _buildQuickActionGrid() {
     final bimbinganId = _activeBimbingan?['bimbingan_id'] is int
         ? _activeBimbingan!['bimbingan_id'] as int
         : int.tryParse(_activeBimbingan?['bimbingan_id']?.toString() ?? '');
 
-    if (bimbinganId == null) return const SizedBox.shrink();
+    if (bimbinganId == null) {
+      return _buildQuickActionTile(
+        icon: Icons.campaign_rounded,
+        title: 'Informasi TA',
+        subtitle: 'Jadwal sidang & syarat',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const InformasiTAPage()),
+          );
+        },
+      );
+    }
 
+    return Row(
+      children: [
+        Expanded(
+          child: _buildQuickActionTile(
+            icon: Icons.campaign_rounded,
+            title: 'Informasi TA',
+            subtitle: 'Jadwal & panduan',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const InformasiTAPage()),
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildQuickActionTile(
+            icon: Icons.assignment_turned_in_rounded,
+            title: 'Berita Acara',
+            subtitle: 'Dokumen sah dosen',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BeritaAcaraListPage(
+                    bimbinganId: bimbinganId,
+                    studentName: _studentName,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
     final textPrimary = AppTheme.textPrimaryOf(context);
     final textSecondary = AppTheme.textSecondaryOf(context);
-    final textMuted = AppTheme.textMutedOf(context);
 
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => BeritaAcaraListPage(
-              bimbinganId: bimbinganId,
-              studentName: _studentName,
-            ),
-          ),
-        );
-      },
-      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
-        child: Row(
-          children: [
-            _buildMenuIconBox(Icons.assignment_turned_in_rounded),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Berita Acara Bimbingan',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Lihat dan unduh Berita Acara yang disahkan dosen',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: textSecondary,
-                    ),
-                  ),
-                ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        child: Ink(
+          padding: const EdgeInsets.all(14),
+          decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildMenuIconBox(icon),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: textPrimary,
+                ),
               ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: textMuted,
-            ),
-          ],
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: textSecondary,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -671,70 +655,89 @@ class _DashboardMainMahasiswaPageState
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildMenuIconBox(Icons.file_download_outlined),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Ekspor Riwayat Bimbingan',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: textPrimary,
+          Row(
+            children: [
+              _buildMenuIconBox(Icons.file_download_outlined),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Ekspor Riwayat Bimbingan',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: textPrimary,
+                      ),
+                    ),
+                    Text(
+                      'Unduh ringkasan jadwal, dokumen & progres',
+                      style: TextStyle(fontSize: 12, color: textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => ExportHelper.exportBimbinganHistory(
+                    context,
+                    rolePrefix: 'mahasiswa',
+                    bimbinganId: bimbinganId,
+                    format: 'pdf',
+                  ),
+                  icon: const Icon(Icons.picture_as_pdf_outlined, size: 16),
+                  label: const Text('PDF'),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: surface,
+                    foregroundColor: primary,
+                    side: BorderSide(color: border),
+                    minimumSize: const Size(0, 44),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-                Text(
-                  'Unduh ringkasan jadwal, dokumen & progres',
-                  style: TextStyle(fontSize: 11.5, color: textSecondary),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => ExportHelper.exportBimbinganHistory(
+                    context,
+                    rolePrefix: 'mahasiswa',
+                    bimbinganId: bimbinganId,
+                    format: 'excel',
+                  ),
+                  icon: const Icon(Icons.table_chart_outlined, size: 16),
+                  label: const Text('Excel'),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: surface,
+                    foregroundColor: primary,
+                    side: BorderSide(color: border),
+                    minimumSize: const Size(0, 44),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          OutlinedButton(
-            onPressed: () => ExportHelper.exportBimbinganHistory(
-              context,
-              rolePrefix: 'mahasiswa',
-              bimbinganId: bimbinganId,
-              format: 'pdf',
-            ),
-            style: OutlinedButton.styleFrom(
-              backgroundColor: surface,
-              foregroundColor: primary,
-              side: BorderSide(color: border),
-              minimumSize: const Size(0, 34),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
-              textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-            ),
-            child: const Text('PDF'),
-          ),
-          const SizedBox(width: 6),
-          OutlinedButton(
-            onPressed: () => ExportHelper.exportBimbinganHistory(
-              context,
-              rolePrefix: 'mahasiswa',
-              bimbinganId: bimbinganId,
-              format: 'excel',
-            ),
-            style: OutlinedButton.styleFrom(
-              backgroundColor: surface,
-              foregroundColor: primary,
-              side: BorderSide(color: border),
-              minimumSize: const Size(0, 34),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              ),
-              textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-            ),
-            child: const Text('Excel'),
+            ],
           ),
         ],
       ),
@@ -746,48 +749,52 @@ class _DashboardMainMahasiswaPageState
     final textSecondary = AppTheme.textSecondaryOf(context);
     final textMuted = AppTheme.textMutedOf(context);
 
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, TAssistApp.chatbotRoute);
-      },
-      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
-        child: Row(
-          children: [
-            _buildMenuIconBox(Icons.chat_bubble_outline),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Asisten TA Virtual (AI)',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: textPrimary,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, TAssistApp.chatbotRoute);
+        },
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        child: Ink(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration:
+              AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
+          child: Row(
+            children: [
+              _buildMenuIconBox(Icons.chat_bubble_outline),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Asisten TA',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: textPrimary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Tanya alur, syarat sidang, format berkas, & panduan TA',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: textSecondary,
+                    const SizedBox(height: 2),
+                    Text(
+                      'Tanya alur, syarat sidang, format berkas, & panduan TA',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: textSecondary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: textMuted,
-            ),
-          ],
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: textMuted,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -805,6 +812,11 @@ class _DashboardMainMahasiswaPageState
       decoration: BoxDecoration(
         color: AppTheme.primaryDark,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        border: Border.all(
+          color: AppTheme.accentGoldOnDark.withValues(alpha: 0.45),
+          width: 1.2,
+        ),
+        boxShadow: AppTheme.floatingShadow,
       ),
       child: Row(
         children: [
@@ -814,7 +826,10 @@ class _DashboardMainMahasiswaPageState
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppTheme.glassSurfaceOnDark,
-              border: Border.all(color: AppTheme.glassBorderOnDark),
+              border: Border.all(
+                color: AppTheme.accentGoldOnDark.withValues(alpha: 0.8),
+                width: 1.4,
+              ),
             ),
             alignment: Alignment.center,
             child: Text(
@@ -833,9 +848,9 @@ class _DashboardMainMahasiswaPageState
                 const Text(
                   'Academic Advisor',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: AppTheme.accentGoldOnDark,
                     fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -867,7 +882,7 @@ class _DashboardMainMahasiswaPageState
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: AppTheme.glassSurfaceOnDark,
-              borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               border: Border.all(color: AppTheme.glassBorderOnDark),
             ),
             child: Text(
@@ -1060,7 +1075,10 @@ class _DashboardMainMahasiswaPageState
               children: [
                 CustomPaint(
                   size: const Size(240, 120),
-                  painter: ArcPainter(percentage: _overallProgressValue),
+                  painter: ArcPainter(
+                    percentage: _overallProgressValue,
+                    isDark: AppTheme.isDark(context),
+                  ),
                 ),
                 Positioned(
                   bottom: 10,
@@ -1097,7 +1115,7 @@ class _DashboardMainMahasiswaPageState
                 ),
               ),
             if (checklist.isEmpty)
-              _buildProgressBar('OVERALL PROGRESS', _overallProgressValue)
+              _buildProgressBar('Overall progress', _overallProgressValue)
             else
               ...checklist.map((item) {
                 final label = item['nama_item']?.toString() ?? 'Checklist';
@@ -1106,7 +1124,7 @@ class _DashboardMainMahasiswaPageState
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _buildProgressBar(
-                    label.toUpperCase(),
+                    label,
                     done ? 1.0 : 0.0,
                   ),
                 );
@@ -1310,8 +1328,9 @@ class _DashboardMainMahasiswaPageState
 
 class ArcPainter extends CustomPainter {
   final double percentage;
+  final bool isDark;
 
-  ArcPainter({required this.percentage});
+  ArcPainter({required this.percentage, this.isDark = false});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1321,7 +1340,7 @@ class ArcPainter extends CustomPainter {
     const strokeWidth = 24.0;
 
     final bgPaint = Paint()
-      ..color = AppTheme.primaryLight.withValues(alpha: 0.45)
+      ..color = isDark ? AppTheme.darkSurfaceVariant : AppTheme.primaryGhost
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -1335,7 +1354,7 @@ class ArcPainter extends CustomPainter {
     );
 
     final activePaint = Paint()
-      ..color = AppTheme.primary
+      ..color = isDark ? AppTheme.darkPrimary : AppTheme.primary
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -1347,10 +1366,23 @@ class ArcPainter extends CustomPainter {
       false,
       activePaint,
     );
+
+    if (safePercentage > 0.02) {
+      final angle = math.pi + math.pi * safePercentage;
+      final tipCenter = Offset(
+        center.dx + radius * math.cos(angle),
+        center.dy + radius * math.sin(angle),
+      );
+      canvas.drawCircle(
+        tipCenter,
+        5,
+        Paint()..color = AppTheme.accentGoldOnDark,
+      );
+    }
   }
 
   @override
   bool shouldRepaint(covariant ArcPainter oldDelegate) {
-    return oldDelegate.percentage != percentage;
+    return oldDelegate.percentage != percentage || oldDelegate.isDark != isDark;
   }
 }

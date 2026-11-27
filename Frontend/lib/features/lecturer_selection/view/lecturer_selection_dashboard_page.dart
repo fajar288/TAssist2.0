@@ -299,21 +299,21 @@ class _LecturerSelectionDashboardPageState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hello There!,',
+                      'Welcome back,',
                       style: GoogleFonts.poppins(
-                        color: Colors.white.withValues(alpha: 0.78),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                        color: AppTheme.accentGoldOnDark,
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '$_studentName!',
+                      _studentName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 23,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.3,
                       ),
@@ -322,14 +322,16 @@ class _LecturerSelectionDashboardPageState
                     Text(
                       'Welcome to TAssist',
                       style: GoogleFonts.poppins(
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: Colors.white.withValues(alpha: 0.78),
                         fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
                     tooltip: 'Asisten TA',
@@ -339,25 +341,26 @@ class _LecturerSelectionDashboardPageState
                       shape: CircleBorder(
                         side: BorderSide(color: AppTheme.glassBorderOnDark),
                       ),
-                      minimumSize: const Size(38, 38),
-                      fixedSize: const Size(38, 38),
+                      minimumSize: const Size(44, 44),
+                      fixedSize: const Size(44, 44),
                       padding: EdgeInsets.zero,
                     ),
-                    icon: const Icon(Icons.chat_bubble_outline, size: 19),
+                    icon: const Icon(Icons.chat_bubble_outline, size: 20),
                     onPressed: () {
                       Navigator.pushNamed(context, TAssistApp.chatbotRoute);
                     },
                   ),
                   const SizedBox(width: 8),
                   NotifikasiBellButton(
-                    size: 38,
+                    size: 44,
                     iconColor: Colors.white,
                     backgroundColor: AppTheme.glassSurfaceOnDark,
                     borderColor: AppTheme.glassBorderOnDark,
                     pageTitle: 'Notifications',
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
                   PopupMenuButton<String>(
+                    tooltip: 'Account menu',
                     onSelected: (value) {
                       if (value == 'edit_profile') {
                         _navigateToEditProfile();
@@ -418,8 +421,9 @@ class _LecturerSelectionDashboardPageState
                     child: UserAvatarCircle(
                       name: _studentName,
                       avatar: _userAvatar,
-                      size: 52,
-                      borderColor: AppTheme.glassBorderOnDark,
+                      size: 48,
+                      borderColor:
+                          AppTheme.accentGoldOnDark.withValues(alpha: 0.75),
                       borderWidth: 1.5,
                       showShadow: false,
                     ),
@@ -489,9 +493,9 @@ class _LecturerSelectionDashboardPageState
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGhostOf(context),
+                color: AppTheme.accentGoldBgOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                border: Border.all(color: AppTheme.infoBorderOf(context)),
+                border: Border.all(color: AppTheme.accentGoldBorderOf(context)),
               ),
               child: Row(
                 children: [
@@ -499,7 +503,7 @@ class _LecturerSelectionDashboardPageState
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppTheme.primary,
+                      color: AppTheme.accentGoldOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     child: const Icon(
@@ -563,9 +567,10 @@ class _LecturerSelectionDashboardPageState
       onPressed: () => _openLecturersPage(),
       icon: const Icon(Icons.chevron_right_rounded, size: 18),
       iconAlignment: IconAlignment.end,
-      label: const Text('view all lecturers'),
+      label: const Text('View all lecturers'),
       style: TextButton.styleFrom(
         foregroundColor: AppTheme.primaryOf(context),
+        minimumSize: const Size(44, 44),
         textStyle: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
@@ -587,10 +592,14 @@ class _LecturerSelectionDashboardPageState
           : _permohonanError != null
               ? _buildRequestError()
               : _permohonanList.isEmpty
-                  ? const AppEmptyStateWidget(
+                  ? AppEmptyStateWidget(
                       compact: true,
                       icon: Icons.assignment_outlined,
-                      title: "there's nothing here...",
+                      title: 'No supervisor requests yet',
+                      subtitle:
+                          'Select a lecturer by topic or expertise above to submit a request.',
+                      actionLabel: 'Explore Lecturers',
+                      onAction: () => _openLecturersPage(),
                     )
                   : Column(
                       children: _permohonanList

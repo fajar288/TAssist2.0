@@ -44,8 +44,8 @@ class _NavbarMahasiswaState extends State<NavbarMahasiswa>
     );
 
     _scaleAnimations = _controllers.map((ctrl) {
-      return Tween<double>(begin: 1.0, end: 1.1).animate( // Perkecil sedikit end scale agar tidak overflow
-        CurvedAnimation(parent: ctrl, curve: Curves.easeOutBack),
+      return Tween<double>(begin: 1.0, end: 1.04).animate(
+        CurvedAnimation(parent: ctrl, curve: Curves.easeOutCubic),
       );
     }).toList();
 

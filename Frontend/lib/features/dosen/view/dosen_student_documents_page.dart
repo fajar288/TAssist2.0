@@ -323,9 +323,9 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
         return Container(
           height: MediaQuery.of(sheetContext).size.height * 0.76,
           padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
-          decoration: const BoxDecoration(
-            color: AppTheme.surface,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
+          decoration: BoxDecoration(
+            color: AppTheme.surfaceOf(sheetContext),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
           ),
           child: FutureBuilder<List<Map<String, dynamic>>>(
             future: future,
@@ -350,7 +350,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                       width: 42,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: AppTheme.cardBorder,
+                        color: AppTheme.cardBorderOf(context),
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
@@ -358,8 +358,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   const SizedBox(height: 20),
                   Text(
                     document['judul_dokumen']?.toString() ?? '-',
-                    style: const TextStyle(
-                      color: AppTheme.textPrimary,
+                    style: TextStyle(
+                      color: AppTheme.textPrimaryOf(context),
                       fontSize: 21,
                       fontWeight: FontWeight.w600,
                     ),
@@ -367,8 +367,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   const SizedBox(height: 4),
                   Text(
                     document['jenis_dokumen']?.toString() ?? '-',
-                    style: const TextStyle(
-                      color: Colors.black54,
+                    style: TextStyle(
+                      color: AppTheme.textSecondaryOf(context),
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
@@ -376,10 +376,10 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   const SizedBox(height: 18),
                   Expanded(
                     child: versions.isEmpty
-                        ? const Center(
+                        ? Center(
                             child: Text(
                               'No version history yet.',
-                              style: TextStyle(color: Colors.black54),
+                              style: TextStyle(color: AppTheme.textMutedOf(context)),
                             ),
                           )
                         : ListView.builder(
@@ -412,22 +412,22 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceVariant,
+        color: AppTheme.surfaceVariantOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.history_rounded, color: AppTheme.primary),
+              Icon(Icons.history_rounded, color: AppTheme.primaryOf(context)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Version ${version['nomor_versi'] ?? '-'}',
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
@@ -437,7 +437,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                 decoration: BoxDecoration(
                   color: _statusColor(status).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
                 child: Text(
                   _formatStatus(status),
@@ -453,15 +453,15 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
           const SizedBox(height: 8),
           Text(
             'Uploaded at ${_formatDateTime(version['uploaded_at']?.toString())}',
-            style: const TextStyle(color: Colors.black54, fontSize: 12),
+            style: TextStyle(color: AppTheme.textSecondaryOf(context), fontSize: 12),
           ),
           if (version['catatan_revisi'] != null &&
               version['catatan_revisi'].toString().isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
               version['catatan_revisi'].toString(),
-              style: const TextStyle(
-                color: Colors.black87,
+              style: TextStyle(
+                color: AppTheme.textPrimaryOf(context),
                 fontSize: 13,
                 height: 1.35,
               ),
@@ -469,10 +469,10 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
           ],
           if (feedback.isNotEmpty) ...[
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Existing Feedback',
               style: TextStyle(
-                color: AppTheme.textPrimary,
+                color: AppTheme.textPrimaryOf(context),
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -540,13 +540,13 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(11),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: AppTheme.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),
       child: Text(
         page == null || page.isEmpty ? comment : 'Page $page: $comment',
-        style: const TextStyle(
-          color: Colors.black87,
+        style: TextStyle(
+          color: AppTheme.textPrimaryOf(context),
           fontSize: 12,
           height: 1.35,
         ),
@@ -564,76 +564,75 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
     final status = latestVersion['status_versi']?.toString();
     final versionNumber = latestVersion['nomor_versi']?.toString();
 
-    return InkWell(
-      onTap: () => _showVersionsSheet(document),
-      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(color: AppTheme.cardBorder),
-          boxShadow: AppTheme.subtleShadow,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 54,
-              height: 54,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryGhost,
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _showVersionsSheet(document),
+        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+        child: Ink(
+          padding: const EdgeInsets.all(16),
+          decoration:
+              AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg),
+          child: Row(
+            children: [
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryGhostOf(context),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                ),
+                child: Icon(
+                  _documentIcon(extension),
+                  color: AppTheme.primaryOf(context),
+                  size: 31,
+                ),
               ),
-              child: Icon(
-                _documentIcon(extension),
-                color: AppTheme.primary,
-                size: 31,
+              const SizedBox(width: 13),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      document['judul_dokumen']?.toString() ?? '-',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppTheme.textPrimaryOf(context),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      document['jenis_dokumen']?.toString() ?? '-',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppTheme.textSecondaryOf(context),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      'V${versionNumber ?? '-'} • ${_formatStatus(status)}',
+                      style: TextStyle(
+                        color: _statusColor(status),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    document['judul_dokumen']?.toString() ?? '-',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppTheme.textPrimary,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    document['jenis_dokumen']?.toString() ?? '-',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 7),
-                  Text(
-                    'V${versionNumber ?? '-'} • ${_formatStatus(status)}',
-                    style: TextStyle(
-                      color: _statusColor(status),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 15,
+                color: AppTheme.textMutedOf(context),
               ),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 15,
-              color: Colors.black38,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -672,10 +671,10 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppTheme.primary,
+        backgroundColor: AppTheme.primaryDark,
         foregroundColor: Colors.white,
         title: const Text(
           'Student Documents',

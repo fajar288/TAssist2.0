@@ -14,13 +14,21 @@ class AppTheme {
   static const Color surface       = Color(0xFFFFFFFF);
   static const Color textPrimary   = Color(0xFF0F1B2D); // Deep Navy Charcoal
   static const Color textSecondary = Color(0xFF526071); // Cool Slate
-  static const Color textMuted     = Color(0xFF8592A3); // Muted Slate
+  static const Color textMuted     = Color(0xFF5C6B7D); // Accessible Muted Slate (>= 4.99:1 AA)
+
+  // ─── Deliberate Secondary Accent (Subtle Academic Dark Gold) ─────────────────
+  static const Color accentGold           = Color(0xFF8A5D0A); // Light surface (>= 5.33:1 AA)
+  static const Color accentGoldOnDark     = Color(0xFFD4A64A); // Deep navy / dark surface (>= 5.80:1 AA)
+  static const Color accentGoldBg         = Color(0xFFFBF6EA);
+  static const Color accentGoldBorder     = Color(0xFFE7D3A1);
+  static const Color darkAccentGoldBg     = Color(0xFF281F0E);
+  static const Color darkAccentGoldBorder = Color(0xFF6E5320);
 
   // ─── Glassmorphism Tokens ────────────────────────────────────────────────────
-  static Color get glassSurfaceLight  => surface.withValues(alpha: 0.78);
-  static Color get glassBorderLight   => surface.withValues(alpha: 0.65);
+  static Color get glassSurfaceLight  => surface.withValues(alpha: 0.62);
+  static Color get glassBorderLight   => surface.withValues(alpha: 0.85);
   static Color get glassSurfaceOnDark => surface.withValues(alpha: 0.14);
-  static Color get glassBorderOnDark  => surface.withValues(alpha: 0.26);
+  static Color get glassBorderOnDark  => surface.withValues(alpha: 0.28);
 
   // ─── Radius Scale ────────────────────────────────────────────────────────────
   static const double radiusSm = 8.0;  // chips, badges, small icon boxes
@@ -50,9 +58,10 @@ class AppTheme {
   static const Color warningBg     = pendingBg;
   static const Color warningBorder = pendingBorder;
 
-  // ─── Surfaces ────────────────────────────────────────────────────────────────
+  // ─── Surfaces & Interactive Borders ──────────────────────────────────────────
   static const Color surfaceVariant = Color(0xFFF8FAFC);
   static const Color cardBorder     = Color(0xFFDCE2EA);
+  static const Color inputBorder    = Color(0xFF8592A3); // >= 3.16:1 non-text contrast on surface
 
   // ─── Annotation Status (S8.3) ────────────────────────────────────────────────
   static const Color annotationOpen       = warning;
@@ -116,9 +125,10 @@ class AppTheme {
   static const Color darkSurface        = Color(0xFF101D33);
   static const Color darkSurfaceVariant = Color(0xFF172642);
   static const Color darkCardBorder     = Color(0xFF243656);
+  static const Color darkInputBorder    = Color(0xFF5E779E);
   static const Color darkTextPrimary    = Color(0xFFF3F5F8);
   static const Color darkTextSecondary  = Color(0xFF94A3B8);
-  static const Color darkTextMuted      = Color(0xFF64748B);
+  static const Color darkTextMuted      = Color(0xFF93A3B8);
   static const Color darkPrimary        = Color(0xFF5B93E8);
   static const Color darkPrimaryGhost   = Color(0xFF162B4D);
 
@@ -144,6 +154,19 @@ class AppTheme {
       ];
 
   static List<BoxShadow> get subtleShadow => cardShadow;
+
+  static List<BoxShadow> get floatingShadow => [
+        BoxShadow(
+          color: primaryDark.withValues(alpha: 0.12),
+          blurRadius: 24,
+          offset: const Offset(0, 8),
+        ),
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.05),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ];
 
   static List<BoxShadow> get avatarGlow => const [];
 
@@ -376,27 +399,51 @@ class AppTheme {
   static Color warningBorderOf(BuildContext context) =>
       isDark(context) ? darkWarningBorder : warningBorder;
 
+  static Color accentGoldOf(BuildContext context) =>
+      isDark(context) ? accentGoldOnDark : accentGold;
+
+  static Color accentGoldBgOf(BuildContext context) =>
+      isDark(context) ? darkAccentGoldBg : accentGoldBg;
+
+  static Color accentGoldBorderOf(BuildContext context) =>
+      isDark(context) ? darkAccentGoldBorder : accentGoldBorder;
+
+  static Color inputBorderOf(BuildContext context) =>
+      isDark(context) ? darkInputBorder : inputBorder;
+
   static Color glassSurfaceOf(BuildContext context) => isDark(context)
-      ? darkSurface.withValues(alpha: 0.78)
+      ? darkSurface.withValues(alpha: 0.68)
       : glassSurfaceLight;
 
   static Color glassBorderOf(BuildContext context) => isDark(context)
-      ? darkCardBorder.withValues(alpha: 0.85)
+      ? Colors.white.withValues(alpha: 0.18)
       : glassBorderLight;
 
   static BoxDecoration glassDecorationOf(
     BuildContext context, {
     double radius = radiusLg,
+    Color? color,
+    Color? borderColor,
     double borderWidth = 1.0,
     List<BoxShadow>? boxShadow,
   }) =>
       glassDecoration(
         radius: radius,
-        color: glassSurfaceOf(context),
-        borderColor: isDark(context) ? glassBorderOf(context) : cardBorder,
+        color: color ?? glassSurfaceOf(context),
+        borderColor: borderColor ?? glassBorderOf(context),
         borderWidth: borderWidth,
         boxShadow: boxShadow,
       );
+
+  static List<BoxShadow> cardShadowOf(BuildContext context) => isDark(context)
+      ? [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ]
+      : cardShadow;
 
   static BoxDecoration cardDecorationOf(
     BuildContext context, {
@@ -407,15 +454,7 @@ class AppTheme {
         color: surfaceOf(context),
         borderRadius: BorderRadius.circular(radius),
         border: withBorder ? Border.all(color: cardBorderOf(context)) : null,
-        boxShadow: isDark(context)
-            ? [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ]
-            : cardShadow,
+        boxShadow: cardShadowOf(context),
       );
 
   // ─── Theme ────────────────────────────────────────────────────────────────────
@@ -466,11 +505,11 @@ class AppTheme {
         labelStyle: const TextStyle(color: textSecondary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: const BorderSide(color: cardBorder),
+          borderSide: const BorderSide(color: inputBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: const BorderSide(color: cardBorder),
+          borderSide: const BorderSide(color: inputBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
@@ -614,11 +653,11 @@ class AppTheme {
         labelStyle: const TextStyle(color: darkTextSecondary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: const BorderSide(color: darkCardBorder),
+          borderSide: const BorderSide(color: darkInputBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),
-          borderSide: const BorderSide(color: darkCardBorder),
+          borderSide: const BorderSide(color: darkInputBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusMd),

@@ -46,11 +46,13 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
   Widget _buildLockedFeaturePage(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundOf(context),
-      body: const AppEmptyStateWidget(
+      body: AppEmptyStateWidget(
         icon: Icons.lock_outline_rounded,
-        title: 'Fitur Belum Tersedia',
+        title: 'Pilih Dosen Pembimbing Dahulu',
         subtitle:
-            'This feature is not available until you have an academic advisor',
+            'Jadwal bimbingan dan unggah dokumen akan terbuka setelah permohonan pembimbing Anda disetujui.',
+        actionLabel: 'Cari Dosen Pembimbing',
+        onAction: () => _onTabTapped(0),
       ),
     );
   }

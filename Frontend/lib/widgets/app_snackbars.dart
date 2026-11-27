@@ -212,7 +212,7 @@ class _TopFloatingBanner extends StatelessWidget {
                   color: style.bg,
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   border: Border.all(color: style.border, width: 1.2),
-                  boxShadow: AppTheme.subtleShadow,
+                  boxShadow: AppTheme.cardShadowOf(context),
                 ),
                 child: Row(
                   children: [

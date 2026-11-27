@@ -136,7 +136,7 @@ class _CompleteStudentProfilePageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: SafeArea(
         child: _isInitialLoading
             ? const _CompleteProfileSkeleton()
@@ -273,9 +273,9 @@ class _CompleteStudentProfilePageState
                                             )
                                           : const Text(
                                               key: ValueKey('text'),
-                                              'SIMPAN PROFIL',
+                                              'Simpan Profil',
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w700,
+                                                fontWeight: FontWeight.w600,
                                                 fontSize: 15,
                                               ),
                                             ),
@@ -299,10 +299,10 @@ class _CompleteStudentProfilePageState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Lengkapi Profil',
           style: TextStyle(
-            color: AppTheme.primary,
+            color: AppTheme.primaryOf(context),
             fontSize: 26,
             fontWeight: FontWeight.w600,
           ),
@@ -311,7 +311,7 @@ class _CompleteStudentProfilePageState
         Text(
           'Data ini diperlukan agar akun mahasiswa kamu bisa menggunakan fitur bimbingan TA dengan lengkap.',
           style: TextStyle(
-            color: Colors.black.withValues(alpha: 0.62),
+            color: AppTheme.textSecondaryOf(context),
             fontSize: 14.5,
             height: 1.45,
           ),
@@ -329,15 +329,16 @@ class _CompleteStudentProfilePageState
     String? Function(String?)? validator,
     List<TextInputFormatter>? inputFormatters,
   }) {
+    final border = AppTheme.inputBorderOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: AppTheme.textPrimary,
+          style: TextStyle(
+            color: AppTheme.textPrimaryOf(context),
             fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
@@ -351,22 +352,22 @@ class _CompleteStudentProfilePageState
           decoration: InputDecoration(
             hintText: hintText,
             filled: true,
-            fillColor: AppTheme.surfaceVariant,
+            fillColor: AppTheme.surfaceVariantOf(context),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.cardBorder),
+              borderSide: BorderSide(color: border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.cardBorder),
+              borderSide: BorderSide(color: border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.primary),
+              borderSide: BorderSide(color: AppTheme.primaryOf(context)),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),

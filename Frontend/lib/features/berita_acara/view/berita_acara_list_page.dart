@@ -84,9 +84,9 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceOf(ctx),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -98,7 +98,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: AppTheme.cardBorder,
+                  color: AppTheme.cardBorderOf(ctx),
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
               ),
@@ -108,10 +108,10 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                 Expanded(
                   child: Text(
                     ba.nomor,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimary,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textPrimaryOf(ctx),
                     ),
                   ),
                 ),
@@ -133,21 +133,29 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
             if (ba.metodePersetujuan != null)
               _buildDetailRow('Metode Verifikasi', ba.metodePersetujuan!.toUpperCase()),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'KODE HASH SHA-256:',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textSecondaryOf(ctx),
+              ),
             ),
             const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceVariantOf(context),
+                color: AppTheme.surfaceVariantOf(ctx),
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                border: Border.all(color: AppTheme.cardBorderOf(context)),
+                border: Border.all(color: AppTheme.cardBorderOf(ctx)),
               ),
               child: SelectableText(
                 ba.activeHash,
-                style: const TextStyle(fontSize: 10, fontFamily: 'monospace', color: AppTheme.textPrimary),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontFamily: 'monospace',
+                  color: AppTheme.textPrimaryOf(ctx),
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -180,14 +188,21 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
         children: [
           Expanded(
             flex: 2,
-            child: Text(label, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 13, color: AppTheme.textSecondaryOf(context)),
+            ),
           ),
           Expanded(
             flex: 3,
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimaryOf(context),
+              ),
             ),
           ),
         ],
@@ -315,7 +330,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Periode: ${_formatDate(ba.periodeMulai)} — ${_formatDate(ba.periodeSelesai)}',
+                    'Periode: ${_formatDate(ba.periodeMulai)} - ${_formatDate(ba.periodeSelesai)}',
                     style: TextStyle(fontSize: 12, color: AppTheme.textSecondaryOf(context)),
                   ),
                   const SizedBox(height: 4),

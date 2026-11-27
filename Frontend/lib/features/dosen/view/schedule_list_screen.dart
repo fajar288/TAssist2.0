@@ -1,6 +1,5 @@
 // lib/features/dosen/view/schedule_list_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tassist/features/dosen/data/dosen_service.dart';
 
@@ -90,7 +89,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: RefreshIndicator(
         onRefresh: _loadJadwal,
         child: CustomScrollView(
@@ -198,6 +197,19 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
               ),
               IconButton(
                 tooltip: 'Atur Ketersediaan',
+                style: IconButton.styleFrom(
+                  backgroundColor: AppTheme.glassSurfaceOnDark,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(44, 44),
+                  fixedSize: const Size(44, 44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    side: BorderSide(
+                      color: AppTheme.glassBorderOnDark,
+                      width: 1,
+                    ),
+                  ),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -206,25 +218,14 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                     ),
                   );
                 },
-                icon: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: AppTheme.glassSurfaceOnDark,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    border: Border.all(
-                      color: AppTheme.glassBorderOnDark,
-                      width: 1,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.event_available_rounded,
-                    color: Colors.white,
-                    size: 22,
-                  ),
+                icon: const Icon(
+                  Icons.event_available_rounded,
+                  color: Colors.white,
+                  size: 22,
                 ),
               ),
             ],
-          ).animate().fadeIn(duration: 500.ms).slideX(begin: -0.05, end: 0),
+          ),
         ),
       ),
     );
@@ -236,80 +237,90 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      child: GestureDetector(
-        onTap: () => _openDetail(context, next),
-        child: Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: AppTheme.primary,
-            borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _openDetail(context, next),
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          child: Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: AppTheme.primary,
+              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+              border: Border.all(
+                color: AppTheme.accentGoldOnDark.withValues(alpha: 0.45),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.glassSurfaceOnDark,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                    border: Border.all(color: AppTheme.glassBorderOnDark),
+                  ),
+                  child: const Icon(
+                    Icons.notifications_active_rounded,
+                    color: AppTheme.accentGoldOnDark,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        next.isProposedByStudent
+                            ? 'Next Pending Student Meeting'
+                            : 'Waiting Student Confirmation',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white.withValues(alpha: 0.82),
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        next.studentName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${next.dayName} • ${next.meetingTime}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white70,
+                ),
+              ],
+            ),
           ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppTheme.glassSurfaceOnDark,
-                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                  border: Border.all(color: AppTheme.glassBorderOnDark),
-                ),
-                child: const Icon(
-                  Icons.notifications_active_rounded,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      next.isProposedByStudent
-                          ? 'Next Pending Student Meeting'
-                          : 'Waiting Student Confirmation',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white.withOpacity(0.75),
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      next.studentName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${next.dayName} • ${next.meetingTime}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.white70,
-              ),
-            ],
-          ),
-        ).animate().fadeIn(duration: 400.ms, delay: 150.ms).slideY(begin: 0.1, end: 0),
+        ),
       ),
     );
   }
 
   Widget _buildFilterRow() {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
       child: Row(
@@ -318,11 +329,11 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
             child: Text(
               'All Meeting Requests',
               style: GoogleFonts.poppins(
-                color: AppTheme.textPrimary,
+                color: textPrimary,
                 fontSize: 17,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
-            ).animate().fadeIn(duration: 400.ms, delay: 200.ms),
+            ),
           ),
           PopupMenuButton<String>(
             initialValue: _selectedFilter,
@@ -335,30 +346,35 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                   ),
                 )
                 .toList(),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppTheme.surface,
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                border: Border.all(color: AppTheme.cardBorder),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    _selectedFilter,
-                    style: GoogleFonts.poppins(
-                      color: AppTheme.textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 44),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppTheme.surfaceOf(context),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                  border: Border.all(color: AppTheme.cardBorderOf(context)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _selectedFilter,
+                      style: GoogleFonts.poppins(
+                        color: textSecondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    size: 18,
-                    color: AppTheme.textSecondary,
-                  ),
-                ],
+                    const SizedBox(width: 6),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 18,
+                      color: textSecondary,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

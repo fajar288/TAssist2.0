@@ -8,12 +8,12 @@ export 'api_client.dart' show SessionExpiredException;
 /// Thin backwards-compatible facade over [ApiClient].
 ///
 /// All HTTP work (auth header, 401 refresh + retry, logout redirect) now lives
-/// in `core/api_client.dart`. This class is kept so existing imports —
-/// `MaterialApp.navigatorKey` in `app/app.dart` — keep working.
+/// in `core/api_client.dart`. This class is kept so existing imports -
+/// `MaterialApp.navigatorKey` in `app/app.dart` - keep working.
 class AuthHttpClient {
   AuthHttpClient._();
 
-  /// Global navigator key — must be assigned to `MaterialApp.navigatorKey`.
+  /// Global navigator key - must be assigned to `MaterialApp.navigatorKey`.
   static GlobalKey<NavigatorState> get navigatorKey =>
       ApiClient.instance.navigatorKey;
 

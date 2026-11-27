@@ -1,6 +1,5 @@
 // lib/widgets/custom_meeting_card.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../model/models.dart';
 import '../theme/app_theme.dart';
@@ -26,12 +25,17 @@ class MeetingRequestCard extends StatelessWidget {
     final textSecondary = AppTheme.textSecondaryOf(context);
     final textMuted = AppTheme.textMutedOf(context);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
-        child: Column(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          child: Ink(
+            decoration:
+                AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
+            child: Column(
           children: [
             // ── Schedule Banner ──────────────────────────────────────────────
             Container(
@@ -153,10 +157,9 @@ class MeetingRequestCard extends StatelessWidget {
             ),
           ],
         ),
+          ),
+        ),
       ),
-    )
-        .animate(delay: (animationIndex * 80).ms)
-        .fadeIn(duration: 400.ms)
-        .slideY(begin: 0.15, end: 0, duration: 400.ms, curve: Curves.easeOut);
+    );
   }
 }

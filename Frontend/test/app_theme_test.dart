@@ -20,14 +20,17 @@ void main() {
       expect(AppTheme.cardBorder, const Color(0xFFDCE2EA));
       expect(AppTheme.textPrimary, const Color(0xFF0F1B2D));
       expect(AppTheme.textSecondary, const Color(0xFF526071));
-      expect(AppTheme.textMuted, const Color(0xFF8592A3));
+      expect(AppTheme.textMuted, const Color(0xFF5C6B7D));
+      expect(AppTheme.accentGold, const Color(0xFF8A5D0A));
+      expect(AppTheme.accentGoldOnDark, const Color(0xFFD4A64A));
     });
 
     test('glassmorphism tokens and helper', () {
-      expect(AppTheme.glassSurfaceLight, AppTheme.surface.withValues(alpha: 0.78));
-      expect(AppTheme.glassBorderLight, AppTheme.surface.withValues(alpha: 0.65));
+      expect(AppTheme.glassSurfaceLight, AppTheme.surface.withValues(alpha: 0.62));
+      expect(AppTheme.glassBorderLight, AppTheme.surface.withValues(alpha: 0.85));
       expect(AppTheme.glassSurfaceOnDark, AppTheme.surface.withValues(alpha: 0.14));
-      expect(AppTheme.glassBorderOnDark, AppTheme.surface.withValues(alpha: 0.26));
+      expect(AppTheme.glassBorderOnDark, AppTheme.surface.withValues(alpha: 0.28));
+      expect(AppTheme.floatingShadow, isNotEmpty);
 
       final deco = AppTheme.glassDecoration();
       expect(deco.color, AppTheme.glassSurfaceLight);
@@ -95,6 +98,58 @@ void main() {
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
       );
+    });
+
+    test('builds a dark Material 3 theme and resolves context tokens', () {
+      final theme = AppTheme.darkTheme;
+
+      expect(theme, isA<ThemeData>());
+      expect(theme.brightness, Brightness.dark);
+      expect(theme.scaffoldBackgroundColor, AppTheme.darkBackground);
+      expect(theme.colorScheme.brightness, Brightness.dark);
+    });
+
+    testWidgets('context-aware accent gold and glass helpers adapt to theme', (tester) async {
+      late Color lightGold;
+      late Color darkGold;
+      late BoxDecoration lightGlass;
+      late BoxDecoration darkGlass;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.light,
+          home: Builder(
+            builder: (context) {
+              lightGold = AppTheme.accentGoldOf(context);
+              lightGlass = AppTheme.glassDecorationOf(context);
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.dark,
+          home: Builder(
+            builder: (context) {
+              darkGold = AppTheme.accentGoldOf(context);
+              darkGlass = AppTheme.glassDecorationOf(context);
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(lightGold, AppTheme.accentGold);
+      expect(darkGold, AppTheme.accentGoldOnDark);
+      expect(lightGlass.color, AppTheme.glassSurfaceLight);
+      expect(darkGlass.color, AppTheme.darkSurface.withValues(alpha: 0.68));
     });
   });
 

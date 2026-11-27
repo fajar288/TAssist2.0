@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tassist/features/auth/view/login_page.dart';
 import 'package:tassist/theme/app_theme.dart';
 import 'package:tassist/widgets/app_empty_state_widget.dart';
 import 'package:tassist/widgets/app_error_widget.dart';
 import 'package:tassist/widgets/app_loading_widget.dart';
 import 'package:tassist/widgets/app_skeleton_loader.dart';
 import 'package:tassist/widgets/app_snackbars.dart';
+import 'package:tassist/widgets/custom_bottom_nav.dart';
+import 'package:tassist/widgets/navbar_shared.dart';
 
 void main() {
   group('AppLoadingWidget', () {
@@ -195,5 +198,155 @@ void main() {
         AppTheme.info,
       );
     });
+  });
+
+  group('NavbarShell & CustomBottomNav', () {
+    const items = [
+      NavItem(icon: Icons.home_rounded, label: 'home'),
+      NavItem(icon: Icons.more_time_rounded, label: 'schedule'),
+      NavItem(icon: Icons.file_upload_outlined, label: 'upload'),
+    ];
+
+    testWidgets(
+      'renders frosted glass capsule, active navy pill with label, and inactive icons only',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        var currentIndex = 0;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: StatefulBuilder(
+              builder: (context, setState) {
+                return Scaffold(
+                  bottomNavigationBar: NavbarShell(
+                    items: items,
+                    currentIndex: currentIndex,
+                    onTap: (index) => setState(() => currentIndex = index),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+        expect(find.byType(BackdropFilter), findsOneWidget);
+        expect(find.text('home'), findsOneWidget);
+        expect(find.text('schedule'), findsNothing);
+        expect(find.text('upload'), findsNothing);
+
+        await tester.tap(find.byIcon(Icons.more_time_rounded));
+        await tester.pumpAndSettle();
+
+        expect(currentIndex, 1);
+        expect(find.text('schedule'), findsOneWidget);
+        expect(find.text('home'), findsNothing);
+      },
+    );
+
+    testWidgets('CustomBottomNav switches tabs and supports dark mode without overflow', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      var selected = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.dark,
+          home: StatefulBuilder(
+            builder: (context, setState) {
+              return Scaffold(
+                bottomNavigationBar: CustomBottomNav(
+                  currentIndex: selected,
+                  onTap: (index) => setState(() => selected = index),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(NavbarShell), findsOneWidget);
+      expect(find.text('home'), findsOneWidget);
+      expect(find.text('students'), findsNothing);
+
+      await tester.tap(find.byIcon(Icons.person_rounded));
+      await tester.pumpAndSettle();
+
+      expect(selected, 2);
+      expect(find.text('students'), findsOneWidget);
+      expect(find.text('home'), findsNothing);
+    });
+  });
+
+  group('LoginPage visual layout & gold caps', () {
+    testWidgets(
+      'renders full-height navy backdrop, centered Sign in header, gold caps, and frosted form without overflow',
+      (tester) async {
+        tester.view.physicalSize = const Size(360, 720);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const LoginPage(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(find.text('KAMPUS DIGITAL'), findsOneWidget);
+        expect(find.text('TAssist'), findsOneWidget);
+        expect(find.text('Sistem Bimbingan Tugas Akhir'), findsOneWidget);
+        expect(find.text('Sign in'), findsOneWidget);
+        expect(find.text('Email'), findsOneWidget);
+        expect(find.text('Password'), findsOneWidget);
+        expect(find.text('Continue'), findsOneWidget);
+        expect(find.byType(BackdropFilter), findsAtLeastNWidgets(2));
+
+        // Verify Sign in sits at the top of the bottom form above Email
+        expect(
+          tester.getTopLeft(find.text('Sign in')).dy,
+          lessThan(tester.getTopLeft(find.text('Email')).dy),
+        );
+        expect(
+          tester.getTopLeft(find.text('TAssist')).dy,
+          lessThan(tester.getTopLeft(find.text('Sign in')).dy),
+        );
+
+        // Verify decorative scattered graduation caps are gold-tinted (never white)
+        final capIcons = tester
+            .widgetList<Icon>(find.byIcon(Icons.school_outlined))
+            .where((icon) => icon.size != null && icon.size! >= 30)
+            .toList();
+        expect(capIcons.length, greaterThanOrEqualTo(6));
+        for (final icon in capIcons) {
+          expect(icon.color, isNotNull);
+          expect(icon.color!.toARGB32() & 0x00FFFFFF,
+              AppTheme.accentGoldOnDark.toARGB32() & 0x00FFFFFF);
+        }
+      },
+    );
   });
 }

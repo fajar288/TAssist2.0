@@ -25,9 +25,9 @@ class StudentCard extends StatelessWidget {
       case 'warning':
         return AppTheme.pending;
       case 'completed':
-        return AppTheme.primaryLight;
+        return AppTheme.primaryOf(context);
       default:
-        return AppTheme.textMuted;
+        return AppTheme.textMutedOf(context);
     }
   }
 
@@ -57,16 +57,16 @@ class StudentCard extends StatelessWidget {
     }
   }
 
-  Color _avatarColor() {
+  Color _avatarColor(BuildContext context) {
     switch (student.status) {
       case 'active':
-        return AppTheme.primaryLight;
+        return AppTheme.primaryOf(context);
       case 'warning':
         return AppTheme.pending;
       case 'completed':
         return AppTheme.accepted;
       default:
-        return AppTheme.textSecondary;
+        return AppTheme.textSecondaryOf(context);
     }
   }
 
@@ -188,14 +188,14 @@ class StudentCard extends StatelessWidget {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: _avatarColor().withValues(alpha: 0.15),
+            color: _avatarColor(context).withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
           child: Center(
             child: Text(
               student.imageInitials,
               style: TextStyle(
-                color: _avatarColor(),
+                color: _avatarColor(context),
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
                 letterSpacing: 0.5,

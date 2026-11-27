@@ -59,10 +59,10 @@ class ChatBubbleWidget extends StatelessWidget {
                         ),
                         Text(
                           citation.judul,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.textPrimaryOf(ctx),
                           ),
                         ),
                       ],
@@ -71,22 +71,30 @@ class ChatBubbleWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Label Kutipan Resmi:',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.textSecondary),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textSecondaryOf(ctx),
+                ),
               ),
               const SizedBox(height: 4),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceVariant,
+                  color: AppTheme.surfaceVariantOf(ctx),
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                  border: Border.all(color: AppTheme.cardBorder),
+                  border: Border.all(color: AppTheme.cardBorderOf(ctx)),
                 ),
                 child: Text(
                   citation.label,
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: AppTheme.textPrimary),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppTheme.textPrimaryOf(ctx),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -248,7 +256,7 @@ class ChatBubbleWidget extends StatelessWidget {
                           _formatTime(message.createdAt),
                           style: TextStyle(
                             fontSize: 10,
-                            color: isUser ? Colors.white70 : AppTheme.textMuted,
+                            color: isUser ? Colors.white70 : AppTheme.textMutedOf(context),
                           ),
                         ),
                       ),

@@ -197,7 +197,7 @@ class _LecturersPageState extends State<LecturersPage> {
     final lecturers = _filteredLecturers;
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       extendBody: true,
       body: SafeArea(
         child: Stack(
@@ -272,6 +272,7 @@ class _LecturersPageState extends State<LecturersPage> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
     return SizedBox(
       height: 48,
       child: Stack(
@@ -280,18 +281,18 @@ class _LecturersPageState extends State<LecturersPage> {
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: AppTheme.textPrimary,
+                color: textPrimary,
                 size: 22,
               ),
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          const Text(
+          Text(
             'Lecturers',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.w600,
             ),
@@ -305,9 +306,9 @@ class _LecturersPageState extends State<LecturersPage> {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: AppTheme.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorderOf(context)),
       ),
       child: Row(
         children: [
@@ -343,19 +344,17 @@ class _LecturersPageState extends State<LecturersPage> {
   }
 
   Widget _buildTopControls() {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+    final dividerColor = AppTheme.cardBorderOf(context);
+
     return Container(
-      height: 44,
+      height: 46,
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: AppTheme.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(color: AppTheme.cardBorder),
+        boxShadow: AppTheme.cardShadow,
+        border: Border.all(color: dividerColor),
       ),
       child: Row(
         children: [
@@ -366,31 +365,34 @@ class _LecturersPageState extends State<LecturersPage> {
               decoration: BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: dividerColor,
                     width: 1,
                   ),
                 ),
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.search_rounded,
                     size: 20,
-                    color: AppTheme.textPrimary,
+                    color: textPrimary,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _searchController,
                       onChanged: (_) => setState(() {}),
-                      style: const TextStyle(fontSize: 14),
-                      decoration: const InputDecoration(
+                      style: TextStyle(fontSize: 14, color: textPrimary),
+                      decoration: InputDecoration(
                         hintText: 'Search name, expertise, or NID',
                         hintStyle: TextStyle(
-                          color: AppTheme.textMuted,
+                          color: textMuted,
                           fontSize: 14,
                         ),
                         border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        filled: false,
                         isDense: true,
                       ),
                     ),
@@ -426,6 +428,10 @@ class _LecturersPageState extends State<LecturersPage> {
     bool showBadge = false,
     bool hasBorder = false,
   }) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final dividerColor = AppTheme.cardBorderOf(context);
+
     return Expanded(
       flex: flex,
       child: InkWell(
@@ -435,7 +441,7 @@ class _LecturersPageState extends State<LecturersPage> {
             border: hasBorder
                 ? Border(
                     right: BorderSide(
-                      color: Colors.black.withValues(alpha: 0.1),
+                      color: dividerColor,
                       width: 1,
                     ),
                   )
@@ -447,13 +453,13 @@ class _LecturersPageState extends State<LecturersPage> {
               Icon(
                 icon,
                 size: 18,
-                color: AppTheme.textPrimary,
+                color: textPrimary,
               ),
               const SizedBox(width: 6),
               Text(
                 label,
-                style: const TextStyle(
-                  color: AppTheme.textSecondary,
+                style: TextStyle(
+                  color: textSecondary,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -566,8 +572,9 @@ class _LecturersPageState extends State<LecturersPage> {
         constraints: const BoxConstraints(maxHeight: 360),
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: AppTheme.surfaceVariant,
+          color: AppTheme.surfaceOf(context),
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          border: Border.all(color: AppTheme.cardBorderOf(context)),
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -612,61 +619,53 @@ class _LecturerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isExtraLarge = viewType == LecturerViewType.extraLarge;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.cardBorder),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: isExtraLarge
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: SizedBox(
-                      width: 110,
-                      height: 110,
-                      child: _buildAvatar(),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        child: Ink(
+          padding: const EdgeInsets.all(10),
+          decoration:
+              AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
+          child: isExtraLarge
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: SizedBox(
+                        width: 110,
+                        height: 110,
+                        child: _buildAvatar(context),
+                      ),
                     ),
-                  ),
-
-                  const SizedBox(width: 16),
-
-                  Expanded(
-                    child: _buildLecturerInfo(),
-                  ),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    flex: 7,
-                    child: _buildAvatar(),
-                  ),
-                  const SizedBox(height: 10),
-                  Flexible(
-                    flex: 3,
-                    child: _buildLecturerInfo(),
-                  ),
-                ],
-              ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildLecturerInfo(context),
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      flex: 7,
+                      child: _buildAvatar(context),
+                    ),
+                    const SizedBox(height: 10),
+                    Flexible(
+                      flex: 3,
+                      child: _buildLecturerInfo(context),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }
 
-  Widget _buildAvatar() {
+  Widget _buildAvatar(BuildContext context) {
     final borderRadius = BorderRadius.circular(AppTheme.radiusMd);
 
     Widget image;
@@ -703,7 +702,7 @@ class _LecturerCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: AppTheme.surfaceVariant,
+          color: AppTheme.surfaceVariantOf(context),
         ),
         child: ClipRRect(
           borderRadius: borderRadius,
@@ -716,7 +715,7 @@ class _LecturerCard extends StatelessWidget {
     );
   }
 
-  Widget _buildLecturerInfo() {
+  Widget _buildLecturerInfo(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -730,24 +729,25 @@ class _LecturerCard extends StatelessWidget {
                 lecturer.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppTheme.textPrimary,
+                style: TextStyle(
+                  color: AppTheme.textPrimaryOf(context),
                   fontSize: 14,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(5),
-              decoration: const BoxDecoration(
-                color: AppTheme.cardBorder,
-                shape: BoxShape.circle,
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGhostOf(context),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
               child: Text(
                 '${lecturer.quotaLeft}',
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
+                style: TextStyle(
+                  fontSize: 10.5,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.primaryOf(context),
                 ),
               ),
             ),
@@ -758,8 +758,8 @@ class _LecturerCard extends StatelessWidget {
           lecturer.bidangKeahlian,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: AppTheme.textSecondary,
+          style: TextStyle(
+            color: AppTheme.textSecondaryOf(context),
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -794,7 +794,9 @@ class _DropdownRadioTile extends StatelessWidget {
             Icon(
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
               size: 20,
-              color: isSelected ? AppTheme.primary : AppTheme.textMuted,
+              color: isSelected
+                  ? AppTheme.primaryOf(context)
+                  : AppTheme.textMutedOf(context),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -907,7 +909,9 @@ class _ModeTabButton extends StatelessWidget {
             Icon(
               icon,
               size: 16,
-              color: isSelected ? AppTheme.surface : AppTheme.textSecondary,
+              color: isSelected
+                  ? Colors.white
+                  : AppTheme.textSecondaryOf(context),
             ),
             const SizedBox(width: 6),
             Flexible(
@@ -916,9 +920,11 @@ class _ModeTabButton extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: isSelected ? AppTheme.surface : AppTheme.textSecondary,
+                  color: isSelected
+                      ? Colors.white
+                      : AppTheme.textSecondaryOf(context),
                   fontSize: 12,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

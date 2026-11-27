@@ -133,7 +133,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: FadeTransition(
         opacity: _fadeAnim,
         child: SlideTransition(
@@ -307,11 +307,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
   Widget _buildProgressSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        boxShadow: AppTheme.subtleShadow,
-      ),
+      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -394,7 +390,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
     return Container(
       width: 1,
       height: 40,
-      color: Colors.grey.shade200,
+      color: AppTheme.cardBorderOf(context),
     );
   }
 
@@ -546,8 +542,8 @@ class _StudentDetailPageState extends State<StudentDetailPage>
           icon: Icons.email_rounded,
           iconColor: AppTheme.primaryLight,
           onTap: () => _showSnackBar(context, 'Opening email...'),
-          trailing: const Icon(Icons.open_in_new_rounded,
-              size: 14, color: AppTheme.textMuted),
+          trailing: Icon(Icons.open_in_new_rounded,
+              size: 14, color: AppTheme.textMutedOf(context)),
         ),
         StudentMenuTile(
           title: 'Phone',
@@ -635,7 +631,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppTheme.cardBorder,
+                color: AppTheme.cardBorderOf(ctx),
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
             ),

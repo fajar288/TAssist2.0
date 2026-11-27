@@ -110,7 +110,7 @@ class _AvailabilityManagementPageState
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: AppTheme.cardBorder,
+                          color: AppTheme.cardBorderOf(ctx),
                           borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
                       ),
@@ -120,8 +120,8 @@ class _AvailabilityManagementPageState
                       isEdit ? 'Edit Slot Ketersediaan' : 'Tambah Slot Ketersediaan',
                       style: GoogleFonts.poppins(
                         fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.textPrimaryOf(ctx),
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -355,10 +355,10 @@ class _AvailabilityManagementPageState
     final exceptions = _slots.where((s) => s['tipe'] == 'khusus').toList();
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         title: const Text('Ketersediaan Bimbingan'),
-        backgroundColor: AppTheme.primary,
+        backgroundColor: AppTheme.primaryDark,
         foregroundColor: Colors.white,
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -407,22 +407,22 @@ class _AvailabilityManagementPageState
             title,
             style: GoogleFonts.poppins(
               fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.textPrimary,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textPrimaryOf(context),
             ),
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: AppTheme.primaryGhost,
+            color: AppTheme.primaryGhostOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
           child: Text(
             '$count',
-            style: const TextStyle(
-              color: AppTheme.primary,
-              fontWeight: FontWeight.w700,
+            style: TextStyle(
+              color: AppTheme.primaryOf(context),
+              fontWeight: FontWeight.w600,
               fontSize: 12,
             ),
           ),
@@ -434,8 +434,8 @@ class _AvailabilityManagementPageState
   Widget _emptyCard(String text) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: AppTheme.cardDecoration(),
-      child: Text(text, style: const TextStyle(color: AppTheme.textSecondary)),
+      decoration: AppTheme.cardDecorationOf(context),
+      child: Text(text, style: TextStyle(color: AppTheme.textSecondaryOf(context))),
     );
   }
 
@@ -446,13 +446,13 @@ class _AvailabilityManagementPageState
         ? _capitalize(slot['hari']?.toString() ?? '-')
         : (slot['tanggal']?.toString() ?? '-');
     final timeRange =
-        '${slot['waktu_mulai'] ?? '-'} – ${slot['waktu_selesai'] ?? '-'}';
+        '${slot['waktu_mulai'] ?? '-'} - ${slot['waktu_selesai'] ?? '-'}';
     final catatan = slot['catatan']?.toString();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
-      decoration: AppTheme.cardDecoration(),
+      decoration: AppTheme.cardDecorationOf(context),
       child: Row(
         children: [
           Container(
@@ -475,9 +475,9 @@ class _AvailabilityManagementPageState
               children: [
                 Text(
                   '$label · $timeRange',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 14,
                   ),
                 ),
@@ -494,8 +494,8 @@ class _AvailabilityManagementPageState
                   const SizedBox(height: 2),
                   Text(
                     catatan,
-                    style: const TextStyle(
-                      color: AppTheme.textSecondary,
+                    style: TextStyle(
+                      color: AppTheme.textSecondaryOf(context),
                       fontSize: 12,
                     ),
                   ),

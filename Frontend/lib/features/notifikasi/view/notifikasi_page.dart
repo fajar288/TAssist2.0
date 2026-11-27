@@ -154,10 +154,15 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
       minChildSize: 0.30,
       maxChildSize: 0.75,
       builder: (context, scrollController) {
+        final surface = AppTheme.surfaceOf(context);
+        final cardBorder = AppTheme.cardBorderOf(context);
+        final textPrimary = AppTheme.textPrimaryOf(context);
+        final textSecondary = AppTheme.textSecondaryOf(context);
+
         return Container(
-          decoration: const BoxDecoration(
-            color: AppTheme.surface,
-            borderRadius: BorderRadius.vertical(
+          decoration: BoxDecoration(
+            color: surface,
+            borderRadius: const BorderRadius.vertical(
               top: Radius.circular(AppTheme.radiusXl),
             ),
           ),
@@ -170,7 +175,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   width: 42,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: AppTheme.cardBorder,
+                    color: cardBorder,
                     borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   ),
                 ),
@@ -198,19 +203,19 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Notification Detail',
                           style: TextStyle(
-                            color: AppTheme.textSecondary,
+                            color: textSecondary,
                             fontSize: 12,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           title,
-                          style: const TextStyle(
-                            color: AppTheme.textPrimary,
+                          style: TextStyle(
+                            color: textPrimary,
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             height: 1.2,
@@ -228,16 +233,16 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceVariant,
+                  color: AppTheme.surfaceVariantOf(context),
                   borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   border: Border.all(
-                    color: AppTheme.cardBorder,
+                    color: cardBorder,
                   ),
                 ),
                 child: Text(
                   message,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: textPrimary,
                     fontSize: 14,
                     height: 1.45,
                     fontWeight: FontWeight.w500,
@@ -263,7 +268,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
-                    foregroundColor: AppTheme.surface,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -293,10 +298,10 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: AppTheme.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(
-          color: AppTheme.cardBorder,
+          color: AppTheme.cardBorderOf(context),
         ),
       ),
       child: Row(
@@ -305,7 +310,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
           Icon(
             icon,
             size: 18,
-            color: AppTheme.textSecondary,
+            color: AppTheme.textSecondaryOf(context),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -314,19 +319,19 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: AppTheme.textMuted,
+                  style: TextStyle(
+                    color: AppTheme.textMutedOf(context),
                     fontSize: 11,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 3),
                 Text(
                   value,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 13,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     height: 1.3,
                   ),
                 ),
@@ -353,25 +358,25 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
   Color _iconColorForType(String? type) {
     final value = type?.toLowerCase() ?? '';
 
-    if (value.contains('dokumen')) return AppTheme.primary;
+    if (value.contains('dokumen')) return AppTheme.primaryOf(context);
     if (value.contains('feedback')) return AppTheme.accepted;
     if (value.contains('jadwal')) return AppTheme.pending;
     if (value.contains('permohonan')) return AppTheme.primaryLight;
     if (value.contains('progres')) return AppTheme.info;
 
-    return AppTheme.textSecondary;
+    return AppTheme.textSecondaryOf(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: false,
         elevation: 0,
-        backgroundColor: AppTheme.surface,
-        foregroundColor: AppTheme.textPrimary,
+        backgroundColor: AppTheme.surfaceOf(context),
+        foregroundColor: AppTheme.textPrimaryOf(context),
         actions: [
           IconButton(
             tooltip: _isUnreadOnly ? 'Tampilkan semua' : 'Tampilkan belum dibaca',
@@ -455,23 +460,19 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppTheme.cardBorder),
-      ),
+      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg),
       child: Row(
         children: [
           Container(
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppTheme.primaryGhost,
+              color: AppTheme.primaryGhostOf(context),
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.notifications_active_rounded,
-              color: AppTheme.primary,
+              color: AppTheme.primaryOf(context),
             ),
           ),
           const SizedBox(width: 12),
@@ -483,8 +484,8 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   _unreadCount > 0
                       ? '$_unreadCount belum dibaca'
                       : 'Semua sudah dibaca',
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -494,8 +495,8 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   _isUnreadOnly
                       ? 'Menampilkan notifikasi yang belum dibaca.'
                       : 'Menampilkan semua notifikasi terbaru.',
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.textSecondaryOf(context),
                     fontSize: 12,
                   ),
                 ),
@@ -514,107 +515,117 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
     final type = item['tipe_notifikasi']?.toString();
     final isRead = item['is_read'] == true;
     final iconColor = _iconColorForType(type);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
 
-    return InkWell(
-      onTap: () => _openNotificationDetail(item),
-      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _openNotificationDetail(item),
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(
-            color: isRead ? AppTheme.cardBorder : AppTheme.infoBorder,
-          ),
-          boxShadow: AppTheme.subtleShadow,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          child: Ink(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceOf(context),
+              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+              border: Border.all(
+                color: isRead
+                    ? AppTheme.cardBorderOf(context)
+                    : AppTheme.infoBorderOf(context),
               ),
-              child: Icon(
-                _iconForType(type),
-                color: iconColor,
-                size: 22,
-              ),
+              boxShadow: AppTheme.cardShadowOf(context),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: iconColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                  ),
+                  child: Icon(
+                    _iconForType(type),
+                    color: iconColor,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            color: AppTheme.textPrimary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                color: textPrimary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
+                          if (!isRead)
+                            Container(
+                              width: 9,
+                              height: 9,
+                              margin: const EdgeInsets.only(top: 5, left: 8),
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryOf(context),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: textMuted,
+                            size: 24,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        message,
+                        style: TextStyle(
+                          color: textSecondary,
+                          fontSize: 13,
+                          height: 1.35,
                         ),
                       ),
-                      if (!isRead)
-                        Container(
-                          width: 9,
-                          height: 9,
-                          margin: const EdgeInsets.only(top: 5, left: 8),
-                          decoration: const BoxDecoration(
-                            color: AppTheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.chevron_right_rounded,
-                        color: AppTheme.textMuted,
-                        size: 24,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    message,
-                    style: const TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 13,
-                      height: 1.35,
-                    ),
-                  ),
-                  if (createdAt.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.access_time_rounded,
-                          size: 14,
-                          color: AppTheme.textMuted,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          createdAt,
-                          style: const TextStyle(
-                            color: AppTheme.textMuted,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      if (createdAt.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time_rounded,
+                              size: 14,
+                              color: textMuted,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              createdAt,
+                              style: TextStyle(
+                                color: textMuted,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
-                ],
-              ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
