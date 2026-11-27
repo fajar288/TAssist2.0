@@ -134,7 +134,7 @@ class _StudentListPageState extends State<StudentListPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -321,13 +321,13 @@ class _StudentListPageState extends State<StudentListPage>
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: AppTheme.surfaceOf(context),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           boxShadow: AppTheme.subtleShadow,
         ),
         child: TextField(
           controller: _searchController,
-          style: const TextStyle(fontSize: 14),
+          style: TextStyle(fontSize: 14, color: AppTheme.textPrimaryOf(context)),
           decoration: InputDecoration(
             hintText: 'Search by name, NIM, or major...',
             hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
@@ -378,7 +378,7 @@ class _StudentListPageState extends State<StudentListPage>
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppTheme.primary
-                    : AppTheme.surface,
+                    : AppTheme.surfaceOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 boxShadow: [
                   BoxShadow(
@@ -418,7 +418,7 @@ class _StudentListPageState extends State<StudentListPage>
                     decoration: BoxDecoration(
                       color: isSelected
                           ? Colors.white.withValues(alpha: 0.25)
-                          : AppTheme.surfaceVariant,
+                          : AppTheme.surfaceVariantOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     child: Text(

@@ -6,9 +6,11 @@ import '../../auth/data/auth_service.dart';
 import '../../notifikasi/widgets/notifikasi_bell_button.dart';
 import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../../../theme/app_theme.dart';
+import '../../../theme/theme_controller.dart';
 import '../../../widgets/app_empty_state_widget.dart';
 import '../../../widgets/app_error_widget.dart';
 import '../../../widgets/app_loading_widget.dart';
+import '../../../widgets/user_avatar_circle.dart';
 import 'lecturer_recommendation_page.dart';
 import 'lecturers_page.dart';
 
@@ -26,6 +28,8 @@ class _LecturerSelectionDashboardPageState
   final AuthService _authService = AuthService();
 
   String _studentName = 'Student';
+  String? _userAvatar;
+  Map<String, dynamic>? _profileData;
 
   final List<LecturerCategory> categories = const [
     LecturerCategory(
@@ -84,6 +88,8 @@ class _LecturerSelectionDashboardPageState
       final profileData = profileResponse?['data'];
 
       String name = 'Student';
+      String? avatar;
+      Map<String, dynamic>? profile;
 
       if (profileData is Map<String, dynamic>) {
         final user = profileData['user'];
@@ -92,6 +98,10 @@ class _LecturerSelectionDashboardPageState
           name = user['nama']?.toString() ??
               user['name']?.toString() ??
               'Student';
+          avatar = user['avatar']?.toString();
+        }
+        if (profileData['profile'] is Map<String, dynamic>) {
+          profile = Map<String, dynamic>.from(profileData['profile']);
         }
       }
 
@@ -99,6 +109,8 @@ class _LecturerSelectionDashboardPageState
 
       setState(() {
         _studentName = name;
+        _userAvatar = avatar;
+        _profileData = profile;
       });
     } catch (e) {
       debugPrint('LecturerSelectionDashboardPage: _loadProfile failed: $e');
@@ -212,8 +224,8 @@ class _LecturerSelectionDashboardPageState
   Widget _dialogLine(String label, String value) {
     return RichText(
       text: TextSpan(
-        style: const TextStyle(
-          color: AppTheme.textPrimary,
+        style: TextStyle(
+          color: AppTheme.textPrimaryOf(context),
           fontSize: 14,
           height: 1.35,
         ),
@@ -257,7 +269,7 @@ class _LecturerSelectionDashboardPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       extendBody: true,
       body: RefreshIndicator(
         onRefresh: _loadDashboardData,
@@ -351,35 +363,71 @@ class _LecturerSelectionDashboardPageState
                     pageTitle: 'Notifications',
                   ),
                   const SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: _logout,
-                    child: Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.18),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.4),
-                          width: 2.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 6),
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == 'edit_profile') {
+                        _navigateToEditProfile();
+                      } else if (value == 'theme') {
+                        ThemeController.showThemeSelectorSheet(context);
+                      } else if (value == 'logout') {
+                        _logout();
+                      }
+                    },
+                    itemBuilder: (ctx) {
+                      final primary = AppTheme.primaryOf(ctx);
+                      return [
+                        if (_profileData != null)
+                          PopupMenuItem<String>(
+                            value: 'edit_profile',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit_rounded, size: 20, color: primary),
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Edit Profil',
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          _initials(_studentName),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                        PopupMenuItem<String>(
+                          value: 'theme',
+                          child: Row(
+                            children: [
+                              Icon(ThemeController.instance.icon, size: 20, color: primary),
+                              const SizedBox(width: 12),
+                              Text(
+                                'Tema: ${ThemeController.instance.label}',
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
+                        const PopupMenuItem<String>(
+                          value: 'logout',
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout_rounded, size: 20, color: AppTheme.declined),
+                              SizedBox(width: 12),
+                              Text(
+                                'Keluar',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.declined,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ];
+                    },
+                    child: UserAvatarCircle(
+                      name: _studentName,
+                      avatar: _userAvatar,
+                      size: 56,
+                      borderColor: Colors.white.withOpacity(0.45),
+                      borderWidth: 2.5,
+                      showShadow: true,
                     ),
                   ),
                 ],
@@ -391,24 +439,41 @@ class _LecturerSelectionDashboardPageState
     );
   }
 
+  Future<void> _navigateToEditProfile() async {
+    if (_profileData == null) return;
+
+    final result = await Navigator.pushNamed(
+      context,
+      TAssistApp.editStudentProfileRoute,
+      arguments: <String, dynamic>{
+        ..._profileData!,
+        'nama': _studentName,
+        if (_userAvatar != null) 'avatar': _userAvatar,
+      },
+    );
+
+    if (result == true && mounted) {
+      _loadProfile();
+    }
+  }
+
   Widget _buildTopCard() {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final primary = AppTheme.primaryOf(context);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 20, 14, 12),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppTheme.cardBorder),
-        boxShadow: AppTheme.cardShadow,
-      ),
+      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
+          Text(
             "Let's choose your lecturer first!",
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
@@ -430,22 +495,22 @@ class _LecturerSelectionDashboardPageState
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGhost,
+                color: AppTheme.primaryGhostOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                border: Border.all(color: AppTheme.infoBorder),
+                border: Border.all(color: AppTheme.infoBorderOf(context)),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 18,
                     backgroundColor: AppTheme.primary,
                     child: Icon(
                       Icons.auto_awesome_rounded,
-                      color: AppTheme.surface,
+                      color: Colors.white,
                       size: 18,
                     ),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -453,16 +518,16 @@ class _LecturerSelectionDashboardPageState
                         Text(
                           'Rekomendasi Dosen by Topik TA',
                           style: TextStyle(
-                            color: AppTheme.textPrimary,
+                            color: textPrimary,
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text(
                           'Cocokkan rencana topik TA dengan keahlian & kuota dosen',
                           style: TextStyle(
-                            color: AppTheme.textSecondary,
+                            color: textSecondary,
                             fontSize: 11,
                           ),
                         ),
@@ -472,7 +537,7 @@ class _LecturerSelectionDashboardPageState
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 14,
-                    color: AppTheme.primary,
+                    color: primary,
                   ),
                 ],
               ),
@@ -496,26 +561,27 @@ class _LecturerSelectionDashboardPageState
   }
 
   Widget _buildViewAllButton() {
+    final textPrimary = AppTheme.textPrimaryOf(context);
     return InkWell(
       onTap: () => _openLecturersPage(),
-      child: const Padding(
-        padding: EdgeInsets.symmetric(vertical: 14),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'view all lecturers',
               style: TextStyle(
-                color: AppTheme.textPrimary,
+                color: textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Icon(
               Icons.arrow_forward_ios_rounded,
               size: 14,
-              color: AppTheme.textPrimary,
+              color: textPrimary,
             ),
           ],
         ),
@@ -527,12 +593,7 @@ class _LecturerSelectionDashboardPageState
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppTheme.cardBorder),
-        boxShadow: AppTheme.cardShadow,
-      ),
+      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg),
       child: _isLoadingPermohonan
           ? const SizedBox(
               height: 100,

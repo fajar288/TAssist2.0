@@ -1,7 +1,12 @@
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../theme/app_theme.dart';
 import '../../../widgets/app_snackbars.dart';
+import '../../../widgets/user_avatar_circle.dart';
 import '../data/auth_service.dart';
 
 class EditStudentProfilePage extends StatefulWidget {
@@ -15,20 +20,27 @@ class EditStudentProfilePage extends StatefulWidget {
 
 class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     with SingleTickerProviderStateMixin {
+  static const int _maxAvatarBytes = 2 * 1024 * 1024; // 2 MB
+
   final _formKey = GlobalKey<FormState>();
 
   final _topikTaController = TextEditingController();
   final _judulTaController = TextEditingController();
 
   final AuthService _authService = AuthService();
+  final ImagePicker _imagePicker = ImagePicker();
 
   bool _isSubmitting = false;
+  bool _didInitArgs = false;
 
   late final AnimationController _entryController;
   late final Animation<double> _fadeAnimation;
   late final Animation<Offset> _slideAnimation;
 
   Map<String, dynamic> _profileData = {};
+  Uint8List? _selectedPhotoBytes;
+  String? _selectedPhotoName;
+  String? _selectedPhotoPath;
 
   @override
   void initState() {
@@ -54,12 +66,17 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
       ),
     );
 
+    _topikTaController.addListener(() => setState(() {}));
+    _judulTaController.addListener(() => setState(() {}));
     _entryController.forward();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_didInitArgs) return;
+    _didInitArgs = true;
+
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, dynamic>) {
       _profileData = args;
@@ -86,7 +103,210 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     final initialTopikTa = _profileData['topik_ta']?.toString().trim() ?? '';
     final initialJudulTa = _profileData['judul_ta']?.toString().trim() ?? '';
 
-    return currentTopikTa != initialTopikTa || currentJudulTa != initialJudulTa;
+    return currentTopikTa != initialTopikTa ||
+        currentJudulTa != initialJudulTa ||
+        _selectedPhotoBytes != null;
+  }
+
+  Future<void> _showPhotoSourceSheet() async {
+    if (_isSubmitting) return;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final surface = AppTheme.surfaceOf(ctx);
+        final textPrimary = AppTheme.textPrimaryOf(ctx);
+        final textSecondary = AppTheme.textSecondaryOf(ctx);
+        final border = AppTheme.cardBorderOf(ctx);
+        final accent = AppTheme.primaryOf(ctx);
+
+        return Container(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+          decoration: BoxDecoration(
+            color: surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppTheme.radiusLg),
+            ),
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: border,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                Text(
+                  'Ubah Foto Profil',
+                  style: TextStyle(
+                    color: textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Format JPG atau PNG dengan ukuran maksimal 2 MB.',
+                  style: TextStyle(color: textSecondary, fontSize: 12.5),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  leading: CircleAvatar(
+                    backgroundColor: AppTheme.primaryGhostOf(ctx),
+                    child: Icon(Icons.photo_library_rounded, color: accent),
+                  ),
+                  title: Text(
+                    'Pilih dari Galeri',
+                    style: TextStyle(
+                      color: textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _pickPhoto(ImageSource.gallery);
+                  },
+                ),
+                if (!kIsWeb)
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                    leading: CircleAvatar(
+                      backgroundColor: AppTheme.primaryGhostOf(ctx),
+                      child: Icon(Icons.camera_alt_rounded, color: accent),
+                    ),
+                    title: Text(
+                      'Ambil dari Kamera',
+                      style: TextStyle(
+                        color: textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _pickPhoto(ImageSource.camera);
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    try {
+      final XFile? picked = await _imagePicker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        imageQuality: 85,
+      );
+      if (picked == null) return;
+
+      final bytes = await picked.readAsBytes();
+      _applySelectedPhoto(
+        bytes: bytes,
+        fileName: picked.name,
+        filePath: kIsWeb ? null : picked.path,
+      );
+    } on MissingPluginException {
+      await _pickWithFilePickerFallback();
+    } on UnimplementedError {
+      await _pickWithFilePickerFallback();
+    } on PlatformException catch (e) {
+      if (source == ImageSource.camera) {
+        if (mounted) {
+          AppSnackBars.warning(
+            context,
+            'Kamera tidak tersedia di perangkat ini. Membuka pemilih file...',
+          );
+        }
+        await _pickWithFilePickerFallback();
+      } else if (mounted) {
+        AppSnackBars.error(context, 'Gagal memilih foto: ${e.message ?? e.code}');
+      }
+    } catch (e) {
+      if (mounted) {
+        AppSnackBars.error(context, 'Gagal memilih foto: $e');
+      }
+    }
+  }
+
+  Future<void> _pickWithFilePickerFallback() async {
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['jpg', 'jpeg', 'png'],
+        withData: true,
+      );
+      if (result == null || result.files.isEmpty) return;
+
+      final file = result.files.first;
+      final bytes = file.bytes;
+      if (bytes == null) {
+        if (mounted) {
+          AppSnackBars.error(context, 'File gambar tidak dapat dibaca.');
+        }
+        return;
+      }
+
+      _applySelectedPhoto(
+        bytes: bytes,
+        fileName: file.name,
+        filePath: kIsWeb ? null : file.path,
+      );
+    } catch (e) {
+      if (mounted) {
+        AppSnackBars.error(context, 'Gagal membuka file gambar: $e');
+      }
+    }
+  }
+
+  void _applySelectedPhoto({
+    required Uint8List bytes,
+    required String fileName,
+    String? filePath,
+  }) {
+    final ext = fileName.contains('.')
+        ? fileName.split('.').last.toLowerCase()
+        : '';
+    if (!const ['jpg', 'jpeg', 'png'].contains(ext)) {
+      if (mounted) {
+        AppSnackBars.error(
+          context,
+          'Format foto harus JPG, JPEG, atau PNG.',
+        );
+      }
+      return;
+    }
+
+    if (bytes.lengthInBytes > _maxAvatarBytes) {
+      if (mounted) {
+        AppSnackBars.error(
+          context,
+          'Ukuran foto profil maksimal 2 MB.',
+        );
+      }
+      return;
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _selectedPhotoBytes = bytes;
+      _selectedPhotoName = fileName;
+      _selectedPhotoPath = filePath;
+    });
   }
 
   Future<void> _submitProfile() async {
@@ -102,6 +322,9 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     final result = await _authService.updateMahasiswaProfile(
       topikTa: _topikTaController.text,
       judulTa: _judulTaController.text,
+      avatarBytes: _selectedPhotoBytes,
+      avatarFilename: _selectedPhotoName,
+      avatarPath: _selectedPhotoPath,
     );
 
     if (!mounted) return;
@@ -125,19 +348,27 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    final bg = AppTheme.backgroundOf(context);
+    final surface = AppTheme.surfaceOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final primary = AppTheme.primaryOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final displayName = _profileData['nama']?.toString() ?? 'Mahasiswa';
+    final existingAvatar = _profileData['avatar']?.toString();
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: bg,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.textPrimary),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Edit Profil',
           style: TextStyle(
-            color: AppTheme.textPrimary,
+            color: textPrimary,
             fontWeight: FontWeight.w700,
             fontSize: 20,
           ),
@@ -149,46 +380,109 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
         child: SlideTransition(
           position: _slideAnimation,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(22, 28, 22, 28),
+            padding: const EdgeInsets.fromLTRB(22, 20, 22, 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeader(),
-                const SizedBox(height: 24),
+                _buildHeader(context),
+                const SizedBox(height: 20),
+                Center(
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          UserAvatarCircle(
+                            name: displayName,
+                            avatar: existingAvatar,
+                            localBytes: _selectedPhotoBytes,
+                            size: 108,
+                            borderColor: surface,
+                            borderWidth: 4,
+                            showShadow: true,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: InkWell(
+                              onTap: _showPhotoSourceSheet,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primary,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: surface, width: 2.5),
+                                ),
+                                child: const Icon(
+                                  Icons.camera_alt_rounded,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton.icon(
+                        onPressed: _showPhotoSourceSheet,
+                        icon: Icon(Icons.photo_camera_outlined, size: 16, color: primary),
+                        label: Text(
+                          _selectedPhotoBytes != null
+                              ? 'Ganti Foto (${_selectedPhotoName ?? 'baru'})'
+                              : 'Ubah Foto Profil',
+                          style: TextStyle(
+                            color: primary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
-                    color: AppTheme.surface,
+                    color: surface,
                     borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 22,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+                    border: Border.all(color: border),
+                    boxShadow: AppTheme.isDark(context)
+                        ? null
+                        : [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 22,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
                   ),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       children: [
                         _buildReadOnlyField(
+                          context,
                           label: 'NIM',
                           value: _profileData['nim']?.toString() ?? '-',
                         ),
                         const SizedBox(height: 16),
                         _buildReadOnlyField(
+                          context,
                           label: 'Program Studi',
                           value: _profileData['prodi']?.toString() ?? '-',
                         ),
                         const SizedBox(height: 16),
                         _buildReadOnlyField(
+                          context,
                           label: 'Angkatan',
                           value: _profileData['angkatan']?.toString() ?? '-',
                         ),
                         const SizedBox(height: 16),
                         _buildInputField(
+                          context,
                           controller: _topikTaController,
                           label: 'Topik TA',
                           hintText: 'Contoh: Sistem Informasi Bimbingan TA',
@@ -196,6 +490,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                         ),
                         const SizedBox(height: 16),
                         _buildInputField(
+                          context,
                           controller: _judulTaController,
                           label: 'Judul TA',
                           hintText: 'Contoh: Pengembangan Aplikasi TAsisst',
@@ -209,9 +504,11 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                           child: ElevatedButton(
                             onPressed: _hasChanges && !_isSubmitting ? _submitProfile : null,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _hasChanges ? AppTheme.primary : AppTheme.textMuted,
+                              backgroundColor: _hasChanges
+                                  ? AppTheme.primary
+                                  : AppTheme.textMutedOf(context),
                               foregroundColor: Colors.white,
-                              disabledBackgroundColor: AppTheme.textMuted,
+                              disabledBackgroundColor: AppTheme.textMutedOf(context),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                               ),
@@ -252,23 +549,23 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Edit Profil Mahasiswa',
           style: TextStyle(
-            color: AppTheme.textPrimary,
+            color: AppTheme.textPrimaryOf(context),
             fontSize: 28,
             fontWeight: FontWeight.w800,
           ),
         ),
         const SizedBox(height: 8),
         Text(
-          'Perbarui topik dan judul TA Anda. NIM, program studi, dan angkatan tidak dapat diubah.',
+          'Perbarui foto profil, topik, dan judul TA Anda. NIM, program studi, dan angkatan tidak dapat diubah.',
           style: TextStyle(
-            color: AppTheme.textSecondary,
+            color: AppTheme.textSecondaryOf(context),
             fontSize: 14.5,
             height: 1.45,
           ),
@@ -277,7 +574,8 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     );
   }
 
-  Widget _buildReadOnlyField({
+  Widget _buildReadOnlyField(
+    BuildContext context, {
     required String label,
     required String value,
   }) {
@@ -286,8 +584,8 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: AppTheme.textSecondary,
+          style: TextStyle(
+            color: AppTheme.textSecondaryOf(context),
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
@@ -297,14 +595,16 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
-            color: AppTheme.primaryGhost,
+            color: AppTheme.primaryGhostOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            border: Border.all(color: AppTheme.primaryLight.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: AppTheme.primaryOf(context).withValues(alpha: 0.25),
+            ),
           ),
           child: Text(
             value,
-            style: const TextStyle(
-              color: AppTheme.textPrimary,
+            style: TextStyle(
+              color: AppTheme.textPrimaryOf(context),
               fontSize: 15,
               fontWeight: FontWeight.w500,
             ),
@@ -314,19 +614,26 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     );
   }
 
-  Widget _buildInputField({
+  Widget _buildInputField(
+    BuildContext context, {
     required TextEditingController controller,
     required String label,
     required String hintText,
     int maxLines = 1,
   }) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final primary = AppTheme.primaryOf(context);
+    final borderColor = AppTheme.isDark(context)
+        ? AppTheme.cardBorderOf(context)
+        : AppTheme.primaryLight;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: AppTheme.textPrimary,
+          style: TextStyle(
+            color: textPrimary,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
@@ -336,6 +643,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           controller: controller,
           maxLines: maxLines,
           enabled: !_isSubmitting,
+          style: TextStyle(color: textPrimary),
           validator: (value) {
             final text = value?.trim() ?? '';
             if (text.length > 500) {
@@ -345,23 +653,24 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           },
           decoration: InputDecoration(
             hintText: hintText,
+            hintStyle: TextStyle(color: AppTheme.textMutedOf(context)),
             filled: true,
-            fillColor: AppTheme.primaryGhost,
+            fillColor: AppTheme.primaryGhostOf(context),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.primaryLight),
+              borderSide: BorderSide(color: borderColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.primaryLight),
+              borderSide: BorderSide(color: borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.primary, width: 2),
+              borderSide: BorderSide(color: primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),

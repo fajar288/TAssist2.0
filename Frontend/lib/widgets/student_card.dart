@@ -98,7 +98,7 @@ class StudentCard extends StatelessWidget {
               child: Row(
                 children: [
                   // Avatar
-                  _buildAvatar(),
+                  _buildAvatar(context),
                   const SizedBox(width: 14),
 
                   // Info
@@ -200,7 +200,7 @@ class StudentCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar() {
+  Widget _buildAvatar(BuildContext context) {
     return Stack(
       children: [
         Container(
@@ -232,7 +232,10 @@ class StudentCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.pending,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.surface,
+                  width: 2,
+                ),
               ),
             ),
           ),

@@ -79,12 +79,13 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
       builder: (context, child) {
+        final baseTheme = Theme.of(context);
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppTheme.primary,
+          data: baseTheme.copyWith(
+            colorScheme: baseTheme.colorScheme.copyWith(
+              primary: AppTheme.primaryOf(context),
               onPrimary: Colors.white,
-              onSurface: AppTheme.textPrimary,
+              onSurface: AppTheme.textPrimaryOf(context),
             ),
           ),
           child: child!,
@@ -182,9 +183,9 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: AppTheme.acceptedBg,
+          color: AppTheme.acceptedBgOf(context),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppTheme.acceptedBorder),
+          border: Border.all(color: AppTheme.acceptedBorderOf(context)),
         ),
         child: const Text(
           'DISETUJUI',
@@ -195,9 +196,9 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppTheme.pendingBg,
+        color: AppTheme.pendingBgOf(context),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.pendingBorder),
+        border: Border.all(color: AppTheme.pendingBorderOf(context)),
       ),
       child: const Text(
         'DRAFT',
@@ -209,12 +210,12 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         title: const Text('Manajemen Berita Acara'),
-        backgroundColor: AppTheme.surface,
+        backgroundColor: AppTheme.surfaceOf(context),
         elevation: 0,
-        foregroundColor: AppTheme.textPrimary,
+        foregroundColor: AppTheme.textPrimaryOf(context),
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
@@ -229,17 +230,17 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Riwayat Berita Acara',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimary,
+                      color: AppTheme.textPrimaryOf(context),
                     ),
                   ),
                   Text(
                     '${_items.length} Dokumen',
-                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    style: TextStyle(fontSize: 12, color: AppTheme.textSecondaryOf(context)),
                   ),
                 ],
               ),
@@ -253,12 +254,19 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
   }
 
   Widget _buildGeneratorCard() {
+    final surface = AppTheme.surfaceOf(context);
+    final surfaceVariant = AppTheme.surfaceVariantOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final primary = AppTheme.primaryOf(context);
+
     return Card(
       elevation: 0,
-      color: AppTheme.surface,
+      color: surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        side: const BorderSide(color: AppTheme.cardBorder),
+        side: BorderSide(color: border),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -270,26 +278,26 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryGhost,
+                    color: AppTheme.primaryGhostOf(context),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.post_add, color: AppTheme.primary, size: 20),
+                  child: Icon(Icons.post_add, color: primary, size: 20),
                 ),
                 const SizedBox(width: 10),
-                const Text(
+                Text(
                   'Terbitkan Berita Acara Baru',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimary,
+                    color: textPrimary,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Pilih rentang periode supervisi yang akan dirangkum dalam dokumen formal Berita Acara:',
-              style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+              style: TextStyle(fontSize: 13, color: textSecondary),
             ),
             const SizedBox(height: 14),
             Row(
@@ -301,27 +309,27 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceVariant,
-                        border: Border.all(color: AppTheme.cardBorder),
+                        color: surfaceVariant,
+                        border: Border.all(color: border),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Periode Mulai', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                          Text('Periode Mulai', style: TextStyle(fontSize: 11, color: textSecondary)),
                           const SizedBox(height: 2),
                           Text(
                             _formatDate(_periodeMulai),
-                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: textPrimary),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Icon(Icons.arrow_forward, size: 16, color: AppTheme.textSecondary),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Icon(Icons.arrow_forward, size: 16, color: textSecondary),
                 ),
                 Expanded(
                   child: InkWell(
@@ -330,18 +338,18 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceVariant,
-                        border: Border.all(color: AppTheme.cardBorder),
+                        color: surfaceVariant,
+                        border: Border.all(color: border),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Periode Selesai', style: TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+                          Text('Periode Selesai', style: TextStyle(fontSize: 11, color: textSecondary)),
                           const SizedBox(height: 2),
                           Text(
                             _formatDate(_periodeSelesai),
-                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: textPrimary),
                           ),
                         ],
                       ),
@@ -393,12 +401,17 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
       );
     }
 
+    final surface = AppTheme.surfaceOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+
     if (_items.isEmpty) {
       return Container(
         decoration: BoxDecoration(
-          color: AppTheme.surface,
+          color: surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.cardBorder),
+          border: Border.all(color: border),
         ),
         child: const AppEmptyStateWidget(
           icon: Icons.inventory_2_outlined,
@@ -419,10 +432,10 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
         final ba = _items[index];
         return Card(
           elevation: 0,
-          color: AppTheme.surface,
+          color: surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            side: const BorderSide(color: AppTheme.cardBorder),
+            side: BorderSide(color: border),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -435,10 +448,10 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                     Expanded(
                       child: Text(
                         ba.nomor,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.textPrimary,
+                          color: textPrimary,
                         ),
                       ),
                     ),
@@ -448,12 +461,12 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                 const SizedBox(height: 8),
                 Text(
                   'Periode: ${_formatDate(ba.periodeMulai)} s/d ${_formatDate(ba.periodeSelesai)}',
-                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                  style: TextStyle(fontSize: 12, color: textSecondary),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Sesi: ${ba.totalSessions} Pertemuan Terkonfirmasi',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textPrimary),
                 ),
                 if (ba.isDisetujui && ba.approvedAt != null) ...[
                   const SizedBox(height: 4),
@@ -482,12 +495,12 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                     OutlinedButton.icon(
                       onPressed: () => _downloadPdf(ba),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppTheme.cardBorder),
+                        side: BorderSide(color: border),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                      icon: const Icon(Icons.download, size: 16, color: AppTheme.textPrimary),
-                      label: const Text('Unduh PDF', style: TextStyle(fontSize: 12, color: AppTheme.textPrimary)),
+                      icon: Icon(Icons.download, size: 16, color: textPrimary),
+                      label: Text('Unduh PDF', style: TextStyle(fontSize: 12, color: textPrimary)),
                     ),
                   ],
                 ),
@@ -572,6 +585,13 @@ class _ApprovalModalState extends State<_ApprovalModal> {
 
   @override
   Widget build(BuildContext context) {
+    final surface = AppTheme.surfaceOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final primary = AppTheme.primaryOf(context);
+    final primaryGhost = AppTheme.primaryGhostOf(context);
+
     return Container(
       padding: EdgeInsets.only(
         top: 24,
@@ -579,9 +599,9 @@ class _ApprovalModalState extends State<_ApprovalModal> {
         right: 20,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
-      decoration: const BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -594,23 +614,23 @@ class _ApprovalModalState extends State<_ApprovalModal> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: AppTheme.cardBorder,
+                  color: border,
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
               ),
             ),
             Text(
               'Persetujuan ${widget.ba.nomor}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.textPrimary,
+                color: textPrimary,
               ),
             ),
             const SizedBox(height: 6),
-            const Text(
+            Text(
               'Pilih metode otorisasi untuk mengesahkan Berita Acara bimbingan:',
-              style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+              style: TextStyle(fontSize: 13, color: textSecondary),
             ),
             const SizedBox(height: 16),
             Row(
@@ -619,9 +639,9 @@ class _ApprovalModalState extends State<_ApprovalModal> {
                   child: ChoiceChip(
                     label: const Center(child: Text('PIN / Password')),
                     selected: _selectedMethod == 'pin',
-                    selectedColor: AppTheme.primaryGhost,
+                    selectedColor: primaryGhost,
                     labelStyle: TextStyle(
-                      color: _selectedMethod == 'pin' ? AppTheme.primary : AppTheme.textSecondary,
+                      color: _selectedMethod == 'pin' ? primary : textSecondary,
                       fontWeight: _selectedMethod == 'pin' ? FontWeight.bold : FontWeight.normal,
                     ),
                     onSelected: (val) {
@@ -634,9 +654,9 @@ class _ApprovalModalState extends State<_ApprovalModal> {
                   child: ChoiceChip(
                     label: const Center(child: Text('Tanda Tangan')),
                     selected: _selectedMethod == 'tanda_tangan',
-                    selectedColor: AppTheme.primaryGhost,
+                    selectedColor: primaryGhost,
                     labelStyle: TextStyle(
-                      color: _selectedMethod == 'tanda_tangan' ? AppTheme.primary : AppTheme.textSecondary,
+                      color: _selectedMethod == 'tanda_tangan' ? primary : textSecondary,
                       fontWeight: _selectedMethod == 'tanda_tangan' ? FontWeight.bold : FontWeight.normal,
                     ),
                     onSelected: (val) {
@@ -651,9 +671,9 @@ class _ApprovalModalState extends State<_ApprovalModal> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppTheme.declinedBg,
+                  color: AppTheme.declinedBgOf(context),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppTheme.declinedBorder),
+                  border: Border.all(color: AppTheme.declinedBorderOf(context)),
                 ),
                 child: Text(_error!, style: const TextStyle(color: AppTheme.declined, fontSize: 12)),
               ),

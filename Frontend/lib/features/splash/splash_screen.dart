@@ -259,7 +259,7 @@ class _SplashScreenState extends State<SplashScreen>
         sqrt(size.width * size.width + size.height * size.height) / 2;
 
     return Scaffold(
-      backgroundColor: _bg,
+      backgroundColor: AppTheme.isDark(context) ? AppTheme.darkBackground : _bg,
       body: Stack(
         fit: StackFit.expand,
         children: [

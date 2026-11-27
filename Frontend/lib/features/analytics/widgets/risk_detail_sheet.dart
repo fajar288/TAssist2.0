@@ -21,9 +21,9 @@ class RiskDetailSheet extends StatelessWidget {
     final color = risk.color;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceOf(context),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       constraints: BoxConstraints(
@@ -40,7 +40,7 @@ class RiskDetailSheet extends StatelessWidget {
               height: 4,
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
-                color: AppTheme.cardBorder,
+                color: AppTheme.cardBorderOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
             ),
@@ -56,18 +56,18 @@ class RiskDetailSheet extends StatelessWidget {
                   children: [
                     Text(
                       studentName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.textPrimaryOf(context),
                       ),
                     ),
                     if (nim.isNotEmpty)
                       Text(
                         'NIM: $nim',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          color: AppTheme.textSecondary,
+                          color: AppTheme.textSecondaryOf(context),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -162,12 +162,12 @@ class RiskDetailSheet extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          const Text(
+          Text(
             'Faktor Sinyal & Rekomendasi Tindakan',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: AppTheme.textPrimary,
+              color: AppTheme.textPrimaryOf(context),
             ),
           ),
           const SizedBox(height: 10),
@@ -175,10 +175,10 @@ class RiskDetailSheet extends StatelessWidget {
           // Signal List
           Expanded(
             child: risk.signals.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       'Belum ada rincian data sinyal.',
-                      style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                      style: TextStyle(color: AppTheme.textMutedOf(context), fontSize: 13),
                     ),
                   )
                 : ListView.separated(
@@ -191,10 +191,10 @@ class RiskDetailSheet extends StatelessWidget {
                       return Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppTheme.surfaceVariant,
+                          color: AppTheme.surfaceVariantOf(context),
                           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                           border: Border.all(
-                            color: isHigh ? AppTheme.riskAttentionBorder : AppTheme.cardBorder,
+                            color: isHigh ? AppTheme.riskAttentionBorder : AppTheme.cardBorderOf(context),
                           ),
                         ),
                         child: Row(
@@ -212,10 +212,10 @@ class RiskDetailSheet extends StatelessWidget {
                                 children: [
                                   Text(
                                     item.deskripsi,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: AppTheme.textPrimary,
+                                      color: AppTheme.textPrimaryOf(context),
                                     ),
                                   ),
                                   const SizedBox(height: 2),
@@ -223,7 +223,7 @@ class RiskDetailSheet extends StatelessWidget {
                                     _getActionableSuggestion(item.nama, item.nilai),
                                     style: TextStyle(
                                       fontSize: 11,
-                                      color: isHigh ? AppTheme.riskAttention : AppTheme.textSecondary,
+                                      color: isHigh ? AppTheme.riskAttention : AppTheme.textSecondaryOf(context),
                                       fontStyle: FontStyle.italic,
                                     ),
                                   ),

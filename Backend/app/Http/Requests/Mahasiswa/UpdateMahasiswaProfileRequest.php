@@ -22,6 +22,7 @@ class UpdateMahasiswaProfileRequest extends FormRequest
         return [
             'topik_ta' => 'nullable|string|max:500',
             'judul_ta' => 'nullable|string|max:500',
+            'avatar'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             // Nim, prodi, angkatan tidak bisa diubah setelah complete-profile (sesuai kebijakan akademik)
         ];
     }
@@ -33,6 +34,9 @@ class UpdateMahasiswaProfileRequest extends FormRequest
             'topik_ta.max'    => 'Topik TA maksimal 500 karakter.',
             'judul_ta.string' => 'Judul TA harus berupa teks.',
             'judul_ta.max'    => 'Judul TA maksimal 500 karakter.',
+            'avatar.image'    => 'File foto profil harus berupa gambar.',
+            'avatar.mimes'    => 'Format foto profil harus jpeg, png, atau jpg.',
+            'avatar.max'      => 'Ukuran foto profil maksimal adalah 2MB.',
         ];
     }
 

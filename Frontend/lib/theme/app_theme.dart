@@ -105,6 +105,29 @@ class AppTheme {
   static const Color notificationNeutralBg     = Color(0xFFF8FAFC); // F-NOT-03 neutral background - Slate-50
   static const Color notificationNeutralBorder = Color(0xFFE2E8F0); // F-NOT-03 neutral border - Slate-200
 
+  // ─── Dark Core Palette (T-68) ───────────────────────────────────────────────
+  static const Color darkBackground    = Color(0xFF0B1120); // Deep Slate-950
+  static const Color darkSurface       = Color(0xFF131C31); // Elevated Slate-900
+  static const Color darkSurfaceVariant = Color(0xFF1B2742); // Inset Slate-850
+  static const Color darkCardBorder    = Color(0xFF283552); // Subtle Indigo-Slate border
+  static const Color darkTextPrimary   = Color(0xFFF1F5F9); // Slate-100
+  static const Color darkTextSecondary = Color(0xFF94A3B8); // Slate-400
+  static const Color darkTextMuted     = Color(0xFF64748B); // Slate-500
+  static const Color darkPrimary       = Color(0xFF818CF8); // Indigo-400 (accessible on dark)
+  static const Color darkPrimaryGhost  = Color(0xFF1E2949); // Deep Indigo tint
+
+  // ─── Dark Semantic Surfaces (T-68) ───────────────────────────────────────────
+  static const Color darkPendingBg     = Color(0xFF2B2111);
+  static const Color darkPendingBorder = Color(0xFF6B4E1B);
+  static const Color darkAcceptedBg    = Color(0xFF0E2923);
+  static const Color darkAcceptedBorder = Color(0xFF1B5E4A);
+  static const Color darkDeclinedBg    = Color(0xFF2D151B);
+  static const Color darkDeclinedBorder = Color(0xFF6D2636);
+  static const Color darkInfoBg        = Color(0xFF132440);
+  static const Color darkInfoBorder    = Color(0xFF24477D);
+  static const Color darkWarningBg     = Color(0xFF2B2111);
+  static const Color darkWarningBorder = Color(0xFF6B4E1B);
+
   // ─── Card Shadow ─────────────────────────────────────────────────────────────
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
@@ -283,16 +306,99 @@ class AppTheme {
     icon: Icons.notifications_none_rounded,
   );
 
+  // ─── Context-Aware Token Helpers (T-68) ──────────────────────────────────────
+  static bool isDark(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark;
+
+  static Color backgroundOf(BuildContext context) =>
+      isDark(context) ? darkBackground : background;
+
+  static Color surfaceOf(BuildContext context) =>
+      isDark(context) ? darkSurface : surface;
+
+  static Color surfaceVariantOf(BuildContext context) =>
+      isDark(context) ? darkSurfaceVariant : surfaceVariant;
+
+  static Color cardBorderOf(BuildContext context) =>
+      isDark(context) ? darkCardBorder : cardBorder;
+
+  static Color textPrimaryOf(BuildContext context) =>
+      isDark(context) ? darkTextPrimary : textPrimary;
+
+  static Color textSecondaryOf(BuildContext context) =>
+      isDark(context) ? darkTextSecondary : textSecondary;
+
+  static Color textMutedOf(BuildContext context) =>
+      isDark(context) ? darkTextMuted : textMuted;
+
+  static Color primaryOf(BuildContext context) =>
+      isDark(context) ? darkPrimary : primary;
+
+  static Color primaryGhostOf(BuildContext context) =>
+      isDark(context) ? darkPrimaryGhost : primaryGhost;
+
+  static Color pendingBgOf(BuildContext context) =>
+      isDark(context) ? darkPendingBg : pendingBg;
+
+  static Color pendingBorderOf(BuildContext context) =>
+      isDark(context) ? darkPendingBorder : pendingBorder;
+
+  static Color acceptedBgOf(BuildContext context) =>
+      isDark(context) ? darkAcceptedBg : acceptedBg;
+
+  static Color acceptedBorderOf(BuildContext context) =>
+      isDark(context) ? darkAcceptedBorder : acceptedBorder;
+
+  static Color declinedBgOf(BuildContext context) =>
+      isDark(context) ? darkDeclinedBg : declinedBg;
+
+  static Color declinedBorderOf(BuildContext context) =>
+      isDark(context) ? darkDeclinedBorder : declinedBorder;
+
+  static Color infoBgOf(BuildContext context) =>
+      isDark(context) ? darkInfoBg : infoBg;
+
+  static Color infoBorderOf(BuildContext context) =>
+      isDark(context) ? darkInfoBorder : infoBorder;
+
+  static Color warningBgOf(BuildContext context) =>
+      isDark(context) ? darkWarningBg : warningBg;
+
+  static Color warningBorderOf(BuildContext context) =>
+      isDark(context) ? darkWarningBorder : warningBorder;
+
+  static BoxDecoration cardDecorationOf(
+    BuildContext context, {
+    double radius = radiusLg,
+    bool withBorder = true,
+  }) =>
+      BoxDecoration(
+        color: surfaceOf(context),
+        borderRadius: BorderRadius.circular(radius),
+        border: withBorder ? Border.all(color: cardBorderOf(context)) : null,
+        boxShadow: isDark(context)
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.28),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ]
+            : cardShadow,
+      );
+
   // ─── Theme ────────────────────────────────────────────────────────────────────
   static ThemeData get lightTheme {
     final base = ThemeData.light(useMaterial3: true);
     return base.copyWith(
       colorScheme: ColorScheme.fromSeed(
         seedColor: primary,
-        background: background,
+        surface: surface,
         brightness: Brightness.light,
       ),
       scaffoldBackgroundColor: background,
+      cardColor: surface,
+      dividerColor: cardBorder,
       textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).apply(
         bodyColor: textPrimary,
         displayColor: textPrimary,
@@ -306,6 +412,113 @@ class AppTheme {
           color: textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.w700,
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: surface,
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+          textStyle: GoogleFonts.poppins(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  static ThemeData get darkTheme {
+    final base = ThemeData.dark(useMaterial3: true);
+    return base.copyWith(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primary,
+        surface: darkSurface,
+        brightness: Brightness.dark,
+      ).copyWith(
+        primary: darkPrimary,
+        onPrimary: Colors.white,
+        surface: darkSurface,
+        onSurface: darkTextPrimary,
+        outline: darkCardBorder,
+      ),
+      scaffoldBackgroundColor: darkBackground,
+      cardColor: darkSurface,
+      dividerColor: darkCardBorder,
+      textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).apply(
+        bodyColor: darkTextPrimary,
+        displayColor: darkTextPrimary,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        iconTheme: const IconThemeData(color: darkTextPrimary),
+        titleTextStyle: GoogleFonts.poppins(
+          color: darkTextPrimary,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: darkSurface,
+        titleTextStyle: GoogleFonts.poppins(
+          color: darkTextPrimary,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
+        contentTextStyle: GoogleFonts.poppins(
+          color: darkTextSecondary,
+          fontSize: 14,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusLg),
+        ),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: darkSurface,
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: darkSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: darkSurfaceVariant,
+        hintStyle: const TextStyle(color: darkTextMuted),
+        labelStyle: const TextStyle(color: darkTextSecondary),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: darkCardBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: darkCardBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: darkPrimary, width: 1.5),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

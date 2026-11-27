@@ -10,8 +10,10 @@ import 'package:tassist/features/main_mahasiswa/data/mahasiswa_service.dart';
 import '../informasi_ta/view/informasi_ta_page.dart';
 import '../berita_acara/view/berita_acara_list_page.dart';
 import '../../theme/app_theme.dart';
+import '../../theme/theme_controller.dart';
 import '../../widgets/app_error_widget.dart';
 import '../../widgets/app_skeleton_loader.dart';
+import '../../widgets/user_avatar_circle.dart';
 
 class DashboardMainMahasiswaPage extends StatefulWidget {
   const DashboardMainMahasiswaPage({super.key});
@@ -30,6 +32,7 @@ class _DashboardMainMahasiswaPageState
   String? _errorMessage;
 
   String _studentName = 'Student';
+  String? _userAvatar;
   Map<String, dynamic>? _activeBimbingan;
   List<Map<String, dynamic>> _jadwalList = [];
   List<Map<String, dynamic>> _progresList = [];
@@ -70,6 +73,7 @@ class _DashboardMainMahasiswaPageState
         final user = profileData['user'];
         if (user is Map<String, dynamic>) {
           _studentName = user['nama']?.toString() ?? 'Student';
+          _userAvatar = user['avatar']?.toString();
         }
         _profileData = profileData['profile'];
       }
@@ -314,10 +318,12 @@ class _DashboardMainMahasiswaPageState
 
   @override
   Widget build(BuildContext context) {
+    final bg = AppTheme.backgroundOf(context);
+
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: AppTheme.background,
-        body: SafeArea(
+      return Scaffold(
+        backgroundColor: bg,
+        body: const SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.only(top: 16),
             child: AppSkeletonLoader.card(count: 4),
@@ -331,7 +337,7 @@ class _DashboardMainMahasiswaPageState
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: bg,
       extendBody: true,
       body: RefreshIndicator(
         onRefresh: _loadDashboardData,
@@ -371,7 +377,7 @@ class _DashboardMainMahasiswaPageState
 
   Widget _buildErrorPage() {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: AppErrorWidget(
         title: 'Failed to load dashboard',
         message: _errorMessage ?? '-',
@@ -382,6 +388,11 @@ class _DashboardMainMahasiswaPageState
   }
 
   Widget _buildHeader() {
+    final surface = AppTheme.surfaceOf(context);
+    final primary = AppTheme.primaryOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -393,18 +404,18 @@ class _DashboardMainMahasiswaPageState
               children: [
                 Text(
                   'Hi, $_studentName!',
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
+                  style: TextStyle(
+                    color: textPrimary,
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
                     height: 1.1,
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Welcome to TAssist',
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: textSecondary,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -418,8 +429,8 @@ class _DashboardMainMahasiswaPageState
             IconButton(
               tooltip: 'Asisten TA',
               style: IconButton.styleFrom(
-                backgroundColor: AppTheme.surface,
-                foregroundColor: AppTheme.primary,
+                backgroundColor: surface,
+                foregroundColor: primary,
                 shape: const CircleBorder(),
                 minimumSize: const Size(38, 38),
                 fixedSize: const Size(38, 38),
@@ -431,11 +442,11 @@ class _DashboardMainMahasiswaPageState
               },
             ),
             const SizedBox(width: 8),
-            const NotifikasiBellButton(
+            NotifikasiBellButton(
               size: 38,
-              iconColor: AppTheme.primary,
-              backgroundColor: AppTheme.surface,
-              borderColor: AppTheme.surface,
+              iconColor: primary,
+              backgroundColor: surface,
+              borderColor: surface,
               pageTitle: 'Notifications',
             ),
             const SizedBox(width: 10),
@@ -443,18 +454,33 @@ class _DashboardMainMahasiswaPageState
               onSelected: (value) {
                 if (value == 'edit_profile') {
                   _navigateToEditProfile();
+                } else if (value == 'theme') {
+                  ThemeController.showThemeSelectorSheet(context);
                 } else if (value == 'logout') {
                   _logout();
                 }
               },
               itemBuilder: (context) => [
-                const PopupMenuItem<String>(
+                PopupMenuItem<String>(
                   value: 'edit_profile',
                   child: Row(
                     children: [
-                      Icon(Icons.edit_rounded, size: 20, color: AppTheme.primary),
-                      SizedBox(width: 12),
-                      Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600)),
+                      Icon(Icons.edit_rounded, size: 20, color: primary),
+                      const SizedBox(width: 12),
+                      const Text('Edit Profil', style: TextStyle(fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'theme',
+                  child: Row(
+                    children: [
+                      Icon(ThemeController.instance.icon, size: 20, color: primary),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Tema: ${ThemeController.instance.label}',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ],
                   ),
                 ),
@@ -469,31 +495,13 @@ class _DashboardMainMahasiswaPageState
                   ),
                 ),
               ],
-              child: Container(
-                width: 66,
-                height: 66,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppTheme.primary,
-                  border: Border.all(color: AppTheme.surface, width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    _initials(_studentName),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
+              child: UserAvatarCircle(
+                name: _studentName,
+                avatar: _userAvatar,
+                size: 66,
+                borderColor: surface,
+                borderWidth: 2,
+                showShadow: true,
               ),
             ),
           ],
@@ -508,7 +516,11 @@ class _DashboardMainMahasiswaPageState
     final result = await Navigator.pushNamed(
       context,
       TAssistApp.editStudentProfileRoute,
-      arguments: _profileData,
+      arguments: <String, dynamic>{
+        ..._profileData!,
+        'nama': _studentName,
+        if (_userAvatar != null) 'avatar': _userAvatar,
+      },
     );
 
     if (result == true && mounted) {
@@ -517,6 +529,11 @@ class _DashboardMainMahasiswaPageState
   }
 
   Widget _buildInformasiTACard() {
+    final primary = AppTheme.primaryOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -528,28 +545,25 @@ class _DashboardMainMahasiswaPageState
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.infoBorder),
-          boxShadow: AppTheme.cardShadow,
+        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd).copyWith(
+          border: Border.all(color: AppTheme.infoBorderOf(context)),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGhost,
+                color: AppTheme.primaryGhostOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.campaign_rounded,
-                color: AppTheme.primary,
+                color: primary,
                 size: 24,
               ),
             ),
             const SizedBox(width: 14),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -558,24 +572,24 @@ class _DashboardMainMahasiswaPageState
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.textPrimary,
+                      color: textPrimary,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     'Cek jadwal sidang, panduan format & syarat TA',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppTheme.textSecondary,
+                      color: textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
-              color: AppTheme.textMuted,
+              color: textMuted,
             ),
           ],
         ),
@@ -589,6 +603,11 @@ class _DashboardMainMahasiswaPageState
         : int.tryParse(_activeBimbingan?['bimbingan_id']?.toString() ?? '');
 
     if (bimbinganId == null) return const SizedBox.shrink();
+
+    final primary = AppTheme.primaryOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
 
     return InkWell(
       onTap: () {
@@ -606,28 +625,23 @@ class _DashboardMainMahasiswaPageState
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.cardBorder),
-          boxShadow: AppTheme.cardShadow,
-        ),
+        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGhost,
+                color: AppTheme.primaryGhostOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.assignment_turned_in_rounded,
-                color: AppTheme.primary,
+                color: primary,
                 size: 24,
               ),
             ),
             const SizedBox(width: 14),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -636,24 +650,24 @@ class _DashboardMainMahasiswaPageState
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.textPrimary,
+                      color: textPrimary,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     'Lihat dan unduh Berita Acara yang disahkan dosen',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppTheme.textSecondary,
+                      color: textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
-              color: AppTheme.textMuted,
+              color: textMuted,
             ),
           ],
         ),
@@ -668,30 +682,30 @@ class _DashboardMainMahasiswaPageState
 
     if (bimbinganId == null) return const SizedBox.shrink();
 
+    final primary = AppTheme.primaryOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.cardBorder),
-      ),
+      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGhost,
+              color: AppTheme.primaryGhostOf(context),
               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.file_download_outlined,
-              color: AppTheme.primary,
+              color: primary,
               size: 22,
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -700,12 +714,12 @@ class _DashboardMainMahasiswaPageState
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: AppTheme.textPrimary,
+                    color: textPrimary,
                   ),
                 ),
                 Text(
                   'Unduh ringkasan jadwal, dokumen & progres',
-                  style: TextStyle(fontSize: 11.5, color: AppTheme.textSecondary),
+                  style: TextStyle(fontSize: 11.5, color: textSecondary),
                 ),
               ],
             ),
@@ -734,6 +748,11 @@ class _DashboardMainMahasiswaPageState
   }
 
   Widget _buildChatbotCard() {
+    final primary = AppTheme.primaryOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, TAssistApp.chatbotRoute);
@@ -742,28 +761,23 @@ class _DashboardMainMahasiswaPageState
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          border: Border.all(color: AppTheme.cardBorder),
-          boxShadow: AppTheme.cardShadow,
-        ),
+        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGhost,
+                color: AppTheme.primaryGhostOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.smart_toy_rounded,
-                color: AppTheme.primary,
+                color: primary,
                 size: 24,
               ),
             ),
             const SizedBox(width: 14),
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -772,24 +786,24 @@ class _DashboardMainMahasiswaPageState
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.textPrimary,
+                      color: textPrimary,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     'Tanya alur, syarat sidang, format berkas, & panduan TA',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppTheme.textSecondary,
+                      color: textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
-              color: AppTheme.textMuted,
+              color: textMuted,
             ),
           ],
         ),
@@ -1020,10 +1034,10 @@ class _DashboardMainMahasiswaPageState
       decoration: _whiteCardDecoration(),
       child: Column(
         children: [
-          const Text(
+          Text(
             'Goal Percentage',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: AppTheme.textPrimaryOf(context),
               fontSize: 20,
               fontWeight: FontWeight.w800,
             ),
@@ -1043,8 +1057,8 @@ class _DashboardMainMahasiswaPageState
                   bottom: 10,
                   child: Text(
                     '$_overallProgressPercent%',
-                    style: const TextStyle(
-                      color: AppTheme.textPrimary,
+                    style: TextStyle(
+                      color: AppTheme.textPrimaryOf(context),
                       fontSize: 40,
                       fontWeight: FontWeight.w900,
                     ),
@@ -1066,8 +1080,8 @@ class _DashboardMainMahasiswaPageState
                 child: Text(
                   latest['status_progress'].toString(),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
+                  style: TextStyle(
+                    color: AppTheme.textSecondaryOf(context),
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
@@ -1104,7 +1118,7 @@ class _DashboardMainMahasiswaPageState
           height: 38,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: AppTheme.background,
+            color: AppTheme.surfaceVariantOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           ),
         ),
@@ -1207,9 +1221,9 @@ class _DashboardMainMahasiswaPageState
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
       decoration: BoxDecoration(
-        color: AppTheme.warningBg,
+        color: AppTheme.warningBgOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.warningBorder),
+        border: Border.all(color: AppTheme.warningBorderOf(context)),
       ),
       child: Row(
         children: [
@@ -1218,8 +1232,8 @@ class _DashboardMainMahasiswaPageState
               note == null || note.isEmpty ? title : '$title\n$note',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppTheme.textPrimary,
+              style: TextStyle(
+                color: AppTheme.textPrimaryOf(context),
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 height: 1.3,
@@ -1252,22 +1266,22 @@ class _DashboardMainMahasiswaPageState
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 22),
       decoration: BoxDecoration(
-        color: AppTheme.background,
+        color: AppTheme.surfaceVariantOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),
       child: Column(
         children: [
           Icon(
             icon,
-            color: AppTheme.primaryLight,
+            color: AppTheme.primaryOf(context),
             size: 30,
           ),
           const SizedBox(height: 8),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppTheme.textSecondary,
+            style: TextStyle(
+              color: AppTheme.textSecondaryOf(context),
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
@@ -1278,7 +1292,7 @@ class _DashboardMainMahasiswaPageState
   }
 
   BoxDecoration _whiteCardDecoration() {
-    return AppTheme.cardDecoration(radius: AppTheme.radiusLg);
+    return AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg);
   }
 }
 

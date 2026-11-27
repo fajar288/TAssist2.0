@@ -214,13 +214,13 @@ class _LoginPageState extends State<LoginPage> {
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: SafeArea(
         child: Stack(
           children: [
-            const Positioned.fill(
+            Positioned.fill(
               child: ColoredBox(
-                color: AppTheme.primaryGhost,
+                color: AppTheme.primaryGhostOf(context),
               ),
             ),
 
@@ -244,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: size.height * (keyboardOpen ? 0.82 : 0.70),
                 padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppTheme.surfaceOf(context),
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(AppTheme.radiusXl),
                   ),
@@ -522,6 +522,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildTopBrandCard() {
+    final border = AppTheme.cardBorderOf(context);
     return Center(
       child: Container(
         width: 268,
@@ -530,11 +531,9 @@ class _LoginPageState extends State<LoginPage> {
           vertical: 20,
         ),
         decoration: BoxDecoration(
-          color: AppTheme.surface.withValues(alpha: 0.92),
+          color: AppTheme.surfaceOf(context).withValues(alpha: 0.94),
           borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-          border: Border.all(
-            color: AppTheme.cardBorder,
-          ),
+          border: Border.all(color: border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.08),
@@ -543,24 +542,24 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-        child: const Column(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               'TAssist',
               style: TextStyle(
-                color: AppTheme.primary,
+                color: AppTheme.primaryOf(context),
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.2,
               ),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             Text(
               'Sistem Bimbingan Tugas Akhir',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppTheme.textSecondary,
+                color: AppTheme.textSecondaryOf(context),
                 fontSize: 12.5,
                 fontWeight: FontWeight.w500,
               ),
@@ -572,22 +571,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildFormHeader() {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Sign In',
           style: TextStyle(
-            color: AppTheme.textPrimary,
+            color: AppTheme.textPrimaryOf(context),
             fontSize: 26,
             fontWeight: FontWeight.w900,
           ),
         ),
-        SizedBox(height: 6),
+        const SizedBox(height: 6),
         Text(
           'Masuk untuk melanjutkan bimbingan TA-mu.',
           style: TextStyle(
-            color: AppTheme.textSecondary,
+            color: AppTheme.textSecondaryOf(context),
             fontSize: 14.5,
             fontWeight: FontWeight.w500,
           ),
@@ -597,11 +596,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildDividerWithText(String text) {
+    final border = AppTheme.cardBorderOf(context);
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Divider(
-            color: AppTheme.cardBorder,
+            color: border,
             thickness: 1,
           ),
         ),
@@ -609,16 +609,16 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Text(
             text,
-            style: const TextStyle(
-              color: AppTheme.textMuted,
+            style: TextStyle(
+              color: AppTheme.textMutedOf(context),
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
-        const Expanded(
+        Expanded(
           child: Divider(
-            color: AppTheme.cardBorder,
+            color: border,
             thickness: 1,
           ),
         ),
@@ -639,6 +639,11 @@ class _LoginPageState extends State<LoginPage> {
     String? Function(String?)? validator,
     ValueChanged<String>? onFieldSubmitted,
   }) {
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final accent = AppTheme.primaryOf(context);
+
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -647,8 +652,8 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: obscureText,
       validator: validator,
       onFieldSubmitted: onFieldSubmitted,
-      style: const TextStyle(
-        color: AppTheme.textPrimary,
+      style: TextStyle(
+        color: textPrimary,
         fontSize: 15,
         fontWeight: FontWeight.w600,
       ),
@@ -656,7 +661,7 @@ class _LoginPageState extends State<LoginPage> {
         labelText: labelText,
         hintText: hintText,
         filled: true,
-        fillColor: AppTheme.surfaceVariant,
+        fillColor: AppTheme.surfaceVariantOf(context),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 18,
@@ -665,34 +670,34 @@ class _LoginPageState extends State<LoginPage> {
             ? null
             : Icon(
                 prefixIcon,
-                color: AppTheme.textSecondary,
+                color: textSecondary,
               ),
         suffixIcon: suffixIcon,
-        labelStyle: const TextStyle(
-          color: AppTheme.textSecondary,
+        labelStyle: TextStyle(
+          color: textSecondary,
           fontWeight: FontWeight.w600,
         ),
-        floatingLabelStyle: const TextStyle(
-          color: AppTheme.primary,
+        floatingLabelStyle: TextStyle(
+          color: accent,
           fontWeight: FontWeight.w700,
         ),
-        hintStyle: const TextStyle(
-          color: AppTheme.textMuted,
+        hintStyle: TextStyle(
+          color: AppTheme.textMutedOf(context),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          borderSide: const BorderSide(color: AppTheme.cardBorder),
+          borderSide: BorderSide(color: border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          borderSide: const BorderSide(color: AppTheme.cardBorder),
+          borderSide: BorderSide(color: border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          borderSide: const BorderSide(
-            color: AppTheme.primary,
+          borderSide: BorderSide(
+            color: accent,
             width: 1.4,
           ),
         ),
@@ -714,8 +719,9 @@ class _LoginPageState extends State<LoginPage> {
     IconData? icon,
     required VoidCallback onTap,
   }) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
     return Material(
-      color: AppTheme.surface,
+      color: AppTheme.surfaceOf(context),
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: InkWell(
         onTap: onTap,
@@ -727,7 +733,7 @@ class _LoginPageState extends State<LoginPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             border: Border.all(
-              color: AppTheme.cardBorder,
+              color: AppTheme.cardBorderOf(context),
             ),
             boxShadow: [
               BoxShadow(
@@ -751,15 +757,15 @@ class _LoginPageState extends State<LoginPage> {
                 Icon(
                   icon,
                   size: 24,
-                  color: Colors.black87,
+                  color: textPrimary,
                 ),
               const SizedBox(width: 12),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15.5,
                   fontWeight: FontWeight.w700,
-                  color: Colors.black87,
+                  color: textPrimary,
                 ),
               ),
             ],

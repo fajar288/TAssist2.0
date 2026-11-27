@@ -238,13 +238,15 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final surface = AppTheme.surfaceOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         title: const Text('Berita Acara Bimbingan'),
-        backgroundColor: AppTheme.surface,
+        backgroundColor: surface,
         elevation: 0,
-        foregroundColor: AppTheme.textPrimary,
+        foregroundColor: textPrimary,
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
@@ -282,10 +284,10 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
         final ba = _items[index];
         return Card(
           elevation: 0,
-          color: AppTheme.surface,
+          color: AppTheme.surfaceOf(context),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            side: const BorderSide(color: AppTheme.cardBorder),
+            side: BorderSide(color: AppTheme.cardBorderOf(context)),
           ),
           child: InkWell(
             onTap: () => _showDetailSheet(ba),
@@ -301,10 +303,10 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                       Expanded(
                         child: Text(
                           ba.nomor,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.textPrimary,
+                            color: AppTheme.textPrimaryOf(context),
                           ),
                         ),
                       ),
@@ -314,12 +316,12 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                   const SizedBox(height: 8),
                   Text(
                     'Periode: ${_formatDate(ba.periodeMulai)} — ${_formatDate(ba.periodeSelesai)}',
-                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                    style: TextStyle(fontSize: 12, color: AppTheme.textSecondaryOf(context)),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Total: ${ba.totalSessions} Sesi Pertemuan',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.textPrimary),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.textPrimaryOf(context)),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -328,12 +330,12 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                       OutlinedButton.icon(
                         onPressed: () => _showDetailSheet(ba),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppTheme.cardBorder),
+                          side: BorderSide(color: AppTheme.cardBorderOf(context)),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
-                        icon: const Icon(Icons.info_outline, size: 16, color: AppTheme.textPrimary),
-                        label: const Text('Detail', style: TextStyle(fontSize: 12, color: AppTheme.textPrimary)),
+                        icon: Icon(Icons.info_outline, size: 16, color: AppTheme.textPrimaryOf(context)),
+                        label: Text('Detail', style: TextStyle(fontSize: 12, color: AppTheme.textPrimaryOf(context))),
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton.icon(

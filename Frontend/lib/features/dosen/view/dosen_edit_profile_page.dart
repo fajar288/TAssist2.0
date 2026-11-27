@@ -115,8 +115,14 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final bg = AppTheme.backgroundOf(context);
+    final surface = AppTheme.surfaceOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.background, // Warna background soft
+      backgroundColor: bg, // Warna background soft
       appBar: AppBar(
         backgroundColor: AppTheme.primary,
         leading: IconButton(
@@ -141,7 +147,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                     width: 120,
                     height: 120,
                     decoration: BoxDecoration(
-                      color: AppTheme.cardBorder,
+                      color: border,
                       shape: BoxShape.circle,
                       image: _selectedPhoto != null && _selectedPhoto!.bytes != null
                           ? DecorationImage(
@@ -160,7 +166,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                               : null,
                     ),
                     child: (_selectedPhoto == null && widget.initialProfile['avatar'] == null)
-                        ? const Icon(Icons.person, size: 60, color: AppTheme.textMuted)
+                        ? Icon(Icons.person, size: 60, color: textMuted)
                         : null,
                   ),
                   Positioned(
@@ -173,7 +179,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                         decoration: BoxDecoration(
                           color: AppTheme.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 3),
+                          border: Border.all(color: surface, width: 3),
                         ),
                         child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
                       ),
@@ -195,11 +201,11 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
             _buildTextField('Kuota Bimbingan', _kuotaController, Icons.people_outline, isNumeric: true),
             const SizedBox(height: 32),
             
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Ubah Password (Opsional)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textPrimary),
               ),
             ),
             const SizedBox(height: 16),
@@ -215,7 +221,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
               child: ElevatedButton(
                 onPressed: _hasChanges && !_isLoading ? _saveProfile : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _hasChanges ? AppTheme.primary : AppTheme.textMuted,
+                  backgroundColor: _hasChanges ? AppTheme.primary : textMuted,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
                   elevation: 0,
@@ -232,29 +238,34 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
   }
 
   Widget _buildTextField(String label, TextEditingController controller, IconData icon, {bool isReadOnly = false, bool isPassword = false, bool isNumeric = false}) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+    final border = AppTheme.cardBorderOf(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textSecondary)),
+        Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: textSecondary)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           readOnly: isReadOnly,
           obscureText: isPassword,
           keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-          style: TextStyle(color: isReadOnly ? AppTheme.textMuted : AppTheme.textPrimary),
+          style: TextStyle(color: isReadOnly ? textMuted : textPrimary),
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: AppTheme.textMuted, size: 20),
+            prefixIcon: Icon(icon, color: textMuted, size: 20),
             filled: true,
-            fillColor: isReadOnly ? AppTheme.background : AppTheme.surface,
+            fillColor: isReadOnly ? AppTheme.backgroundOf(context) : AppTheme.surfaceOf(context),
             contentPadding: const EdgeInsets.symmetric(vertical: 16),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.cardBorder),
+              borderSide: BorderSide(color: border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              borderSide: const BorderSide(color: AppTheme.primary),
+              borderSide: BorderSide(color: AppTheme.primaryOf(context)),
             ),
           ),
         ),

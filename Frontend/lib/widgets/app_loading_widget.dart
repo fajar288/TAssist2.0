@@ -22,9 +22,9 @@ class AppLoadingWidget extends StatelessWidget {
         SizedBox(
           width: size,
           height: size,
-          child: const CircularProgressIndicator(
+          child: CircularProgressIndicator(
             strokeWidth: 2.8,
-            color: AppTheme.primary,
+            color: AppTheme.primaryOf(context),
           ),
         ),
         if (message != null && message!.trim().isNotEmpty) ...[
@@ -32,10 +32,10 @@ class AppLoadingWidget extends StatelessWidget {
           Text(
             message!,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: AppTheme.textSecondary,
+              color: AppTheme.textSecondaryOf(context),
             ),
           ),
         ],

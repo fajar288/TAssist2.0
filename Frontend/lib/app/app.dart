@@ -10,6 +10,7 @@ import '../features/dosen/view/dashboard_dosen_page.dart';
 import '../features/main_mahasiswa/main_mahasiswa_page.dart';
 import '../features/splash/splash_screen.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_controller.dart';
 
 class TAssistApp extends StatelessWidget {
   const TAssistApp({super.key});
@@ -27,29 +28,36 @@ class TAssistApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: AuthHttpClient.navigatorKey,
-      debugShowCheckedModeBanner: false,
-      title: 'TAssist',
+    return AnimatedBuilder(
+      animation: ThemeController.instance,
+      builder: (context, _) {
+        return MaterialApp(
+          navigatorKey: AuthHttpClient.navigatorKey,
+          debugShowCheckedModeBanner: false,
+          title: 'TAssist',
 
-      // ── Use the full premium theme instead of bare ThemeData ───────────────
-      theme: AppTheme.lightTheme,
+          // ── Use light + dark theme controlled by ThemeController (T-68) ────
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeController.instance.themeMode,
 
-      initialRoute: splashRoute,
-      routes: {
-        splashRoute: (_) => SplashScreen(
-          destinationBuilder: (_) => const LoginPage(),
-        ),
-        loginRoute:          (_) => const LoginPage(),
-        dashboardRoute:      (_) => const DashboardMahasiswaWrapper(),
-        dashboardDosenRoute: (_) => const DashboardDosenPage(),   
-        learningRoute:       (_) => const LearningPlaceholderPage(),
-        completeStudentProfileRoute: (_) => const CompleteStudentProfilePage(),
-        editStudentProfileRoute: (_) => const EditStudentProfilePage(
-          initialProfile: {},
-        ),
-        chatbotRoute:        (_) => const ChatbotPage(),
-        chatbotHistoryRoute: (_) => const ChatbotConversationListPage(),
+          initialRoute: splashRoute,
+          routes: {
+            splashRoute: (_) => SplashScreen(
+              destinationBuilder: (_) => const LoginPage(),
+            ),
+            loginRoute:          (_) => const LoginPage(),
+            dashboardRoute:      (_) => const DashboardMahasiswaWrapper(),
+            dashboardDosenRoute: (_) => const DashboardDosenPage(),
+            learningRoute:       (_) => const LearningPlaceholderPage(),
+            completeStudentProfileRoute: (_) => const CompleteStudentProfilePage(),
+            editStudentProfileRoute: (_) => const EditStudentProfilePage(
+              initialProfile: {},
+            ),
+            chatbotRoute:        (_) => const ChatbotPage(),
+            chatbotHistoryRoute: (_) => const ChatbotConversationListPage(),
+          },
+        );
       },
     );
   }

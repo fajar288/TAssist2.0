@@ -32,7 +32,7 @@ class AppEmptyStateWidget extends StatelessWidget {
               width: compact ? 52 : 68,
               height: compact ? 52 : 68,
               decoration: BoxDecoration(
-                color: AppTheme.primaryGhost,
+                color: AppTheme.primaryGhostOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 border: Border.all(
                   color: AppTheme.primaryLight.withValues(alpha: 0.22),
@@ -41,7 +41,7 @@ class AppEmptyStateWidget extends StatelessWidget {
               child: Icon(
                 icon,
                 size: compact ? 26 : 34,
-                color: AppTheme.primary,
+                color: AppTheme.primaryOf(context),
               ),
             ),
             SizedBox(height: compact ? 12 : 16),
@@ -51,7 +51,7 @@ class AppEmptyStateWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: compact ? 14 : 16,
                 fontWeight: FontWeight.w700,
-                color: AppTheme.textPrimary,
+                color: AppTheme.textPrimaryOf(context),
               ),
             ),
             if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
@@ -59,10 +59,10 @@ class AppEmptyStateWidget extends StatelessWidget {
               Text(
                 subtitle!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   height: 1.45,
-                  color: AppTheme.textSecondary,
+                  color: AppTheme.textSecondaryOf(context),
                 ),
               ),
             ],
@@ -72,7 +72,7 @@ class AppEmptyStateWidget extends StatelessWidget {
                 onPressed: onAction,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primary,
-                  foregroundColor: AppTheme.surface,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
