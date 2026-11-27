@@ -47,7 +47,7 @@ class _TypingIndicatorWidgetState extends State<TypingIndicatorWidget>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.smart_toy_rounded, size: 16, color: AppTheme.primary),
+          const Icon(Icons.chat_bubble_outline, size: 16, color: AppTheme.primary),
           const SizedBox(width: 8),
           const Text(
             'Sedang mencari jawaban',

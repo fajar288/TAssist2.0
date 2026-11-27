@@ -132,7 +132,7 @@ class ChatBubbleWidget extends StatelessWidget {
                   radius: 14,
                   backgroundColor: isRefused ? refusalBg : AppTheme.primaryLight.withOpacity(0.15),
                   child: Icon(
-                    isRefused ? Icons.shield_outlined : Icons.smart_toy_rounded,
+                    isRefused ? Icons.shield_outlined : Icons.chat_bubble_outline,
                     size: 16,
                     color: isRefused ? AppTheme.chatRefusal : AppTheme.primaryOf(context),
                   ),
@@ -208,13 +208,13 @@ class ChatBubbleWidget extends StatelessWidget {
                           children: message.sumber!.map((citation) {
                             return InkWell(
                               onTap: () => _showCitationDetail(context, citation),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: AppTheme.chatCitationBg,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: AppTheme.chatCitation.withOpacity(0.3)),
+                                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                                  border: Border.all(color: AppTheme.chatCitation.withValues(alpha: 0.3)),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,

@@ -97,17 +97,9 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
                 shape: BoxShape.circle,
                 color: widget.backgroundColor ?? AppTheme.surfaceOf(context),
                 border: Border.all(
-                  color: widget.borderColor ??
-                      AppTheme.cardBorderOf(context).withOpacity(0.5),
-                  width: 1.5,
+                  color: widget.borderColor ?? AppTheme.cardBorderOf(context),
+                  width: 1.0,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.10),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
               child: Icon(
                 Icons.notifications_rounded,
@@ -127,7 +119,7 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   decoration: BoxDecoration(
                     color: widget.badgeColor,
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   child: Center(
@@ -136,7 +128,7 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

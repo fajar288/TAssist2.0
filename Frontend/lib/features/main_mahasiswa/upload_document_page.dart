@@ -321,7 +321,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                           style: TextStyle(
                             color: AppTheme.textPrimary,
                             fontSize: 22,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -443,7 +443,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w800,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                           ),
@@ -522,7 +522,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                         style: TextStyle(
                           color: AppTheme.textPrimary,
                           fontSize: 22,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -614,7 +614,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                         ),
@@ -684,7 +684,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                 style: const TextStyle(
                   color: AppTheme.textPrimary,
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 6),
@@ -738,7 +738,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                         'Versions',
                         style: TextStyle(
                           color: AppTheme.primary,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -761,7 +761,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                         'New Version',
                         style: TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -853,7 +853,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     style: TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 22,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -1194,7 +1194,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppTheme.textPrimary,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -1290,7 +1290,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
             style: const TextStyle(
               color: AppTheme.textPrimary,
               fontSize: 13,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -1484,7 +1484,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                       style: TextStyle(
                         color: _statusColor(status),
                         fontSize: 10,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

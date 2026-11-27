@@ -78,69 +78,26 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Gradient background
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-        ),
-
-        // Decorative circles
-        Positioned(
-          top: -60,
-          right: -60,
-          child: Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.06),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 20,
-          left: -40,
-          child: Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.04),
-            ),
-          ),
-        ),
+        // Solid navy hero background
+        const ColoredBox(color: AppTheme.primaryDark),
 
         // Network image (if it loads)
         Image.network(
           widget.request.avatarUrl,
           fit: BoxFit.cover,
-          color: Colors.indigo.withOpacity(0.6),
+          color: AppTheme.primaryDark.withValues(alpha: 0.65),
           colorBlendMode: BlendMode.multiply,
           errorBuilder: (_, __, ___) => const SizedBox.shrink(),
         ),
 
-        // Bottom gradient for readability
+        // Subtle scrim for readability
         Positioned(
           bottom: 0,
           left: 0,
           right: 0,
           child: Container(
-            height: 140,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  AppTheme.textPrimary.withValues(alpha: 0.85),
-                ],
-              ),
-            ),
+            height: 120,
+            color: AppTheme.primaryDark.withValues(alpha: 0.72),
           ),
         ),
 
@@ -156,14 +113,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
+                  border: Border.all(color: Colors.white, width: 2.5),
                 ),
                 child: Hero(
                   tag: 'counseling-avatar-${widget.request.id}',
@@ -176,21 +126,14 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                       errorBuilder: (_, __, ___) => Container(
                         width: 80,
                         height: 80,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppTheme.primaryLight,
-                              AppTheme.primaryLight.withValues(alpha: 0.65),
-                            ],
-                          ),
-                        ),
+                        color: AppTheme.primary,
                         child: Center(
                           child: Text(
                             widget.request.initials,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 28,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -210,7 +153,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: -0.3,
                       ),
                     ),

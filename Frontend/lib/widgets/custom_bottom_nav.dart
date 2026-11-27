@@ -134,24 +134,11 @@ class _CustomBottomNavState extends State<CustomBottomNav>
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
-              decoration: BoxDecoration(
-                color: AppTheme.isDark(context)
-                    ? AppTheme.darkSurface.withValues(alpha: 0.72)
-                    : Colors.white.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                border: Border.all(
-                  color: AppTheme.isDark(context)
-                      ? AppTheme.darkCardBorder.withValues(alpha: 0.8)
-                      : Colors.white.withOpacity(0.2),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+              decoration: AppTheme.glassDecorationOf(
+                context,
+                radius: AppTheme.radiusLg,
+                borderWidth: 1.2,
+                boxShadow: AppTheme.cardShadow,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -185,9 +172,6 @@ class _NavItemWidget extends StatelessWidget {
   final Animation<double> scaleAnimation;
   final Animation<double> labelAnimation;
 
-  // Warna identik dengan NavbarShell
-  static const Color _activeColor   = AppTheme.primary;
-
   const _NavItemWidget({
     required this.item,
     required this.isActive,
@@ -197,7 +181,10 @@ class _NavItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inactiveColor = AppTheme.textPrimaryOf(context);
+    final activeColor = AppTheme.primaryOf(context);
+    final activeBg = AppTheme.primaryGhostOf(context);
+    final inactiveColor = AppTheme.textMutedOf(context);
+
     return AnimatedBuilder(
       animation: Listenable.merge([scaleAnimation, labelAnimation]),
       builder: (context, _) {
@@ -210,17 +197,8 @@ class _NavItemWidget extends StatelessWidget {
               width:  isActive ? 110 : 60,
               height: isActive ? 60  : 50,
               decoration: BoxDecoration(
-                color: isActive ? _activeColor : Colors.transparent,
+                color: isActive ? activeBg : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                boxShadow: isActive
-                    ? [
-                        BoxShadow(
-                          color: _activeColor.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
-                    : null,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +206,7 @@ class _NavItemWidget extends StatelessWidget {
                   Icon(
                     item.icon,
                     size: 24,
-                    color: isActive ? Colors.white : inactiveColor,
+                    color: isActive ? activeColor : inactiveColor,
                   ),
                   if (isActive)
                     Flexible(
@@ -239,10 +217,10 @@ class _NavItemWidget extends StatelessWidget {
                           child: Text(
                             item.label,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: activeColor,
                               fontSize: 12,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),

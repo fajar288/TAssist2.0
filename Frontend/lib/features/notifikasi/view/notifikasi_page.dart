@@ -212,7 +212,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                           style: const TextStyle(
                             color: AppTheme.textPrimary,
                             fontSize: 20,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w600,
                             height: 1.2,
                           ),
                         ),
@@ -272,7 +272,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   child: const Text(
                     'Close',
                     style: TextStyle(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -486,7 +486,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                   style: const TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 16,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -559,7 +559,7 @@ class _NotifikasiPageState extends State<NotifikasiPage> {
                           style: TextStyle(
                             color: AppTheme.textPrimary,
                             fontSize: 14,
-                            fontWeight: isRead ? FontWeight.w600 : FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),

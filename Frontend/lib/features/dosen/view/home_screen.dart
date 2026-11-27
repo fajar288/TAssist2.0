@@ -248,16 +248,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: AppTheme.primaryDark,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppTheme.radiusXl),
         ),
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 26),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -268,21 +267,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            const Text(
-                              '👋  ',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              'Hello There!,',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white.withOpacity(0.75),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          'Hello There!,',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white.withValues(alpha: 0.78),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
                         )
                             .animate()
                             .fadeIn(duration: 500.ms)
@@ -294,9 +285,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.5,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.3,
                           ),
                         )
                             .animate()
@@ -308,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.6),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 12,
                           ),
                         ),
@@ -320,26 +311,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       IconButton(
                         tooltip: 'Asisten TA',
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.white24,
+                          backgroundColor: AppTheme.glassSurfaceOnDark,
                           foregroundColor: Colors.white,
-                          shape: const CircleBorder(
-                            side: BorderSide(color: Colors.white38),
+                          shape: CircleBorder(
+                            side: BorderSide(color: AppTheme.glassBorderOnDark),
                           ),
                           minimumSize: const Size(38, 38),
                           fixedSize: const Size(38, 38),
                           padding: EdgeInsets.zero,
                         ),
-                        icon: const Icon(Icons.smart_toy_rounded, size: 20),
+                        icon: const Icon(Icons.chat_bubble_outline, size: 19),
                         onPressed: () {
                           Navigator.pushNamed(context, TAssistApp.chatbotRoute);
                         },
                       ),
                       const SizedBox(width: 8),
-                      const NotifikasiBellButton(
+                      NotifikasiBellButton(
                         size: 38,
                         iconColor: Colors.white,
-                        backgroundColor: Colors.white24,
-                        borderColor: Colors.white38,
+                        backgroundColor: AppTheme.glassSurfaceOnDark,
+                        borderColor: AppTheme.glassBorderOnDark,
                         pageTitle: 'Notifications',
                       ),
                       const SizedBox(width: 10),
@@ -413,35 +404,23 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ];
                         },
-                        // UI Container asli
                         child: Container(
+                          width: 52,
+                          height: 52,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
+                            color: AppTheme.glassSurfaceOnDark,
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.4),
-                              width: 2.5,
+                              color: AppTheme.glassBorderOnDark,
+                              width: 1.5,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 20,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
                           ),
-                          child: ClipOval(
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              color: Colors.white24,
-                              child: Center(
-                                child: Text(
-                                  avatarText,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          child: Center(
+                            child: Text(
+                              avatarText,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
@@ -494,7 +473,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: GoogleFonts.poppins(
                 color: AppTheme.textPrimaryOf(context),
                 fontSize: 17,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -560,10 +539,10 @@ class _StatChip extends StatelessWidget {
         vertical: 8,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
+        color: AppTheme.glassSurfaceOnDark,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
+          color: AppTheme.glassBorderOnDark,
           width: 1,
         ),
       ),
@@ -615,11 +594,11 @@ class _FilterChip extends StatelessWidget {
           vertical: 5,
         ),
         decoration: BoxDecoration(
-          color: selected ? AppTheme.primary : Colors.transparent,
+          color: selected ? AppTheme.primary : AppTheme.surfaceOf(context),
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
           border: Border.all(
             color: selected ? AppTheme.primary : AppTheme.cardBorderOf(context),
-            width: 1.5,
+            width: 1,
           ),
         ),
         child: Text(

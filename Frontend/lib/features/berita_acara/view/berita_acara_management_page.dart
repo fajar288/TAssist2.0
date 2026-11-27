@@ -184,12 +184,12 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
           color: AppTheme.acceptedBgOf(context),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           border: Border.all(color: AppTheme.acceptedBorderOf(context)),
         ),
         child: const Text(
           'DISETUJUI',
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.accepted),
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.accepted),
         ),
       );
     }
@@ -197,12 +197,12 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: AppTheme.pendingBgOf(context),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
         border: Border.all(color: AppTheme.pendingBorderOf(context)),
       ),
       child: const Text(
         'DRAFT',
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.pending),
+        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.pending),
       ),
     );
   }
@@ -279,7 +279,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: AppTheme.primaryGhostOf(context),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   ),
                   child: Icon(Icons.post_add, color: primary, size: 20),
                 ),
@@ -288,7 +288,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                   'Terbitkan Berita Acara Baru',
                   style: TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                     color: textPrimary,
                   ),
                 ),
@@ -305,13 +305,13 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                 Expanded(
                   child: InkWell(
                     onTap: () => _selectDate(context, true),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
                         color: surfaceVariant,
                         border: Border.all(color: border),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,13 +334,13 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                 Expanded(
                   child: InkWell(
                     onTap: () => _selectDate(context, false),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
                         color: surfaceVariant,
                         border: Border.all(color: border),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -485,18 +485,18 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.accepted,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
                         icon: const Icon(Icons.verified, size: 16),
-                        label: const Text('Setujui Dokumen', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        label: const Text('Setujui Dokumen', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                       ),
                     if (ba.isDraft) const SizedBox(width: 8),
                     OutlinedButton.icon(
                       onPressed: () => _downloadPdf(ba),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: border),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                       icon: Icon(Icons.download, size: 16, color: textPrimary),
@@ -672,7 +672,7 @@ class _ApprovalModalState extends State<_ApprovalModal> {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: AppTheme.declinedBgOf(context),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   border: Border.all(color: AppTheme.declinedBorderOf(context)),
                 ),
                 child: Text(_error!, style: const TextStyle(color: AppTheme.declined, fontSize: 12)),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../app/app.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_empty_state_widget.dart';
 import '../../widgets/app_error_widget.dart';
@@ -108,19 +107,6 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
           body: IndexedStack(
             index: _currentIndex,
             children: pages,
-          ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 76.0),
-            child: FloatingActionButton(
-              backgroundColor: AppTheme.primary,
-              foregroundColor: Colors.white,
-              elevation: 4,
-              tooltip: 'Asisten TA',
-              child: const Icon(Icons.smart_toy_rounded, size: 28),
-              onPressed: () {
-                Navigator.pushNamed(context, TAssistApp.chatbotRoute);
-              },
-            ),
           ),
           bottomNavigationBar: NavbarMahasiswa(
             currentIndex: _currentIndex,

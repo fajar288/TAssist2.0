@@ -154,16 +154,9 @@ class _CompleteStudentProfilePageState
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(22),
-                          decoration: BoxDecoration(
-                            color: AppTheme.surface,
-                            borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
-                                blurRadius: 22,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
+                          decoration: AppTheme.cardDecorationOf(
+                            context,
+                            radius: AppTheme.radiusXl,
                           ),
                           child: Form(
                             key: _formKey,
@@ -310,8 +303,8 @@ class _CompleteStudentProfilePageState
           'Lengkapi Profil',
           style: TextStyle(
             color: AppTheme.primary,
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
@@ -434,20 +427,14 @@ class _CompleteProfileSkeletonState extends State<_CompleteProfileSkeleton>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
+        final t = (_animation.value % 1.0).clamp(0.0, 1.0);
+        final alpha = 0.45 + 0.35 * (t < 0.5 ? t * 2 : (1.0 - t) * 2);
         return Container(
           width: width ?? double.infinity,
           height: height,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius),
-            gradient: LinearGradient(
-              begin: Alignment(-1 + _animation.value, 0),
-              end: Alignment(_animation.value, 0),
-              colors: const [
-                AppTheme.cardBorder,
-                AppTheme.surfaceVariant,
-                AppTheme.cardBorder,
-              ],
-            ),
+            color: AppTheme.cardBorderOf(context).withValues(alpha: alpha),
           ),
         );
       },

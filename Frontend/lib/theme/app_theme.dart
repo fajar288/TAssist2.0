@@ -5,166 +5,175 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   AppTheme._();
 
-  // ─── Core Palette ────────────────────────────────────────────────────────────
-  static const Color primary       = Color(0xFF4338CA); // Deep Indigo
-  static const Color primaryLight  = Color(0xFF6366F1); // Indigo-500
-  static const Color primaryDark   = Color(0xFF312E81); // Indigo-900
-  static const Color primaryGhost  = Color(0xFFEEF2FF); // Indigo-50
-  static const Color background    = Color(0xFFF1F5F9); // Slate-100
+  // ─── Core Palette (Navy + Glassmorphism) ─────────────────────────────────────
+  static const Color primary       = Color(0xFF0D4AA3); // Navy Blue
+  static const Color primaryLight  = Color(0xFF1A65C8); // Accent Navy-Blue
+  static const Color primaryDark   = Color(0xFF082E6B); // Deep Navy Surface
+  static const Color primaryGhost  = Color(0xFFE8F0FB); // Soft Navy Tint
+  static const Color background    = Color(0xFFF3F5F8); // Cool Neutral Gray
   static const Color surface       = Color(0xFFFFFFFF);
-  static const Color textPrimary   = Color(0xFF1E1B4B); // Indigo-950
-  static const Color textSecondary = Color(0xFF64748B); // Slate-500
-  static const Color textMuted     = Color(0xFF94A3B8); // Slate-400
+  static const Color textPrimary   = Color(0xFF0F1B2D); // Deep Navy Charcoal
+  static const Color textSecondary = Color(0xFF526071); // Cool Slate
+  static const Color textMuted     = Color(0xFF8592A3); // Muted Slate
 
-  // ─── Radius Scale (S8.7) ─────────────────────────────────────────────────────
-  static const double radiusSm = 8.0;  // chips, badges, tags
-  static const double radiusMd = 14.0; // cards, buttons, inputs
-  static const double radiusLg = 20.0; // large cards, modals
-  static const double radiusXl = 28.0; // dialogs, sheets
+  // ─── Glassmorphism Tokens ────────────────────────────────────────────────────
+  static Color get glassSurfaceLight  => surface.withValues(alpha: 0.78);
+  static Color get glassBorderLight   => surface.withValues(alpha: 0.65);
+  static Color get glassSurfaceOnDark => surface.withValues(alpha: 0.14);
+  static Color get glassBorderOnDark  => surface.withValues(alpha: 0.26);
+
+  // ─── Radius Scale ────────────────────────────────────────────────────────────
+  static const double radiusSm = 8.0;  // chips, badges, small icon boxes
+  static const double radiusMd = 12.0; // cards, buttons, inputs, popup menus
+  static const double radiusLg = 16.0; // large cards, containers, floating navbar
+  static const double radiusXl = 24.0; // dialogs, bottom sheets
 
   // ─── Semantic Colors ─────────────────────────────────────────────────────────
-  static const Color pending     = Color(0xFFF59E0B); // Amber-400
-  static const Color pendingBg   = Color(0xFFFFFBEB); // Amber-50
-  static const Color pendingBorder = Color(0xFFFDE68A); // Amber-200
+  static const Color pending       = Color(0xFFB45309); // Amber-700
+  static const Color pendingBg     = Color(0xFFFFF7E6);
+  static const Color pendingBorder = Color(0xFFF5D9A8);
 
-  static const Color accepted    = Color(0xFF10B981); // Emerald-500
-  static const Color acceptedBg  = Color(0xFFECFDF5); // Emerald-50
-  static const Color acceptedBorder = Color(0xFFA7F3D0); // Emerald-200
+  static const Color accepted       = Color(0xFF047857); // Emerald-700
+  static const Color acceptedBg     = Color(0xFFECFDF3);
+  static const Color acceptedBorder = Color(0xFFA6E5C6);
 
-  static const Color declined    = Color(0xFFEF4444); // Rose-500
-  static const Color declinedBg  = Color(0xFFFFF1F2); // Rose-50
-  static const Color declinedBorder = Color(0xFFFFCDD2); // Rose-200
+  static const Color declined       = Color(0xFFB42318); // Red-700
+  static const Color declinedBg     = Color(0xFFFEF3F2);
+  static const Color declinedBorder = Color(0xFFFECDCA);
 
-  // ─── Info / Caution (S8.1) ───────────────────────────────────────────────────
-  static const Color info          = Color(0xFF3B82F6); // S8.1 info - Blue-500
-  static const Color infoBg        = Color(0xFFEFF6FF); // S8.1 info background - Blue-50
-  static const Color infoBorder    = Color(0xFFBFDBFE); // S8.1 info border - Blue-200
+  // ─── Info / Caution ──────────────────────────────────────────────────────────
+  static const Color info       = primary;
+  static const Color infoBg     = primaryGhost;
+  static const Color infoBorder = Color(0xFFBFD3F2);
 
-  static const Color warning       = Color(0xFFD97706); // S8.1 caution - Amber-600 (distinct from pending)
-  static const Color warningBg     = Color(0xFFFFFBEB); // S8.1 caution background - Amber-50
-  static const Color warningBorder = Color(0xFFFDE68A); // S8.1 caution border - Amber-200
+  static const Color warning       = pending;
+  static const Color warningBg     = pendingBg;
+  static const Color warningBorder = pendingBorder;
 
-  // ─── Surfaces (S8.1) ─────────────────────────────────────────────────────────
-  static const Color surfaceVariant = Color(0xFFF8FAFC); // S8.1 inset surface - Slate-50
-  static const Color cardBorder     = Color(0xFFE2E8F0); // S8.1 card hairline border - Slate-200
+  // ─── Surfaces ────────────────────────────────────────────────────────────────
+  static const Color surfaceVariant = Color(0xFFF8FAFC);
+  static const Color cardBorder     = Color(0xFFDCE2EA);
 
   // ─── Annotation Status (S8.3) ────────────────────────────────────────────────
-  static const Color annotationOpen          = Color(0xFFF59E0B); // S8.3 annotation open - Amber-500
-  static const Color annotationOpenBg        = Color(0xFFFFFBEB); // S8.3 annotation open background - Amber-50
-  static const Color annotationOpenBorder    = Color(0xFFFDE68A); // S8.3 annotation open border - Amber-200
+  static const Color annotationOpen       = warning;
+  static const Color annotationOpenBg     = warningBg;
+  static const Color annotationOpenBorder = warningBorder;
 
-  static const Color annotationRevised       = Color(0xFF3B82F6); // S8.3 annotation revised - Blue-500
-  static const Color annotationRevisedBg     = Color(0xFFEFF6FF); // S8.3 annotation revised background - Blue-50
-  static const Color annotationRevisedBorder = Color(0xFFBFDBFE); // S8.3 annotation revised border - Blue-200
+  static const Color annotationRevised       = info;
+  static const Color annotationRevisedBg     = infoBg;
+  static const Color annotationRevisedBorder = infoBorder;
 
-  static const Color annotationResolved       = Color(0xFF10B981); // S8.3 annotation resolved - Emerald-500
-  static const Color annotationResolvedBg     = Color(0xFFECFDF5); // S8.3 annotation resolved background - Emerald-50
-  static const Color annotationResolvedBorder = Color(0xFFA7F3D0); // S8.3 annotation resolved border - Emerald-200
+  static const Color annotationResolved       = accepted;
+  static const Color annotationResolvedBg     = acceptedBg;
+  static const Color annotationResolvedBorder = acceptedBorder;
 
   // ─── Risk Level (S8.4) ───────────────────────────────────────────────────────
-  static const Color riskSafe          = Color(0xFF10B981); // S8.4 risk aman - Emerald-500
-  static const Color riskSafeBg        = Color(0xFFECFDF5); // S8.4 risk aman background - Emerald-50
-  static const Color riskSafeBorder    = Color(0xFFA7F3D0); // S8.4 risk aman border - Emerald-200
+  static const Color riskSafe       = accepted;
+  static const Color riskSafeBg     = acceptedBg;
+  static const Color riskSafeBorder = acceptedBorder;
 
-  static const Color riskAttention       = Color(0xFFF59E0B); // S8.4 risk perlu_perhatian - Amber-500
-  static const Color riskAttentionBg     = Color(0xFFFFFBEB); // S8.4 risk perlu_perhatian background - Amber-50
-  static const Color riskAttentionBorder = Color(0xFFFDE68A); // S8.4 risk perlu_perhatian border - Amber-200
+  static const Color riskAttention       = warning;
+  static const Color riskAttentionBg     = warningBg;
+  static const Color riskAttentionBorder = warningBorder;
 
-  static const Color riskAtRisk       = Color(0xFFEF4444); // S8.4 risk berisiko - Rose-500
-  static const Color riskAtRiskBg     = Color(0xFFFFF1F2); // S8.4 risk berisiko background - Rose-50
-  static const Color riskAtRiskBorder = Color(0xFFFFCDD2); // S8.4 risk berisiko border - Rose-200
+  static const Color riskAtRisk       = declined;
+  static const Color riskAtRiskBg     = declinedBg;
+  static const Color riskAtRiskBorder = declinedBorder;
 
   // ─── Chat (S8.5) ─────────────────────────────────────────────────────────────
-  static const Color chatUserText        = Color(0xFFFFFFFF); // S8.5 user bubble text
-  static const Color chatUserBubble      = Color(0xFF4338CA); // S8.5 user bubble - primary
-  static const Color chatAssistantText   = Color(0xFF1E1B4B); // S8.5 assistant bubble text - textPrimary
-  static const Color chatAssistantBubble = Color(0xFFF1F5F9); // S8.5 assistant bubble - Slate-100
-  static const Color chatCitation        = Color(0xFF6366F1); // S8.5 source citation - primaryLight
-  static const Color chatCitationBg      = Color(0xFFEEF2FF); // S8.5 source citation background - primaryGhost
-  static const Color chatRefusal         = Color(0xFFF59E0B); // S8.5 refusal indicator - Amber-500
-  static const Color chatRefusalBg       = Color(0xFFFFFBEB); // S8.5 refusal indicator background - Amber-50
+  static const Color chatUserText        = surface;
+  static const Color chatUserBubble      = primary;
+  static const Color chatAssistantText   = textPrimary;
+  static const Color chatAssistantBubble = background;
+  static const Color chatCitation        = primaryLight;
+  static const Color chatCitationBg      = primaryGhost;
+  static const Color chatRefusal         = warning;
+  static const Color chatRefusalBg       = warningBg;
 
   // ─── Notification Types (F-NOT-03) ───────────────────────────────────────────
-  static const Color notificationInfo          = Color(0xFF3B82F6); // F-NOT-03 info - Blue-500
-  static const Color notificationInfoBg        = Color(0xFFEFF6FF); // F-NOT-03 info background - Blue-50
-  static const Color notificationInfoBorder    = Color(0xFFBFDBFE); // F-NOT-03 info border - Blue-200
+  static const Color notificationInfo       = info;
+  static const Color notificationInfoBg     = infoBg;
+  static const Color notificationInfoBorder = infoBorder;
 
-  static const Color notificationSuccess       = Color(0xFF10B981); // F-NOT-03 success - Emerald-500
-  static const Color notificationSuccessBg     = Color(0xFFECFDF5); // F-NOT-03 success background - Emerald-50
-  static const Color notificationSuccessBorder = Color(0xFFA7F3D0); // F-NOT-03 success border - Emerald-200
+  static const Color notificationSuccess       = accepted;
+  static const Color notificationSuccessBg     = acceptedBg;
+  static const Color notificationSuccessBorder = acceptedBorder;
 
-  static const Color notificationWarning       = Color(0xFFD97706); // F-NOT-03 warning - Amber-600 (caution)
-  static const Color notificationWarningBg     = Color(0xFFFFFBEB); // F-NOT-03 warning background - Amber-50
-  static const Color notificationWarningBorder = Color(0xFFFDE68A); // F-NOT-03 warning border - Amber-200
+  static const Color notificationWarning       = warning;
+  static const Color notificationWarningBg     = warningBg;
+  static const Color notificationWarningBorder = warningBorder;
 
-  static const Color notificationError         = Color(0xFFEF4444); // F-NOT-03 error - Rose-500
-  static const Color notificationErrorBg       = Color(0xFFFFF1F2); // F-NOT-03 error background - Rose-50
-  static const Color notificationErrorBorder   = Color(0xFFFFCDD2); // F-NOT-03 error border - Rose-200
+  static const Color notificationError       = declined;
+  static const Color notificationErrorBg     = declinedBg;
+  static const Color notificationErrorBorder = declinedBorder;
 
-  static const Color notificationNeutral       = Color(0xFF64748B); // F-NOT-03 neutral - textSecondary
-  static const Color notificationNeutralBg     = Color(0xFFF8FAFC); // F-NOT-03 neutral background - Slate-50
-  static const Color notificationNeutralBorder = Color(0xFFE2E8F0); // F-NOT-03 neutral border - Slate-200
+  static const Color notificationNeutral       = textSecondary;
+  static const Color notificationNeutralBg     = surfaceVariant;
+  static const Color notificationNeutralBorder = cardBorder;
 
-  // ─── Dark Core Palette (T-68) ───────────────────────────────────────────────
-  static const Color darkBackground    = Color(0xFF0B1120); // Deep Slate-950
-  static const Color darkSurface       = Color(0xFF131C31); // Elevated Slate-900
-  static const Color darkSurfaceVariant = Color(0xFF1B2742); // Inset Slate-850
-  static const Color darkCardBorder    = Color(0xFF283552); // Subtle Indigo-Slate border
-  static const Color darkTextPrimary   = Color(0xFFF1F5F9); // Slate-100
-  static const Color darkTextSecondary = Color(0xFF94A3B8); // Slate-400
-  static const Color darkTextMuted     = Color(0xFF64748B); // Slate-500
-  static const Color darkPrimary       = Color(0xFF818CF8); // Indigo-400 (accessible on dark)
-  static const Color darkPrimaryGhost  = Color(0xFF1E2949); // Deep Indigo tint
+  // ─── Dark Core Palette (Navy Dark Variant) ───────────────────────────────────
+  static const Color darkBackground     = Color(0xFF091322);
+  static const Color darkSurface        = Color(0xFF101D33);
+  static const Color darkSurfaceVariant = Color(0xFF172642);
+  static const Color darkCardBorder     = Color(0xFF243656);
+  static const Color darkTextPrimary    = Color(0xFFF3F5F8);
+  static const Color darkTextSecondary  = Color(0xFF94A3B8);
+  static const Color darkTextMuted      = Color(0xFF64748B);
+  static const Color darkPrimary        = Color(0xFF5B93E8);
+  static const Color darkPrimaryGhost   = Color(0xFF162B4D);
 
   // ─── Dark Semantic Surfaces (T-68) ───────────────────────────────────────────
-  static const Color darkPendingBg     = Color(0xFF2B2111);
-  static const Color darkPendingBorder = Color(0xFF6B4E1B);
-  static const Color darkAcceptedBg    = Color(0xFF0E2923);
+  static const Color darkPendingBg      = Color(0xFF2B2111);
+  static const Color darkPendingBorder  = Color(0xFF6B4E1B);
+  static const Color darkAcceptedBg     = Color(0xFF0E2923);
   static const Color darkAcceptedBorder = Color(0xFF1B5E4A);
-  static const Color darkDeclinedBg    = Color(0xFF2D151B);
+  static const Color darkDeclinedBg     = Color(0xFF2D151B);
   static const Color darkDeclinedBorder = Color(0xFF6D2636);
-  static const Color darkInfoBg        = Color(0xFF132440);
-  static const Color darkInfoBorder    = Color(0xFF24477D);
-  static const Color darkWarningBg     = Color(0xFF2B2111);
-  static const Color darkWarningBorder = Color(0xFF6B4E1B);
+  static const Color darkInfoBg         = Color(0xFF122645);
+  static const Color darkInfoBorder     = Color(0xFF214880);
+  static const Color darkWarningBg      = Color(0xFF2B2111);
+  static const Color darkWarningBorder  = Color(0xFF6B4E1B);
 
   // ─── Card Shadow ─────────────────────────────────────────────────────────────
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: primary.withValues(alpha: 0.08),
-          blurRadius: 24,
-          offset: const Offset(0, 10),
-          spreadRadius: 0,
-        ),
-        BoxShadow(
           color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 6,
-          offset: const Offset(0, 2),
+          blurRadius: 10,
+          offset: const Offset(0, 3),
         ),
       ];
 
-  static List<BoxShadow> get subtleShadow => [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+  static List<BoxShadow> get subtleShadow => cardShadow;
 
-  static List<BoxShadow> get avatarGlow => [
-        BoxShadow(
-          color: primary.withValues(alpha: 0.25),
-          blurRadius: 20,
-          spreadRadius: 2,
-          offset: const Offset(0, 4),
-        ),
-      ];
+  static List<BoxShadow> get avatarGlow => const [];
 
   // ─── Decoration Helpers ───────────────────────────────────────────────────────
-  static BoxDecoration cardDecoration({double radius = radiusLg}) => BoxDecoration(
+  static BoxDecoration cardDecoration({
+    double radius = radiusLg,
+    bool withBorder = true,
+  }) =>
+      BoxDecoration(
         color: surface,
         borderRadius: BorderRadius.circular(radius),
+        border: withBorder ? Border.all(color: cardBorder) : null,
         boxShadow: cardShadow,
+      );
+
+  static BoxDecoration glassDecoration({
+    double radius = radiusLg,
+    Color? color,
+    Color? borderColor,
+    double borderWidth = 1.0,
+    List<BoxShadow>? boxShadow,
+  }) =>
+      BoxDecoration(
+        color: color ?? glassSurfaceLight,
+        borderRadius: BorderRadius.circular(radius),
+        border: Border.all(
+          color: borderColor ?? glassBorderLight,
+          width: borderWidth,
+        ),
+        boxShadow: boxShadow,
       );
 
   // ─── Annotation Status Helpers (S8.3) ────────────────────────────────────────
@@ -367,6 +376,28 @@ class AppTheme {
   static Color warningBorderOf(BuildContext context) =>
       isDark(context) ? darkWarningBorder : warningBorder;
 
+  static Color glassSurfaceOf(BuildContext context) => isDark(context)
+      ? darkSurface.withValues(alpha: 0.78)
+      : glassSurfaceLight;
+
+  static Color glassBorderOf(BuildContext context) => isDark(context)
+      ? darkCardBorder.withValues(alpha: 0.85)
+      : glassBorderLight;
+
+  static BoxDecoration glassDecorationOf(
+    BuildContext context, {
+    double radius = radiusLg,
+    double borderWidth = 1.0,
+    List<BoxShadow>? boxShadow,
+  }) =>
+      glassDecoration(
+        radius: radius,
+        color: glassSurfaceOf(context),
+        borderColor: isDark(context) ? glassBorderOf(context) : cardBorder,
+        borderWidth: borderWidth,
+        boxShadow: boxShadow,
+      );
+
   static BoxDecoration cardDecorationOf(
     BuildContext context, {
     double radius = radiusLg,
@@ -379,9 +410,9 @@ class AppTheme {
         boxShadow: isDark(context)
             ? [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.28),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
               ]
             : cardShadow,
@@ -395,6 +426,12 @@ class AppTheme {
         seedColor: primary,
         surface: surface,
         brightness: Brightness.light,
+      ).copyWith(
+        primary: primary,
+        onPrimary: Colors.white,
+        surface: surface,
+        onSurface: textPrimary,
+        outline: cardBorder,
       ),
       scaffoldBackgroundColor: background,
       cardColor: surface,
@@ -411,17 +448,46 @@ class AppTheme {
         titleTextStyle: GoogleFonts.poppins(
           color: textPrimary,
           fontSize: 18,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          side: const BorderSide(color: cardBorder),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: surface,
+        hintStyle: const TextStyle(color: textMuted),
+        labelStyle: const TextStyle(color: textSecondary),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: cardBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: cardBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          borderSide: const BorderSide(color: primaryLight, width: 1.5),
         ),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radiusLg),
+          borderRadius: BorderRadius.circular(radiusXl),
         ),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusXl)),
+        ),
       ),
       popupMenuTheme: PopupMenuThemeData(
         color: surface,
@@ -434,12 +500,39 @@ class AppTheme {
           backgroundColor: primary,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          minimumSize: const Size(0, 52),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMd),
           ),
           textStyle: GoogleFonts.poppins(
             fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: surface,
+          foregroundColor: primary,
+          elevation: 0,
+          minimumSize: const Size(0, 52),
+          side: const BorderSide(color: cardBorder),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+          textStyle: GoogleFonts.poppins(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: primary,
+          textStyle: GoogleFonts.poppins(
+            fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -476,7 +569,15 @@ class AppTheme {
         titleTextStyle: GoogleFonts.poppins(
           color: darkTextPrimary,
           fontSize: 18,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: darkSurface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          side: const BorderSide(color: darkCardBorder),
         ),
       ),
       dialogTheme: DialogThemeData(
@@ -484,18 +585,21 @@ class AppTheme {
         titleTextStyle: GoogleFonts.poppins(
           color: darkTextPrimary,
           fontSize: 18,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
         contentTextStyle: GoogleFonts.poppins(
           color: darkTextSecondary,
           fontSize: 14,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(radiusLg),
+          borderRadius: BorderRadius.circular(radiusXl),
         ),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: darkSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusXl)),
+        ),
       ),
       popupMenuTheme: PopupMenuThemeData(
         color: darkSurface,
@@ -526,12 +630,39 @@ class AppTheme {
           backgroundColor: primary,
           foregroundColor: Colors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          minimumSize: const Size(0, 52),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radiusMd),
           ),
           textStyle: GoogleFonts.poppins(
             fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: darkSurface,
+          foregroundColor: darkPrimary,
+          elevation: 0,
+          minimumSize: const Size(0, 52),
+          side: const BorderSide(color: darkCardBorder),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiusMd),
+          ),
+          textStyle: GoogleFonts.poppins(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: darkPrimary,
+          textStyle: GoogleFonts.poppins(
+            fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
         ),

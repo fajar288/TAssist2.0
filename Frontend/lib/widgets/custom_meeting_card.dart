@@ -30,22 +30,17 @@ class MeetingRequestCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
-        decoration: AppTheme.cardDecorationOf(context),
+        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
         child: Column(
           children: [
             // ── Schedule Banner ──────────────────────────────────────────────
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    primary.withOpacity(0.08),
-                    AppTheme.primaryLight.withOpacity(0.04),
-                  ],
-                ),
+                color: AppTheme.primaryGhostOf(context).withValues(alpha: 0.55),
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(AppTheme.radiusLg),
-                  topRight: Radius.circular(AppTheme.radiusLg),
+                  topLeft: Radius.circular(AppTheme.radiusMd),
+                  topRight: Radius.circular(AppTheme.radiusMd),
                 ),
               ),
               child: Row(
@@ -53,8 +48,9 @@ class MeetingRequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: primaryGhost,
+                      color: AppTheme.surfaceOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                      border: Border.all(color: AppTheme.cardBorderOf(context)),
                     ),
                     child: Icon(
                       Icons.calendar_today_rounded,
@@ -91,7 +87,7 @@ class MeetingRequestCard extends StatelessWidget {
             ),
 
             // Thin divider
-            Divider(height: 1, color: AppTheme.cardBorderOf(context).withOpacity(0.8)),
+            Divider(height: 1, color: AppTheme.cardBorderOf(context)),
 
             // ── Student Info ──────────────────────────────────────────────────
             Padding(
@@ -114,7 +110,7 @@ class MeetingRequestCard extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             color: textPrimary,
                             fontSize: 14.5,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 2),

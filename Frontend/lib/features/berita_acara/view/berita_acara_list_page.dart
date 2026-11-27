@@ -141,9 +141,9 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceVariant,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppTheme.cardBorder),
+                color: AppTheme.surfaceVariantOf(context),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                border: Border.all(color: AppTheme.cardBorderOf(context)),
               ),
               child: SelectableText(
                 ba.activeHash,
@@ -200,26 +200,26 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: AppTheme.acceptedBg,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppTheme.acceptedBorder),
+          color: AppTheme.acceptedBgOf(context),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+          border: Border.all(color: AppTheme.acceptedBorderOf(context)),
         ),
         child: const Text(
           'DISETUJUI',
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.accepted),
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.accepted),
         ),
       );
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppTheme.pendingBg,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.pendingBorder),
+        color: AppTheme.pendingBgOf(context),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+        border: Border.all(color: AppTheme.pendingBorderOf(context)),
       ),
       child: const Text(
         'DRAFT',
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.pending),
+        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.pending),
       ),
     );
   }
@@ -331,7 +331,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                         onPressed: () => _showDetailSheet(ba),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: AppTheme.cardBorderOf(context)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
                         icon: Icon(Icons.info_outline, size: 16, color: AppTheme.textPrimaryOf(context)),
@@ -343,11 +343,11 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primary,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
                         icon: const Icon(Icons.download, size: 16),
-                        label: const Text('Unduh PDF', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        label: const Text('Unduh PDF', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                       ),
                     ],
                   ),

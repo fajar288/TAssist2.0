@@ -32,28 +32,14 @@ class NavbarShell extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16), 
         child: ClipRRect( // ClipRRect dipindah ke luar agar efek blur tidak melebar
           borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          child: BackdropFilter( // Widget kunci untuk efek blur di belakang
+          child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
-              decoration: BoxDecoration(
-                // Warna dibuat lebih transparan agar konten di belakang terlihat samar
-                color: AppTheme.isDark(context)
-                    ? AppTheme.darkSurface.withValues(alpha: 0.72)
-                    : Colors.white.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                border: Border.all(
-                  color: AppTheme.isDark(context)
-                      ? AppTheme.darkCardBorder.withValues(alpha: 0.8)
-                      : Colors.white.withOpacity(0.2), // Border putih tipis memperkuat kesan kaca
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+              decoration: AppTheme.glassDecorationOf(
+                context,
+                radius: AppTheme.radiusLg,
+                borderWidth: 1.2,
+                boxShadow: AppTheme.cardShadow,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -93,11 +79,12 @@ class _NavbarItemWidget extends StatelessWidget {
     required this.labelAnimation,
   });
 
-  static const Color _activeColor = AppTheme.primary;
-
   @override
   Widget build(BuildContext context) {
-    final inactiveColor = AppTheme.textPrimaryOf(context);
+    final activeColor = AppTheme.primaryOf(context);
+    final activeBg = AppTheme.primaryGhostOf(context);
+    final inactiveColor = AppTheme.textMutedOf(context);
+
     return AnimatedBuilder(
       animation: Listenable.merge([scaleAnimation, labelAnimation]),
       builder: (context, _) {
@@ -110,16 +97,8 @@ class _NavbarItemWidget extends StatelessWidget {
               width: isActive ? 110 : 60,
               height: isActive ? 60 : 50,
               decoration: BoxDecoration(
-                // Tambahkan sedikit shadow pada pill aktif agar lebih pop-out
-                color: isActive ? _activeColor : Colors.transparent,
+                color: isActive ? activeBg : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                boxShadow: isActive ? [
-                  BoxShadow(
-                    color: _activeColor.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  )
-                ] : null,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -127,9 +106,9 @@ class _NavbarItemWidget extends StatelessWidget {
                   Icon(
                     item.icon,
                     size: 24,
-                    color: isActive ? Colors.white : inactiveColor,
+                    color: isActive ? activeColor : inactiveColor,
                   ),
-                  if (isActive) 
+                  if (isActive)
                     Flexible(
                       child: FadeTransition(
                         opacity: labelAnimation,
@@ -138,10 +117,10 @@ class _NavbarItemWidget extends StatelessWidget {
                           child: Text(
                             item.label,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: activeColor,
                               fontSize: 12,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),

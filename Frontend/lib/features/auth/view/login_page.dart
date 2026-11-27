@@ -209,52 +209,47 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    const primaryBlue = AppTheme.primary;
+    final primaryNavy = AppTheme.primaryOf(context);
     final size = MediaQuery.of(context).size;
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundOf(context),
       body: SafeArea(
+        bottom: false,
         child: Stack(
           children: [
             Positioned.fill(
               child: ColoredBox(
-                color: AppTheme.primaryGhostOf(context),
+                color: AppTheme.backgroundOf(context),
               ),
             ),
 
-            _buildFloatingEducationIcons(),
-
-            // Top brand card
+            // Left-aligned clean wordmark + subtitle
             Positioned(
-              top: keyboardOpen ? 18 : size.height * 0.065,
+              top: keyboardOpen ? 18 : size.height * 0.055,
               left: 24,
               right: 24,
-              child: _buildTopBrandCard(),
+              child: _buildTopBrandHeader(),
             ),
 
-            // Bottom login card
+            // Bottom glass sheet form card
             Align(
               alignment: Alignment.bottomCenter,
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
                 curve: Curves.easeOut,
                 width: double.infinity,
-                height: size.height * (keyboardOpen ? 0.82 : 0.70),
-                padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
+                height: size.height * (keyboardOpen ? 0.82 : 0.72),
+                padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
                 decoration: BoxDecoration(
-                  color: AppTheme.surfaceOf(context),
+                  color: AppTheme.glassSurfaceOf(context),
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(AppTheme.radiusXl),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.10),
-                      blurRadius: 24,
-                      offset: const Offset(0, -6),
-                    ),
-                  ],
+                  border: Border(
+                    top: BorderSide(color: AppTheme.cardBorderOf(context)),
+                  ),
                 ),
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -359,17 +354,17 @@ class _LoginPageState extends State<LoginPage> {
 
                         SizedBox(
                           width: double.infinity,
-                          height: 54,
+                          height: 52,
                           child: ElevatedButton(
                             onPressed: _isLoading ? null : _handleLogin,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryBlue,
+                              backgroundColor: AppTheme.primary,
                               foregroundColor: Colors.white,
                               elevation: 0,
                               disabledBackgroundColor:
-                                  primaryBlue.withValues(alpha: 0.65),
+                                  primaryNavy.withValues(alpha: 0.6),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                               ),
                             ),
                             child: _isLoading
@@ -382,41 +377,33 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   )
                                 : const Text(
-                                    'CONTINUE',
+                                    'Continue',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 16,
-                                      letterSpacing: 0.4,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.5,
                                     ),
                                   ),
                           ),
                         ),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 22),
 
                         _buildDividerWithText('or'),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 22),
 
                         if (kIsWeb)
                           LayoutBuilder(
                             builder: (context, constraints) {
                               return Container(
                                 width: double.infinity,
-                                height: 56,
+                                height: 52,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: AppTheme.surfaceOf(context),
                                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                                   border: Border.all(
-                                    color: AppTheme.cardBorder,
+                                    color: AppTheme.cardBorderOf(context),
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.035),
-                                      blurRadius: 14,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ],
                                 ),
                                 child: Center(
                                   child: ClipRRect(
@@ -461,112 +448,30 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildFloatingEducationIcons() {
-    return IgnorePointer(
-      child: Stack(
-        children: [
-          _floatingEducationIcon(
-            top: 24,
-            left: 26,
-            size: 46,
-            opacity: 0.08,
-            rotate: -0.22,
+  Widget _buildTopBrandHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'TAssist',
+          style: TextStyle(
+            color: AppTheme.primaryOf(context),
+            fontSize: 28,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
           ),
-          _floatingEducationIcon(
-            top: 52,
-            right: 34,
-            size: 54,
-            opacity: 0.07,
-            rotate: 0.18,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Sistem Bimbingan Tugas Akhir',
+          style: TextStyle(
+            color: AppTheme.textSecondaryOf(context),
+            fontSize: 13.5,
+            fontWeight: FontWeight.w500,
           ),
-          _floatingEducationIcon(
-            top: 136,
-            left: 58,
-            size: 38,
-            opacity: 0.055,
-            rotate: 0.28,
-          ),
-          _floatingEducationIcon(
-            top: 148,
-            right: 64,
-            size: 42,
-            opacity: 0.06,
-            rotate: -0.18,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _floatingEducationIcon({
-    double? top,
-    double? left,
-    double? right,
-    required double size,
-    required double opacity,
-    required double rotate,
-  }) {
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      child: Transform.rotate(
-        angle: rotate,
-        child: Icon(
-          Icons.school_outlined,
-          size: size,
-          color: AppTheme.primary.withValues(alpha: opacity),
         ),
-      ),
-    );
-  }
-
-  Widget _buildTopBrandCard() {
-    final border = AppTheme.cardBorderOf(context);
-    return Center(
-      child: Container(
-        width: 268,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 22,
-          vertical: 20,
-        ),
-        decoration: BoxDecoration(
-          color: AppTheme.surfaceOf(context).withValues(alpha: 0.94),
-          borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-          border: Border.all(color: border),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'TAssist',
-              style: TextStyle(
-                color: AppTheme.primaryOf(context),
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.2,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              'Sistem Bimbingan Tugas Akhir',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppTheme.textSecondaryOf(context),
-                fontSize: 12.5,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 
@@ -578,8 +483,8 @@ class _LoginPageState extends State<LoginPage> {
           'Sign In',
           style: TextStyle(
             color: AppTheme.textPrimaryOf(context),
-            fontSize: 26,
-            fontWeight: FontWeight.w900,
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 6),
@@ -587,8 +492,8 @@ class _LoginPageState extends State<LoginPage> {
           'Masuk untuk melanjutkan bimbingan TA-mu.',
           style: TextStyle(
             color: AppTheme.textSecondaryOf(context),
-            fontSize: 14.5,
-            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
           ),
         ),
       ],
@@ -661,10 +566,10 @@ class _LoginPageState extends State<LoginPage> {
         labelText: labelText,
         hintText: hintText,
         filled: true,
-        fillColor: AppTheme.surfaceVariantOf(context),
+        fillColor: AppTheme.surfaceOf(context),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
-          vertical: 18,
+          vertical: 16,
         ),
         prefixIcon: prefixIcon == null
             ? null
@@ -675,16 +580,16 @@ class _LoginPageState extends State<LoginPage> {
         suffixIcon: suffixIcon,
         labelStyle: TextStyle(
           color: textSecondary,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
         ),
         floatingLabelStyle: TextStyle(
           color: accent,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
         hintStyle: TextStyle(
           color: AppTheme.textMutedOf(context),
           fontSize: 14,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -697,8 +602,8 @@ class _LoginPageState extends State<LoginPage> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           borderSide: BorderSide(
-            color: accent,
-            width: 1.4,
+            color: AppTheme.isDark(context) ? accent : AppTheme.primaryLight,
+            width: 1.5,
           ),
         ),
         errorBorder: OutlineInputBorder(
@@ -720,57 +625,44 @@ class _LoginPageState extends State<LoginPage> {
     required VoidCallback onTap,
   }) {
     final textPrimary = AppTheme.textPrimaryOf(context);
-    return Material(
-      color: AppTheme.surfaceOf(context),
-      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        child: Container(
-          width: double.infinity,
-          height: 56,
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            border: Border.all(
-              color: AppTheme.cardBorderOf(context),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.035),
-                blurRadius: 14,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (assetIconPath != null)
-                Image.asset(
-                  assetIconPath,
-                  width: 22,
-                  height: 22,
-                  fit: BoxFit.contain,
-                )
-              else if (icon != null)
-                Icon(
-                  icon,
-                  size: 24,
-                  color: textPrimary,
-                ),
-              const SizedBox(width: 12),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 15.5,
-                  fontWeight: FontWeight.w700,
-                  color: textPrimary,
-                ),
-              ),
-            ],
-          ),
+    return OutlinedButton(
+      onPressed: onTap,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: AppTheme.surfaceOf(context),
+        foregroundColor: textPrimary,
+        elevation: 0,
+        minimumSize: const Size(double.infinity, 52),
+        side: BorderSide(color: AppTheme.cardBorderOf(context)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (assetIconPath != null)
+            Image.asset(
+              assetIconPath,
+              width: 22,
+              height: 22,
+              fit: BoxFit.contain,
+            )
+          else if (icon != null)
+            Icon(
+              icon,
+              size: 22,
+              color: textPrimary,
+            ),
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: textPrimary,
+            ),
+          ),
+        ],
       ),
     );
   }

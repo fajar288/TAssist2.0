@@ -232,7 +232,7 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
                           color: AppTheme.primaryGhost,
                           borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
-                        child: const Icon(Icons.smart_toy_outlined, color: AppTheme.primary, size: 24),
+                        child: const Icon(Icons.chat_bubble_outline, color: AppTheme.primary, size: 24),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

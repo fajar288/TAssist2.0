@@ -70,10 +70,9 @@ class StylizedAvatar extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          boxShadow: glowing ? AppTheme.avatarGlow : AppTheme.subtleShadow,
           border: Border.all(
-            color: Colors.white,
-            width: 2.5,
+            color: AppTheme.surfaceOf(context),
+            width: 2,
           ),
         ),
         child: ClipOval(
@@ -81,20 +80,14 @@ class StylizedAvatar extends StatelessWidget {
             avatarUrl,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppTheme.primaryDark, AppTheme.primaryLight],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+              color: AppTheme.primary,
               child: Center(
                 child: Text(
                   initials,
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: size * 0.3,
-                    fontWeight: FontWeight.w700,
+                    fontSize: size * 0.32,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -129,7 +122,7 @@ class CounselingRequestCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
-        decoration: AppTheme.cardDecorationOf(context, withBorder: AppTheme.isDark(context)),
+        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
         child: Padding(
           padding: const EdgeInsets.all(18),
           child: Row(
@@ -153,7 +146,7 @@ class CounselingRequestCard extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         color: textPrimary,
                         fontSize: 15,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 3),

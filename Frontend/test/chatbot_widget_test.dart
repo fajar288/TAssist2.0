@@ -26,8 +26,8 @@ void main() {
 
       expect(find.text('Kapan batas akhir pengumpulan revisi TA?'), findsOneWidget);
       expect(find.text('14:00'), findsOneWidget);
-      // User bubble should not show robot icon
-      expect(find.byIcon(Icons.smart_toy_rounded), findsNothing);
+      // User bubble should not show assistant chat icon
+      expect(find.byIcon(Icons.chat_bubble_outline), findsNothing);
     });
 
     testWidgets('renders assistant message with citations correctly', (WidgetTester tester) async {
@@ -60,7 +60,7 @@ void main() {
 
       expect(find.text('Batas akhir pengumpulan revisi adalah 14 hari kalender setelah sidang.'), findsOneWidget);
       expect(find.text('Buku Panduan TA 2026'), findsOneWidget);
-      expect(find.byIcon(Icons.smart_toy_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.chat_bubble_outline), findsOneWidget);
     });
 
     testWidgets('renders assistant refusal when triggered', (WidgetTester tester) async {

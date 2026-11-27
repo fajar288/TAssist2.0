@@ -58,7 +58,7 @@ class RiskDetailSheet extends StatelessWidget {
                       studentName,
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         color: AppTheme.textPrimaryOf(context),
                       ),
                     ),
@@ -128,7 +128,7 @@ class RiskDetailSheet extends StatelessWidget {
                       '${risk.skor} / 100',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         color: color,
                       ),
                     ),

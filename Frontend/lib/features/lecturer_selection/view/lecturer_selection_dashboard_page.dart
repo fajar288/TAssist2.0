@@ -35,32 +35,27 @@ class _LecturerSelectionDashboardPageState
     LecturerCategory(
       title: 'AI & Machine Learning Lecturers',
       keyword: 'Kecerdasan Buatan',
-      imageUrl:
-          'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80',
+      icon: Icons.psychology_outlined,
     ),
     LecturerCategory(
       title: 'Software Engineering Lecturers',
       keyword: 'Rekayasa Perangkat Lunak',
-      imageUrl:
-          'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
+      icon: Icons.code_rounded,
     ),
     LecturerCategory(
       title: 'Network & Cybersecurity Lecturers',
       keyword: 'Jaringan Komputer',
-      imageUrl:
-          'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
+      icon: Icons.security_outlined,
     ),
     LecturerCategory(
       title: 'Information Systems & Database Lecturers',
       keyword: 'Sistem Informasi',
-      imageUrl:
-          'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80',
+      icon: Icons.storage_rounded,
     ),
     LecturerCategory(
       title: 'Computer Vision Lecturers',
       keyword: 'Computer Vision',
-      imageUrl:
-          'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=1200&q=80',
+      icon: Icons.visibility_outlined,
     ),
   ];
 
@@ -253,19 +248,6 @@ class _LecturerSelectionDashboardPageState
     }
   }
 
-  Color _statusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'menunggu':
-        return AppTheme.pending;
-      case 'diterima':
-        return AppTheme.accepted;
-      case 'ditolak':
-        return AppTheme.declined;
-      default:
-        return AppTheme.textSecondary;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -300,16 +282,15 @@ class _LecturerSelectionDashboardPageState
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: AppTheme.primaryDark,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppTheme.radiusXl),
         ),
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 26),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -317,18 +298,13 @@ class _LecturerSelectionDashboardPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        const Text('👋  ', style: TextStyle(fontSize: 18)),
-                        Text(
-                          'Hello There!,',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.75),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'Hello There!,',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white.withValues(alpha: 0.78),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -337,16 +313,16 @@ class _LecturerSelectionDashboardPageState
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.3,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Welcome to TAssist',
                       style: GoogleFonts.poppins(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.7),
                         fontSize: 12,
                       ),
                     ),
@@ -355,11 +331,29 @@ class _LecturerSelectionDashboardPageState
               ),
               Row(
                 children: [
-                  const NotifikasiBellButton(
+                  IconButton(
+                    tooltip: 'Asisten TA',
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.glassSurfaceOnDark,
+                      foregroundColor: Colors.white,
+                      shape: CircleBorder(
+                        side: BorderSide(color: AppTheme.glassBorderOnDark),
+                      ),
+                      minimumSize: const Size(38, 38),
+                      fixedSize: const Size(38, 38),
+                      padding: EdgeInsets.zero,
+                    ),
+                    icon: const Icon(Icons.chat_bubble_outline, size: 19),
+                    onPressed: () {
+                      Navigator.pushNamed(context, TAssistApp.chatbotRoute);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  NotifikasiBellButton(
                     size: 38,
                     iconColor: Colors.white,
-                    backgroundColor: Colors.white24,
-                    borderColor: Colors.white38,
+                    backgroundColor: AppTheme.glassSurfaceOnDark,
+                    borderColor: AppTheme.glassBorderOnDark,
                     pageTitle: 'Notifications',
                   ),
                   const SizedBox(width: 10),
@@ -424,10 +418,10 @@ class _LecturerSelectionDashboardPageState
                     child: UserAvatarCircle(
                       name: _studentName,
                       avatar: _userAvatar,
-                      size: 56,
-                      borderColor: Colors.white.withOpacity(0.45),
-                      borderWidth: 2.5,
-                      showShadow: true,
+                      size: 52,
+                      borderColor: AppTheme.glassBorderOnDark,
+                      borderWidth: 1.5,
+                      showShadow: false,
                     ),
                   ),
                 ],
@@ -464,7 +458,7 @@ class _LecturerSelectionDashboardPageState
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(14, 20, 14, 12),
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
       decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -475,7 +469,7 @@ class _LecturerSelectionDashboardPageState
             style: TextStyle(
               color: textPrimary,
               fontSize: 16,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 14),
@@ -493,7 +487,7 @@ class _LecturerSelectionDashboardPageState
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               decoration: BoxDecoration(
                 color: AppTheme.primaryGhostOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -501,13 +495,17 @@ class _LecturerSelectionDashboardPageState
               ),
               child: Row(
                 children: [
-                  const CircleAvatar(
-                    radius: 18,
-                    backgroundColor: AppTheme.primary,
-                    child: Icon(
-                      Icons.auto_awesome_rounded,
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primary,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                    ),
+                    child: const Icon(
+                      Icons.person_search_outlined,
                       color: Colors.white,
-                      size: 18,
+                      size: 20,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -519,8 +517,8 @@ class _LecturerSelectionDashboardPageState
                           'Rekomendasi Dosen by Topik TA',
                           style: TextStyle(
                             color: textPrimary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -528,31 +526,31 @@ class _LecturerSelectionDashboardPageState
                           'Cocokkan rencana topik TA dengan keahlian & kuota dosen',
                           style: TextStyle(
                             color: textSecondary,
-                            fontSize: 11,
+                            fontSize: 11.5,
                           ),
                         ),
                       ],
                     ),
                   ),
                   Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
+                    Icons.chevron_right_rounded,
+                    size: 20,
                     color: primary,
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
           for (int i = 0; i < categories.length; i++) ...[
-            _LecturerBannerCard(
+            _LecturerCategoryRow(
               title: categories[i].title,
-              imageUrl: categories[i].imageUrl,
+              icon: categories[i].icon,
               onTap: () => _openLecturersPage(
                 bidangKeahlian: categories[i].keyword,
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
           ],
           _buildViewAllButton(),
         ],
@@ -561,29 +559,16 @@ class _LecturerSelectionDashboardPageState
   }
 
   Widget _buildViewAllButton() {
-    final textPrimary = AppTheme.textPrimaryOf(context);
-    return InkWell(
-      onTap: () => _openLecturersPage(),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'view all lecturers',
-              style: TextStyle(
-                color: textPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 14,
-              color: textPrimary,
-            ),
-          ],
+    return TextButton.icon(
+      onPressed: () => _openLecturersPage(),
+      icon: const Icon(Icons.chevron_right_rounded, size: 18),
+      iconAlignment: IconAlignment.end,
+      label: const Text('view all lecturers'),
+      style: TextButton.styleFrom(
+        foregroundColor: AppTheme.primaryOf(context),
+        textStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -638,34 +623,48 @@ class _LecturerSelectionDashboardPageState
     final bidangKeahlian = dosen['bidang_keahlian']?.toString() ?? '-';
     final status = request['status']?.toString() ?? '-';
 
+    final statusKey = status.toLowerCase();
+    final Color statusFg = switch (statusKey) {
+      'menunggu' => AppTheme.pending,
+      'disetujui' || 'diterima' => AppTheme.accepted,
+      'ditolak' => AppTheme.declined,
+      _ => AppTheme.textSecondaryOf(context),
+    };
+    final Color statusBg = switch (statusKey) {
+      'menunggu' => AppTheme.pendingBgOf(context),
+      'disetujui' || 'diterima' => AppTheme.acceptedBgOf(context),
+      'ditolak' => AppTheme.declinedBgOf(context),
+      _ => AppTheme.surfaceVariantOf(context),
+    };
+    final Color statusBorder = switch (statusKey) {
+      'menunggu' => AppTheme.pendingBorderOf(context),
+      'disetujui' || 'diterima' => AppTheme.acceptedBorderOf(context),
+      'ditolak' => AppTheme.declinedBorderOf(context),
+      _ => AppTheme.cardBorderOf(context),
+    };
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () => _showPermohonanDetail(request),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: AppTheme.primary,
+            color: AppTheme.surfaceOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.primary.withValues(alpha: 0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            border: Border.all(color: AppTheme.cardBorderOf(context)),
           ),
           child: Row(
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
+                backgroundColor: AppTheme.primary,
                 child: Text(
                   _initials(namaDosen),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
                 ),
@@ -675,41 +674,53 @@ class _LecturerSelectionDashboardPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      _formatStatus(status),
-                      style: TextStyle(
-                        color: _statusColor(status),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusBg,
+                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                        border: Border.all(color: statusBorder),
+                      ),
+                      child: Text(
+                        _formatStatus(status),
+                        style: TextStyle(
+                          color: statusFg,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       'with Mr. $namaDosen',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
+                      style: TextStyle(
+                        color: AppTheme.textPrimaryOf(context),
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       bidangKeahlian,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
+                      style: TextStyle(
+                        color: AppTheme.textSecondaryOf(context),
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Colors.white54,
-                size: 14,
+              Icon(
+                Icons.chevron_right_rounded,
+                color: AppTheme.textMutedOf(context),
+                size: 20,
               ),
             ],
           ),
@@ -735,53 +746,63 @@ class _LecturerSelectionDashboardPageState
   }
 }
 
-class _LecturerBannerCard extends StatelessWidget {
+class _LecturerCategoryRow extends StatelessWidget {
   final String title;
-  final String imageUrl;
+  final IconData icon;
   final VoidCallback onTap;
 
-  const _LecturerBannerCard({
+  const _LecturerCategoryRow({
     required this.title,
-    required this.imageUrl,
+    required this.icon,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
+    return Material(
+      color: AppTheme.surfaceOf(context),
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-      child: Container(
-        height: 72,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          image: DecorationImage(
-            image: NetworkImage(imageUrl),
-            fit: BoxFit.cover,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         child: Container(
-          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            color: Colors.black.withValues(alpha: 0.3),
+            border: Border.all(color: AppTheme.cardBorderOf(context)),
           ),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-            ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryGhostOf(context),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                ),
+                child: Icon(
+                  icon,
+                  color: AppTheme.primaryOf(context),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: AppTheme.textPrimaryOf(context),
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: AppTheme.textMutedOf(context),
+                size: 20,
+              ),
+            ],
           ),
         ),
       ),
@@ -792,11 +813,11 @@ class _LecturerBannerCard extends StatelessWidget {
 class LecturerCategory {
   final String title;
   final String keyword;
-  final String imageUrl;
+  final IconData icon;
 
   const LecturerCategory({
     required this.title,
     required this.keyword,
-    required this.imageUrl,
+    required this.icon,
   });
 }

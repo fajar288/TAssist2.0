@@ -361,7 +361,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 21,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -429,7 +429,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   style: const TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 15,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -444,7 +444,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                   style: TextStyle(
                     color: _statusColor(status),
                     fontSize: 11,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -474,7 +474,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
               style: TextStyle(
                 color: AppTheme.textPrimary,
                 fontSize: 13,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
@@ -602,7 +602,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
                       fontSize: 15,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -622,7 +622,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                     style: TextStyle(
                       color: _statusColor(status),
                       fontSize: 11,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -679,7 +679,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
         foregroundColor: Colors.white,
         title: const Text(
           'Student Documents',
-          style: TextStyle(fontWeight: FontWeight.w800),
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
       ),
       body: Column(
@@ -700,7 +700,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                     student.imageInitials,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -716,7 +716,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 3),

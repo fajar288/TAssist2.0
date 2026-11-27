@@ -161,10 +161,9 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
   Widget _buildHeader(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: AppTheme.primaryDark,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppTheme.radiusXl),
         ),
       ),
       child: SafeArea(
@@ -181,16 +180,16 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                       'Schedule',
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.3,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Manage student meeting requests',
                       style: GoogleFonts.poppins(
-                        color: Colors.white.withOpacity(0.65),
+                        color: Colors.white.withValues(alpha: 0.72),
                         fontSize: 13,
                       ),
                     ),
@@ -210,10 +209,10 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                 icon: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: AppTheme.glassSurfaceOnDark,
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: AppTheme.glassBorderOnDark,
                       width: 1,
                     ),
                   ),
@@ -242,27 +241,17 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
         child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppTheme.primaryDark, AppTheme.primaryLight],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: AppTheme.primary,
             borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.primary.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: AppTheme.glassSurfaceOnDark,
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                  border: Border.all(color: AppTheme.glassBorderOnDark),
                 ),
                 child: const Icon(
                   Icons.notifications_active_rounded,

@@ -833,7 +833,7 @@ class _SchedulePageState extends State<SchedulePage> {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 10,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -1002,7 +1002,7 @@ class _SchedulePageState extends State<SchedulePage> {
                 _initials(dosenName),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

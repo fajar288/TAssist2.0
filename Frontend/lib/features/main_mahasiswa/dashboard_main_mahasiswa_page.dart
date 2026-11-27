@@ -276,19 +276,6 @@ class _DashboardMainMahasiswaPageState
     }
   }
 
-  Color _scheduleStatusColor(String? status) {
-    switch (status?.toLowerCase()) {
-      case 'menunggu':
-        return AppTheme.pending;
-      case 'dikonfirmasi':
-        return AppTheme.accepted;
-      case 'ditolak':
-        return AppTheme.declined;
-      default:
-        return Colors.white70;
-    }
-  }
-
   bool _isChecklistDone(Map<String, dynamic> item) {
     final raw = item['is_selesai'] ?? item['tgl_selesai'];
 
@@ -406,9 +393,9 @@ class _DashboardMainMahasiswaPageState
                   'Hi, $_studentName!',
                   style: TextStyle(
                     color: textPrimary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    height: 1.1,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    height: 1.15,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -416,8 +403,8 @@ class _DashboardMainMahasiswaPageState
                   'Welcome to TAssist',
                   style: TextStyle(
                     color: textSecondary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
@@ -431,12 +418,14 @@ class _DashboardMainMahasiswaPageState
               style: IconButton.styleFrom(
                 backgroundColor: surface,
                 foregroundColor: primary,
-                shape: const CircleBorder(),
+                shape: CircleBorder(
+                  side: BorderSide(color: AppTheme.cardBorderOf(context)),
+                ),
                 minimumSize: const Size(38, 38),
                 fixedSize: const Size(38, 38),
                 padding: EdgeInsets.zero,
               ),
-              icon: const Icon(Icons.smart_toy_rounded, size: 20),
+              icon: const Icon(Icons.chat_bubble_outline, size: 19),
               onPressed: () {
                 Navigator.pushNamed(context, TAssistApp.chatbotRoute);
               },
@@ -446,7 +435,7 @@ class _DashboardMainMahasiswaPageState
               size: 38,
               iconColor: primary,
               backgroundColor: surface,
-              borderColor: surface,
+              borderColor: AppTheme.cardBorderOf(context),
               pageTitle: 'Notifications',
             ),
             const SizedBox(width: 10),
@@ -498,10 +487,10 @@ class _DashboardMainMahasiswaPageState
               child: UserAvatarCircle(
                 name: _studentName,
                 avatar: _userAvatar,
-                size: 66,
-                borderColor: surface,
-                borderWidth: 2,
-                showShadow: true,
+                size: 56,
+                borderColor: AppTheme.cardBorderOf(context),
+                borderWidth: 1.5,
+                showShadow: false,
               ),
             ),
           ],
@@ -528,8 +517,23 @@ class _DashboardMainMahasiswaPageState
     }
   }
 
+  Widget _buildMenuIconBox(IconData icon) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: AppTheme.primaryGhostOf(context),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+      ),
+      child: Icon(
+        icon,
+        color: AppTheme.primaryOf(context),
+        size: 20,
+      ),
+    );
+  }
+
   Widget _buildInformasiTACard() {
-    final primary = AppTheme.primaryOf(context);
     final textPrimary = AppTheme.textPrimaryOf(context);
     final textSecondary = AppTheme.textSecondaryOf(context);
     final textMuted = AppTheme.textMutedOf(context);
@@ -545,23 +549,10 @@ class _DashboardMainMahasiswaPageState
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd).copyWith(
-          border: Border.all(color: AppTheme.infoBorderOf(context)),
-        ),
+        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryGhostOf(context),
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              ),
-              child: Icon(
-                Icons.campaign_rounded,
-                color: primary,
-                size: 24,
-              ),
-            ),
+            _buildMenuIconBox(Icons.campaign_rounded),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -571,7 +562,7 @@ class _DashboardMainMahasiswaPageState
                     'Informasi & Pengumuman TA',
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       color: textPrimary,
                     ),
                   ),
@@ -587,8 +578,8 @@ class _DashboardMainMahasiswaPageState
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 16,
+              Icons.chevron_right_rounded,
+              size: 20,
               color: textMuted,
             ),
           ],
@@ -604,7 +595,6 @@ class _DashboardMainMahasiswaPageState
 
     if (bimbinganId == null) return const SizedBox.shrink();
 
-    final primary = AppTheme.primaryOf(context);
     final textPrimary = AppTheme.textPrimaryOf(context);
     final textSecondary = AppTheme.textSecondaryOf(context);
     final textMuted = AppTheme.textMutedOf(context);
@@ -628,18 +618,7 @@ class _DashboardMainMahasiswaPageState
         decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryGhostOf(context),
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              ),
-              child: Icon(
-                Icons.assignment_turned_in_rounded,
-                color: primary,
-                size: 24,
-              ),
-            ),
+            _buildMenuIconBox(Icons.assignment_turned_in_rounded),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -649,7 +628,7 @@ class _DashboardMainMahasiswaPageState
                     'Berita Acara Bimbingan',
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       color: textPrimary,
                     ),
                   ),
@@ -665,8 +644,8 @@ class _DashboardMainMahasiswaPageState
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 16,
+              Icons.chevron_right_rounded,
+              size: 20,
               color: textMuted,
             ),
           ],
@@ -685,25 +664,16 @@ class _DashboardMainMahasiswaPageState
     final primary = AppTheme.primaryOf(context);
     final textPrimary = AppTheme.textPrimaryOf(context);
     final textSecondary = AppTheme.textSecondaryOf(context);
+    final border = AppTheme.cardBorderOf(context);
+    final surface = AppTheme.surfaceOf(context);
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryGhostOf(context),
-              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-            ),
-            child: Icon(
-              Icons.file_download_outlined,
-              color: primary,
-              size: 22,
-            ),
-          ),
+          _buildMenuIconBox(Icons.file_download_outlined),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -713,7 +683,7 @@ class _DashboardMainMahasiswaPageState
                   'Ekspor Riwayat Bimbingan',
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                     color: textPrimary,
                   ),
                 ),
@@ -724,21 +694,45 @@ class _DashboardMainMahasiswaPageState
               ],
             ),
           ),
-          TextButton(
+          const SizedBox(width: 8),
+          OutlinedButton(
             onPressed: () => ExportHelper.exportBimbinganHistory(
               context,
               rolePrefix: 'mahasiswa',
               bimbinganId: bimbinganId,
               format: 'pdf',
             ),
+            style: OutlinedButton.styleFrom(
+              backgroundColor: surface,
+              foregroundColor: primary,
+              side: BorderSide(color: border),
+              minimumSize: const Size(0, 34),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              ),
+              textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
             child: const Text('PDF'),
           ),
-          TextButton(
+          const SizedBox(width: 6),
+          OutlinedButton(
             onPressed: () => ExportHelper.exportBimbinganHistory(
               context,
               rolePrefix: 'mahasiswa',
               bimbinganId: bimbinganId,
               format: 'excel',
+            ),
+            style: OutlinedButton.styleFrom(
+              backgroundColor: surface,
+              foregroundColor: primary,
+              side: BorderSide(color: border),
+              minimumSize: const Size(0, 34),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              ),
+              textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
             child: const Text('Excel'),
           ),
@@ -748,7 +742,6 @@ class _DashboardMainMahasiswaPageState
   }
 
   Widget _buildChatbotCard() {
-    final primary = AppTheme.primaryOf(context);
     final textPrimary = AppTheme.textPrimaryOf(context);
     final textSecondary = AppTheme.textSecondaryOf(context);
     final textMuted = AppTheme.textMutedOf(context);
@@ -764,18 +757,7 @@ class _DashboardMainMahasiswaPageState
         decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryGhostOf(context),
-                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-              ),
-              child: Icon(
-                Icons.smart_toy_rounded,
-                color: primary,
-                size: 24,
-              ),
-            ),
+            _buildMenuIconBox(Icons.chat_bubble_outline),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -785,7 +767,7 @@ class _DashboardMainMahasiswaPageState
                     'Asisten TA Virtual (AI)',
                     style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       color: textPrimary,
                     ),
                   ),
@@ -801,8 +783,8 @@ class _DashboardMainMahasiswaPageState
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 16,
+              Icons.chevron_right_rounded,
+              size: 20,
               color: textMuted,
             ),
           ],
@@ -821,30 +803,25 @@ class _DashboardMainMahasiswaPageState
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.primary],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppTheme.primaryDark,
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.primary.withValues(alpha: 0.25),
-            blurRadius: 14,
-            offset: const Offset(0, 7),
-          ),
-        ],
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 25,
-            backgroundColor: Colors.white.withValues(alpha: 0.18),
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppTheme.glassSurfaceOnDark,
+              border: Border.all(color: AppTheme.glassBorderOnDark),
+            ),
+            alignment: Alignment.center,
             child: Text(
               _initials(advisorName),
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -858,7 +835,7 @@ class _DashboardMainMahasiswaPageState
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -869,7 +846,7 @@ class _DashboardMainMahasiswaPageState
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -879,25 +856,26 @@ class _DashboardMainMahasiswaPageState
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white70,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
+              color: AppTheme.glassSurfaceOnDark,
               borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+              border: Border.all(color: AppTheme.glassBorderOnDark),
             ),
             child: Text(
               _formatStatus(status),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 11,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -908,6 +886,8 @@ class _DashboardMainMahasiswaPageState
 
   Widget _buildMeetingSchedule() {
     final schedules = _upcomingSchedules;
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final primary = AppTheme.primaryOf(context);
 
     return Container(
       width: double.infinity,
@@ -916,26 +896,26 @@ class _DashboardMainMahasiswaPageState
       child: Column(
         children: [
           Row(
-            children: const [
+            children: [
               Icon(
                 Icons.alarm_on_rounded,
-                color: AppTheme.primary,
-                size: 28,
+                color: primary,
+                size: 24,
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Next Meeting Schedule',
                   style: TextStyle(
-                    color: AppTheme.primary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    color: textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           if (schedules.isEmpty)
             _buildEmptyCardMessage(
               icon: Icons.event_busy_rounded,
@@ -960,28 +940,49 @@ class _DashboardMainMahasiswaPageState
     final selesai = schedule['waktu_selesai']?.toString();
     final mode = schedule['mode']?.toString() ?? '-';
 
+    final statusKey = status?.toLowerCase();
+    final Color statusFg = switch (statusKey) {
+      'menunggu' => AppTheme.pending,
+      'dikonfirmasi' => AppTheme.accepted,
+      'ditolak' => AppTheme.declined,
+      _ => AppTheme.textSecondaryOf(context),
+    };
+    final Color statusBg = switch (statusKey) {
+      'menunggu' => AppTheme.pendingBgOf(context),
+      'dikonfirmasi' => AppTheme.acceptedBgOf(context),
+      'ditolak' => AppTheme.declinedBgOf(context),
+      _ => AppTheme.surfaceVariantOf(context),
+    };
+    final Color statusBorder = switch (statusKey) {
+      'menunggu' => AppTheme.pendingBorderOf(context),
+      'dikonfirmasi' => AppTheme.acceptedBorderOf(context),
+      'ditolak' => AppTheme.declinedBorderOf(context),
+      _ => AppTheme.cardBorderOf(context),
+    };
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppTheme.primaryLight,
+        color: AppTheme.surfaceOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        border: Border.all(color: AppTheme.cardBorderOf(context)),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 19,
-            backgroundColor: Colors.white.withValues(alpha: 0.22),
+            backgroundColor: AppTheme.primaryGhostOf(context),
             child: Text(
               _initials(dosenName),
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppTheme.primaryOf(context),
                 fontSize: 11,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -990,33 +991,41 @@ class _DashboardMainMahasiswaPageState
                   '${_formatDate(tanggal)} at ${_formatTime(mulai)} - ${_formatTime(selesai)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 13,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 2),
                 Text(
                   '$mode with Mr. $dosenName',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
+                  style: TextStyle(
+                    color: AppTheme.textSecondaryOf(context),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          Text(
-            _formatStatus(status),
-            style: TextStyle(
-              color: _scheduleStatusColor(status),
-              fontSize: 11,
-              fontWeight: FontWeight.w900,
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: statusBg,
+              borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              border: Border.all(color: statusBorder),
+            ),
+            child: Text(
+              _formatStatus(status),
+              style: TextStyle(
+                color: statusFg,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -1038,11 +1047,11 @@ class _DashboardMainMahasiswaPageState
             'Goal Percentage',
             style: TextStyle(
               color: AppTheme.textPrimaryOf(context),
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 24),
           SizedBox(
             height: 140,
             width: 240,
@@ -1059,15 +1068,15 @@ class _DashboardMainMahasiswaPageState
                     '$_overallProgressPercent%',
                     style: TextStyle(
                       color: AppTheme.textPrimaryOf(context),
-                      fontSize: 40,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           if (latest == null)
             _buildEmptyCardMessage(
               icon: Icons.track_changes_rounded,
@@ -1083,7 +1092,7 @@ class _DashboardMainMahasiswaPageState
                   style: TextStyle(
                     color: AppTheme.textSecondaryOf(context),
                     fontSize: 13,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -1120,6 +1129,7 @@ class _DashboardMainMahasiswaPageState
           decoration: BoxDecoration(
             color: AppTheme.surfaceVariantOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+            border: Border.all(color: AppTheme.cardBorderOf(context)),
           ),
         ),
         FractionallySizedBox(
@@ -1127,9 +1137,7 @@ class _DashboardMainMahasiswaPageState
           child: Container(
             height: 38,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppTheme.primary, AppTheme.primaryLight],
-              ),
+              color: AppTheme.primary,
               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
             ),
           ),
@@ -1148,19 +1156,21 @@ class _DashboardMainMahasiswaPageState
                     style: TextStyle(
                       color: safeProgress > 0.45
                           ? Colors.white
-                          : AppTheme.primary,
+                          : AppTheme.primaryOf(context),
                       fontSize: 12,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Text(
                   '$percent%',
-                  style: const TextStyle(
-                    color: AppTheme.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
+                  style: TextStyle(
+                    color: safeProgress > 0.9
+                        ? Colors.white
+                        : AppTheme.primaryOf(context),
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -1173,6 +1183,8 @@ class _DashboardMainMahasiswaPageState
 
   Widget _buildTargetThisWeek() {
     final targets = _unfinishedChecklist.take(4).toList();
+    final primary = AppTheme.primaryOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
 
     return Container(
       width: double.infinity,
@@ -1181,20 +1193,20 @@ class _DashboardMainMahasiswaPageState
       child: Column(
         children: [
           Row(
-            children: const [
+            children: [
               Icon(
                 Icons.track_changes_rounded,
-                color: AppTheme.primary,
-                size: 28,
+                color: primary,
+                size: 24,
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Target this Week',
                   style: TextStyle(
-                    color: AppTheme.primary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    color: textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

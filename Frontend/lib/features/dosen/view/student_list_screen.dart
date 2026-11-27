@@ -212,10 +212,9 @@ class _StudentListPageState extends State<StudentListPage>
 
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: AppTheme.primaryDark,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppTheme.radiusXl),
         ),
       ),
       child: SafeArea(
@@ -235,9 +234,9 @@ class _StudentListPageState extends State<StudentListPage>
                           'Students Overview',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.5,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.3,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -380,18 +379,11 @@ class _StudentListPageState extends State<StudentListPage>
                     ? AppTheme.primary
                     : AppTheme.surfaceOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                boxShadow: [
-                  BoxShadow(
-                    color: isSelected
-                        ? Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.3)
-                        : Colors.black.withOpacity(0.04),
-                    blurRadius: isSelected ? 8 : 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                border: Border.all(
+                  color: isSelected
+                      ? AppTheme.primary
+                      : AppTheme.cardBorderOf(context),
+                ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

@@ -251,13 +251,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          color: AppTheme.primaryDark,
           child: SafeArea(
             child: Stack(
               children: [
@@ -271,8 +265,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
                       letterSpacing: -0.7,
                       height: 1.05,
                     ),
@@ -293,7 +287,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                           height: 1.15,
                         ),
                       ),
@@ -379,7 +373,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             style: TextStyle(
               color: AppTheme.textPrimary,
               fontSize: 15,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 16),
@@ -391,7 +385,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 style: const TextStyle(
                   color: AppTheme.primary,
                   fontSize: 42,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                   height: 1,
                 ),
               ),
@@ -493,7 +487,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                   style: TextStyle(
                     color: AppTheme.textPrimary,
                     fontSize: 15,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -501,7 +495,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 '${checklist.where((item) => _isDone(item['is_selesai'] ?? item['tgl_selesai'])).length}/${checklist.length}',
                 style: const TextStyle(
                   color: AppTheme.primary,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -634,7 +628,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             style: TextStyle(
               color: AppTheme.textPrimary,
               fontSize: 15,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 12),
@@ -678,7 +672,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 '${percent.round()}%',
                 style: const TextStyle(
                   color: AppTheme.primary,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -692,7 +686,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                   status,
                   style: const TextStyle(
                     color: AppTheme.textPrimary,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
                 ),
@@ -765,7 +759,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                       'Update Progress',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -959,7 +953,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     isEdit ? 'Edit Checklist' : 'Add Checklist',
                     style: const TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 16),

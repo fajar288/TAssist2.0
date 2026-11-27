@@ -227,7 +227,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 color: AppTheme.primaryGhostOf(context),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.smart_toy_rounded, color: AppTheme.primaryOf(context), size: 22),
+              child: Icon(Icons.chat_bubble_outline, color: AppTheme.primaryOf(context), size: 20),
             ),
             const SizedBox(width: 10),
             Expanded(

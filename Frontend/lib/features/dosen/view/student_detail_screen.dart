@@ -206,40 +206,9 @@ class _StudentDetailPageState extends State<StudentDetailPage>
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [_avatarColor, _avatarColor.withOpacity(0.75)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          color: AppTheme.primaryDark,
           child: Stack(
             children: [
-              // Decorative circles
-              Positioned(
-                right: -30,
-                top: -20,
-                child: Container(
-                  width: 160,
-                  height: 160,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.08),
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 40,
-                bottom: -30,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.06),
-                  ),
-                ),
-              ),
               // Content
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 80, 20, 20),
@@ -265,7 +234,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                               student.imageInitials,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 24,
                                 letterSpacing: 1,
                               ),
@@ -306,7 +275,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                                 student.name,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w600,
                                   fontSize: 20,
                                   letterSpacing: -0.3,
                                 ),
@@ -360,7 +329,7 @@ class _StudentDetailPageState extends State<StudentDetailPage>
                 '${(student.progress * 100).toInt()}%',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                   color: _statusColor,
                 ),
               ),

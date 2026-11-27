@@ -304,35 +304,13 @@ class _SplashScreenState extends State<SplashScreen>
                 position: _textSlideAnim,
                 child: Opacity(
                   opacity: _textFadeAnim.value,
-                  child: ShaderMask(
-                    shaderCallback: (bounds) {
-                      final double pos = _shimmerAnim.value;
-                      return LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: const [
-                          Colors.white,
-                          AppTheme.primaryGhost,
-                          Colors.white,
-                          Colors.white,
-                        ],
-                        stops: [
-                          (pos - 0.3).clamp(0.0, 1.0),
-                          pos.clamp(0.0, 1.0),
-                          (pos + 0.3).clamp(0.0, 1.0),
-                          1.0,
-                        ],
-                      ).createShader(bounds);
-                    },
-                    blendMode: BlendMode.srcIn,
-                    child: Text(
-                      'TAssist',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.5,
-                      ),
+                  child: Text(
+                    'TAssist',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.5,
                     ),
                   ),
                 ),
@@ -356,18 +334,8 @@ class _SplashScreenState extends State<SplashScreen>
             decoration: BoxDecoration(
               color: _blue,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              boxShadow: [
-                BoxShadow(
-                  color: _blue.withOpacity(0.55 * _glowAnim.value),
-                  blurRadius:   40 * _glowAnim.value,
-                  spreadRadius: 10 * _glowAnim.value,
-                ),
-                BoxShadow(
-                  color: _blue.withOpacity(0.25 * _glowAnim.value),
-                  blurRadius:   80 * _glowAnim.value,
-                  spreadRadius: 20 * _glowAnim.value,
-                ),
-              ],
+              border: Border.all(color: AppTheme.glassBorderOnDark),
+              boxShadow: AppTheme.cardShadow,
             ),
             child: const Center(
               child: _GraduationCapIcon(size: 48, color: Colors.white),

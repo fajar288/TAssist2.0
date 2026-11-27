@@ -63,18 +63,10 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 17,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppTheme.primaryDark, AppTheme.primary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-            ),
+            flexibleSpace: const ColoredBox(color: AppTheme.primaryDark),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -118,8 +110,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              boxShadow: AppTheme.avatarGlow,
-              border: Border.all(color: Colors.white, width: 3),
+              border: Border.all(color: Colors.white, width: 2.5),
             ),
             child: Hero(
               tag: 'meeting-avatar-${widget.request.id}',
@@ -128,11 +119,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                 height: 70,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [AppTheme.primaryDark, AppTheme.primaryLight],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: AppTheme.primary,
                 ),
                 child: Center(
                   child: Text(
@@ -140,7 +127,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 24,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -157,10 +144,10 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
-                    color: AppTheme.textPrimary,
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 17,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.2,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -191,13 +178,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppTheme.primaryDark, AppTheme.primary],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
+            color: AppTheme.primaryDark,
             child: Row(
               children: [
                 const Icon(
@@ -798,7 +779,7 @@ class _ScheduleBlock extends StatelessWidget {
           style: GoogleFonts.poppins(
             color: AppTheme.textPrimary,
             fontSize: 24,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
             height: 1.15,
           ),
         ),

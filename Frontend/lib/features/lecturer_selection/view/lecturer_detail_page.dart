@@ -224,7 +224,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
             style: TextStyle(
               color: AppTheme.textPrimary,
               fontSize: 24,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -350,7 +350,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
             style: TextStyle(
               color: _statusColor(status),
               fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           if (topikTa != null && topikTa.isNotEmpty) ...[
@@ -511,7 +511,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
             style: TextStyle(
               color: AppTheme.textPrimary,
               fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
@@ -620,15 +620,9 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
           color: AppTheme.surface,
           borderRadius: BorderRadius.circular(AppTheme.radiusXl),
           border: Border.all(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AppTheme.cardBorder,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.18),
-              blurRadius: 28,
-              offset: const Offset(0, 12),
-            ),
-          ],
+          boxShadow: AppTheme.cardShadow,
         ),
         child: Form(
           key: _formKey,
@@ -655,7 +649,7 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                 style: TextStyle(
                   color: AppTheme.textPrimary,
                   fontSize: 21,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 6),
@@ -808,7 +802,7 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),

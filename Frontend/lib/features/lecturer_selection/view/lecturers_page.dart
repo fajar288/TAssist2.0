@@ -243,9 +243,9 @@ class _LecturersPageState extends State<LecturersPage> {
                 child: GestureDetector(
                   onTap: _closeAllDropdowns,
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: Container(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                     ),
                   ),
                 ),
@@ -292,8 +292,8 @@ class _LecturersPageState extends State<LecturersPage> {
             'Lecturers',
             style: TextStyle(
               color: AppTheme.textPrimary,
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -325,7 +325,7 @@ class _LecturersPageState extends State<LecturersPage> {
           ),
           Expanded(
             child: _ModeTabButton(
-              icon: Icons.auto_awesome_rounded,
+              icon: Icons.person_search_outlined,
               label: 'Rekomendasi Topik',
               isSelected: _isRecommendationMode,
               onTap: () {
