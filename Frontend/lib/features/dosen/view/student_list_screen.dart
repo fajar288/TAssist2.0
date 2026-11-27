@@ -262,7 +262,7 @@ class _StudentListPageState extends State<StudentListPage>
                       ),
                     ),
                     child: const Icon(
-                      Icons.people_alt_rounded,
+                      Icons.groups_outlined,
                       color: Colors.white,
                       size: 20,
                     ),
@@ -274,9 +274,9 @@ class _StudentListPageState extends State<StudentListPage>
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _headerStatChip('$active Active', const Color(0xFF34D399)),
-                  _headerStatChip('$warning Warning', AppTheme.accentGoldOnDark),
-                  _headerStatChip('$completed Done', const Color(0xFF93C5FD)),
+                  _headerStatChip('$active Aktif', const Color(0xFF34D399)),
+                  _headerStatChip('$warning Perhatian', AppTheme.accentGoldOnDark),
+                  _headerStatChip('$completed Selesai', const Color(0xFF93C5FD)),
                 ],
               ),
             ],
@@ -327,19 +327,19 @@ class _StudentListPageState extends State<StudentListPage>
           hintText: 'Search by name, NIM, or major...',
           hintStyle: TextStyle(color: muted, fontSize: 13),
           prefixIcon: Icon(
-            Icons.search_rounded,
+            Icons.search_outlined,
             color: muted,
             size: 20,
           ),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-                  tooltip: 'Clear search',
+                  tooltip: 'Hapus pencarian',
                   onPressed: () {
                     _searchController.clear();
                     _applyFilters();
                   },
                   icon: Icon(
-                    Icons.close_rounded,
+                    Icons.close_outlined,
                     color: muted,
                     size: 18,
                   ),
@@ -440,10 +440,10 @@ class _StudentListPageState extends State<StudentListPage>
       children: [
         const SizedBox(height: 80),
         AppEmptyStateWidget(
-          icon: Icons.search_off_rounded,
-          title: 'No students found',
-          subtitle: 'Try adjusting your search or filter',
-          actionLabel: 'Reset filters',
+          icon: Icons.search_off_outlined,
+          title: 'Mahasiswa tidak ditemukan',
+          subtitle: 'Coba ubah kata kunci pencarian atau filter',
+          actionLabel: 'Atur ulang filter',
           onAction: () {
             _searchController.clear();
             _onFilterChanged('All');

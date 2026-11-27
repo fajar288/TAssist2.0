@@ -212,8 +212,9 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
+              tooltip: 'Kembali',
               icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
+                Icons.arrow_back_ios_new_outlined,
                 color: textPrimary,
                 size: 22,
               ),
@@ -221,10 +222,10 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
             ),
           ),
           Text(
-            'Lecturer Detail',
+            'Detail Dosen',
             style: TextStyle(
               color: textPrimary,
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -259,7 +260,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
                   color: cardBorder,
                   child: Center(
                     child: Icon(
-                      Icons.person_rounded,
+                      Icons.person_outline,
                       color: textSecondary,
                       size: 80,
                     ),
@@ -269,11 +270,11 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
             ),
           ),
           const SizedBox(height: 24),
-          _buildInfoRow('Name :', lecturer.displayName),
+          _buildInfoRow('Nama :', lecturer.displayName),
           const SizedBox(height: 12),
           _buildInfoRow('NID :', lecturer.nid),
           const SizedBox(height: 12),
-          _buildInfoRow('Expertise :', lecturer.bidangKeahlian),
+          _buildInfoRow('Keahlian :', lecturer.bidangKeahlian),
           if (lecturer.email != null && lecturer.email!.isNotEmpty) ...[
             const SizedBox(height: 12),
             _buildInfoRow('Email :', lecturer.email!),
@@ -289,7 +290,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
               Expanded(
                 flex: 4,
                 child: Text(
-                  'Number of guidance left :',
+                  'Sisa kuota bimbingan :',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -392,22 +393,25 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
     }
 
     if (_isBlockedByExistingRequest) {
+      final isAccepted = _requestStatus?.toLowerCase() == 'diterima';
+      final badgeColor = _statusColor(_requestStatus);
       return Container(
         width: double.infinity,
         height: 52,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppTheme.primary.withValues(alpha: 0.5),
+          color: AppTheme.surfaceVariantOf(context),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(
+            color: badgeColor.withValues(alpha: 0.45),
+          ),
         ),
         child: Text(
-          _requestStatus?.toLowerCase() == 'diterima'
-              ? 'Accepted'
-              : 'Requested',
-          style: const TextStyle(
-            color: Colors.white,
+          isAccepted ? 'Sudah Diterima' : 'Sudah Diajukan',
+          style: TextStyle(
+            color: badgeColor,
             fontSize: 16,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       );
@@ -419,14 +423,15 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
         height: 52,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppTheme.textMutedOf(context),
+          color: AppTheme.surfaceVariantOf(context),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(color: AppTheme.cardBorderOf(context)),
         ),
-        child: const Text(
-          'Quota Full',
+        child: Text(
+          'Kuota Penuh',
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 17,
+            color: AppTheme.textSecondaryOf(context),
+            fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -638,14 +643,14 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.school_rounded,
+                  Icons.school_outlined,
                   color: primary,
                   size: 30,
                 ),
               ),
               const SizedBox(height: 14),
               Text(
-                'Request Counseling',
+                'Ajukan Bimbingan',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: textPrimary,
@@ -655,7 +660,7 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
               ),
               const SizedBox(height: 6),
               Text(
-                'Submit your thesis topic to request guidance from ${widget.lecturerName}.',
+                'Kirim rencana topik TA untuk mengajukan bimbingan kepada ${widget.lecturerName}.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: textSecondary,
@@ -678,8 +683,8 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                   height: 1.35,
                 ),
                 decoration: InputDecoration(
-                  labelText: 'Thesis Topic',
-                  hintText: 'Example: Sistem Informasi Monitoring TA',
+                  labelText: 'Topik Tugas Akhir',
+                  hintText: 'Contoh: Sistem Informasi Monitoring TA',
                   alignLabelWithHint: true,
                   filled: true,
                   fillColor: AppTheme.surfaceVariantOf(context),
@@ -739,7 +744,7 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: _pickProposalPdf,
-                icon: const Icon(Icons.attach_file_rounded, size: 18),
+                icon: const Icon(Icons.attach_file_outlined, size: 18),
                 label: Text(
                   _pickedProposal != null
                       ? 'Proposal: ${_pickedProposal!.filename}'

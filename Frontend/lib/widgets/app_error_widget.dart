@@ -43,7 +43,7 @@ class AppErrorWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                 ),
                 child: Icon(
-                  Icons.error_outline_rounded,
+                  Icons.error_outline,
                   size: compact ? 24 : 28,
                   color: AppTheme.declined,
                 ),
@@ -72,7 +72,7 @@ class AppErrorWidget extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: onRetry,
-                  icon: const Icon(Icons.refresh_rounded, size: 18),
+                  icon: const Icon(Icons.refresh_outlined, size: 18),
                   label: Text(retryLabel),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,

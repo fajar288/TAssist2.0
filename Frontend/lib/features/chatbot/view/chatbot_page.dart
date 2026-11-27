@@ -215,7 +215,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
         backgroundColor: surface,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 20),
+          tooltip: 'Kembali',
+          icon: Icon(Icons.arrow_back_ios_new_outlined, color: textPrimary, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         titleSpacing: 0,
@@ -277,7 +278,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
             onPressed: _resetToNewChat,
           ),
           IconButton(
-            icon: Icon(Icons.history_rounded, color: textPrimary),
+            icon: Icon(Icons.history_outlined, color: textPrimary),
             tooltip: 'Riwayat Percakapan',
             onPressed: _openHistory,
           ),
@@ -303,7 +304,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
       color: AppTheme.pendingBgOf(context),
       child: Row(
         children: [
-          const Icon(Icons.speed_rounded, color: AppTheme.pending, size: 20),
+          const Icon(Icons.speed_outlined, color: AppTheme.pending, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -316,7 +317,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.close_rounded, size: 18, color: AppTheme.textMutedOf(context)),
+            tooltip: 'Tutup',
+            icon: Icon(Icons.close_outlined, size: 18, color: AppTheme.textMutedOf(context)),
             onPressed: () => setState(() => _rateLimitError = null),
           ),
         ],
@@ -331,7 +333,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
       color: AppTheme.declinedBgOf(context),
       child: Row(
         children: [
-          const Icon(Icons.cloud_off_rounded, color: AppTheme.declined, size: 20),
+          const Icon(Icons.cloud_off_outlined, color: AppTheme.declined, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -344,7 +346,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.close_rounded, size: 18, color: AppTheme.textMutedOf(context)),
+            tooltip: 'Tutup',
+            icon: Icon(Icons.close_outlined, size: 18, color: AppTheme.textMutedOf(context)),
             onPressed: () => setState(() => _circuitBreakerError = null),
           ),
         ],
@@ -359,7 +362,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
       color: AppTheme.warningBgOf(context),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber_rounded, color: AppTheme.warning, size: 18),
+          const Icon(Icons.warning_amber_outlined, color: AppTheme.warning, size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -368,7 +371,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.close_rounded, size: 16, color: AppTheme.textMutedOf(context)),
+            tooltip: 'Tutup',
+            icon: Icon(Icons.close_outlined, size: 16, color: AppTheme.textMutedOf(context)),
             onPressed: () => setState(() => _generalError = null),
           ),
         ],
@@ -403,13 +407,13 @@ class _ChatbotPageState extends State<ChatbotPage> {
                       color: AppTheme.primaryGhostOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
-                    child: Icon(Icons.school_rounded, color: AppTheme.primaryOf(context), size: 36),
+                    child: Icon(Icons.school_outlined, color: AppTheme.primaryOf(context), size: 36),
                   ),
                   const SizedBox(height: 14),
                   Text(
                     'Halo! Saya Asisten Tugas Akhir',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppTheme.textPrimaryOf(context)),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: AppTheme.textPrimaryOf(context)),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -423,11 +427,11 @@ class _ChatbotPageState extends State<ChatbotPage> {
             const SizedBox(height: 28),
             Row(
               children: [
-                Icon(Icons.lightbulb_outline_rounded, color: AppTheme.primaryOf(context), size: 18),
+                Icon(Icons.lightbulb_outline, color: AppTheme.primaryOf(context), size: 18),
                 const SizedBox(width: 8),
                 Text(
                   'Saran Pertanyaan:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimaryOf(context)),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: AppTheme.textPrimaryOf(context)),
                 ),
               ],
             ),
@@ -448,7 +452,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.chat_bubble_outline_rounded, size: 16, color: AppTheme.primaryOf(context)),
+                        Icon(Icons.chat_bubble_outline, size: 16, color: AppTheme.primaryOf(context)),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -456,7 +460,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                             style: TextStyle(fontSize: 13, color: AppTheme.textPrimaryOf(context), fontWeight: FontWeight.w500),
                           ),
                         ),
-                        Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppTheme.textMutedOf(context)),
+                        Icon(Icons.chevron_right_outlined, size: 18, color: AppTheme.textMutedOf(context)),
                       ],
                     ),
                   ),
@@ -574,7 +578,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                         height: 18,
                         child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                       )
-                    : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                    : const Icon(Icons.send_outlined, color: Colors.white, size: 20),
                 tooltip: 'Kirim',
                 onPressed: _isSending ? null : () => _sendMessage(),
               ),

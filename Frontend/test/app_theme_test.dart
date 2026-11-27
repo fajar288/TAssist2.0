@@ -173,9 +173,9 @@ void main() {
       expect(RequestStatus.accepted.label, 'Accepted');
       expect(RequestStatus.declined.label, 'Declined');
 
-      expect(RequestStatus.pending.icon, Icons.schedule_rounded);
-      expect(RequestStatus.accepted.icon, Icons.check_circle_rounded);
-      expect(RequestStatus.declined.icon, Icons.cancel_rounded);
+      expect(RequestStatus.pending.icon, Icons.schedule_outlined);
+      expect(RequestStatus.accepted.icon, Icons.check_circle_outlined);
+      expect(RequestStatus.declined.icon, Icons.cancel_outlined);
     });
   });
 }

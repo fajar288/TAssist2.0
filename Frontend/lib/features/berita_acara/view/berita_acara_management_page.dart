@@ -281,7 +281,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                     color: AppTheme.primaryGhostOf(context),
                     borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                   ),
-                  child: Icon(Icons.post_add, color: primary, size: 20),
+                  child: Icon(Icons.note_add_outlined, color: primary, size: 20),
                 ),
                 const SizedBox(width: 10),
                 Text(
@@ -329,7 +329,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Icon(Icons.arrow_forward, size: 16, color: textSecondary),
+                  child: Icon(Icons.arrow_forward_outlined, size: 16, color: textSecondary),
                 ),
                 Expanded(
                   child: InkWell(
@@ -375,7 +375,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                         height: 16,
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
-                    : const Icon(Icons.auto_stories, size: 18),
+                    : const Icon(Icons.description_outlined, size: 18),
                 label: Text(
                   _isGenerating ? 'Memproses Dokumen...' : 'Generate Berita Acara (Draft)',
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -488,7 +488,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
-                        icon: const Icon(Icons.verified, size: 16),
+                        icon: const Icon(Icons.verified_outlined, size: 16),
                         label: const Text('Setujui Dokumen', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                       ),
                     if (ba.isDraft) const SizedBox(width: 8),
@@ -499,7 +499,7 @@ class _BeritaAcaraManagementPageState extends State<BeritaAcaraManagementPage> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                      icon: Icon(Icons.download, size: 16, color: textPrimary),
+                      icon: Icon(Icons.file_download_outlined, size: 16, color: textPrimary),
                       label: Text('Unduh PDF', style: TextStyle(fontSize: 12, color: textPrimary)),
                     ),
                   ],

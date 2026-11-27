@@ -164,7 +164,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
                   leading: CircleAvatar(
                     backgroundColor: AppTheme.primaryGhostOf(ctx),
-                    child: Icon(Icons.photo_library_rounded, color: accent),
+                    child: Icon(Icons.photo_library_outlined, color: accent),
                   ),
                   title: Text(
                     'Pilih dari Galeri',
@@ -183,7 +183,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                     contentPadding: const EdgeInsets.symmetric(horizontal: 4),
                     leading: CircleAvatar(
                       backgroundColor: AppTheme.primaryGhostOf(ctx),
-                      child: Icon(Icons.camera_alt_rounded, color: accent),
+                      child: Icon(Icons.photo_camera_outlined, color: accent),
                     ),
                     title: Text(
                       'Ambil dari Kamera',
@@ -350,7 +350,6 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
   Widget build(BuildContext context) {
     final bg = AppTheme.backgroundOf(context);
     final surface = AppTheme.surfaceOf(context);
-    final textPrimary = AppTheme.textPrimaryOf(context);
     final primary = AppTheme.primaryOf(context);
     final displayName = _profileData['nama']?.toString() ?? 'Mahasiswa';
     final existingAvatar = _profileData['avatar']?.toString();
@@ -358,18 +357,20 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppTheme.primaryDark,
+        foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary),
+          tooltip: 'Kembali',
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          'Edit Profil',
+        title: const Text(
+          'Edit Profil Mahasiswa',
           style: TextStyle(
-            color: textPrimary,
-            fontWeight: FontWeight.w700,
-            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
           ),
         ),
         centerTitle: true,
@@ -379,11 +380,18 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
         child: SlideTransition(
           position: _slideAnimation,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(22, 20, 22, 28),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeader(context),
+                Text(
+                  'Perbarui foto profil, topik, dan judul TA Anda. NIM, program studi, dan angkatan tidak dapat diubah.',
+                  style: TextStyle(
+                    color: AppTheme.textSecondaryOf(context),
+                    fontSize: 13.5,
+                    height: 1.45,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 Center(
                   child: Column(
@@ -402,20 +410,29 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: InkWell(
-                              onTap: _showPhotoSourceSheet,
-                              borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppTheme.primary,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: surface, width: 2.5),
-                                ),
-                                child: const Icon(
-                                  Icons.camera_alt_rounded,
-                                  color: Colors.white,
-                                  size: 18,
+                            child: Semantics(
+                              button: true,
+                              label: 'Ubah foto profil',
+                              child: Tooltip(
+                                message: 'Ubah foto profil',
+                                child: InkWell(
+                                  onTap: _showPhotoSourceSheet,
+                                  customBorder: const CircleBorder(),
+                                  child: Container(
+                                    width: 44,
+                                    height: 44,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.primary,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: surface, width: 2.5),
+                                    ),
+                                    child: const Icon(
+                                      Icons.photo_camera_outlined,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -425,7 +442,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                       const SizedBox(height: 8),
                       TextButton.icon(
                         onPressed: _showPhotoSourceSheet,
-                        icon: Icon(Icons.photo_camera_outlined, size: 16, color: primary),
+                        icon: Icon(Icons.photo_camera_outlined, size: 18, color: primary),
                         label: Text(
                           _selectedPhotoBytes != null
                               ? 'Ganti Foto (${_selectedPhotoName ?? 'baru'})'
@@ -443,7 +460,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                 const SizedBox(height: 16),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(22),
+                  padding: const EdgeInsets.all(20),
                   decoration: AppTheme.cardDecorationOf(
                     context,
                     radius: AppTheme.radiusXl,
@@ -482,14 +499,14 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                           context,
                           controller: _judulTaController,
                           label: 'Judul TA',
-                          hintText: 'Contoh: Pengembangan Aplikasi TAsisst',
+                          hintText: 'Contoh: Pengembangan Aplikasi TAssist',
                           maxLines: 2,
                         ),
                         const SizedBox(height: 24),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
                           width: double.infinity,
-                          height: 54,
+                          height: 52,
                           child: ElevatedButton(
                             onPressed: _hasChanges && !_isSubmitting ? _submitProfile : null,
                             style: ElevatedButton.styleFrom(
@@ -517,9 +534,9 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                                     )
                                   : const Text(
                                       key: ValueKey('text'),
-                                      'SIMPAN PERUBAHAN',
+                                      'Simpan Perubahan',
                                       style: TextStyle(
-                                        fontWeight: FontWeight.w700,
+                                        fontWeight: FontWeight.w600,
                                         fontSize: 15,
                                       ),
                                     ),
@@ -538,31 +555,6 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Edit Profil Mahasiswa',
-          style: TextStyle(
-            color: AppTheme.textPrimaryOf(context),
-            fontSize: 26,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Perbarui foto profil, topik, dan judul TA Anda. NIM, program studi, dan angkatan tidak dapat diubah.',
-          style: TextStyle(
-            color: AppTheme.textSecondaryOf(context),
-            fontSize: 14.5,
-            height: 1.45,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildReadOnlyField(
     BuildContext context, {
     required String label,
@@ -575,8 +567,8 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           label,
           style: TextStyle(
             color: AppTheme.textSecondaryOf(context),
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
@@ -584,10 +576,10 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: BoxDecoration(
-            color: AppTheme.primaryGhostOf(context),
+            color: AppTheme.surfaceVariantOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             border: Border.all(
-              color: AppTheme.primaryOf(context).withValues(alpha: 0.25),
+              color: AppTheme.cardBorderOf(context),
             ),
           ),
           child: Text(
@@ -612,9 +604,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
   }) {
     final textPrimary = AppTheme.textPrimaryOf(context);
     final primary = AppTheme.primaryOf(context);
-    final borderColor = AppTheme.isDark(context)
-        ? AppTheme.cardBorderOf(context)
-        : AppTheme.primaryLight;
+    final borderColor = AppTheme.cardBorderOf(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -623,8 +613,8 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           label,
           style: TextStyle(
             color: textPrimary,
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
@@ -644,7 +634,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
             hintText: hintText,
             hintStyle: TextStyle(color: AppTheme.textMutedOf(context)),
             filled: true,
-            fillColor: AppTheme.primaryGhostOf(context),
+            fillColor: AppTheme.surfaceOf(context),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,

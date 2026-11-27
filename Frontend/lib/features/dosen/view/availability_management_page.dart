@@ -130,12 +130,12 @@ class _AvailabilityManagementPageState
                         ButtonSegment(
                           value: 'mingguan',
                           label: Text('Rutin Mingguan'),
-                          icon: Icon(Icons.repeat_rounded),
+                          icon: Icon(Icons.repeat_outlined),
                         ),
                         ButtonSegment(
                           value: 'khusus',
                           label: Text('Tanggal Khusus'),
-                          icon: Icon(Icons.event_rounded),
+                          icon: Icon(Icons.event_outlined),
                         ),
                       ],
                       selected: {tipe},
@@ -174,7 +174,7 @@ class _AvailabilityManagementPageState
                             setSheetState(() => tanggal = picked);
                           }
                         },
-                        icon: const Icon(Icons.calendar_today_rounded),
+                        icon: const Icon(Icons.calendar_today_outlined),
                         label: Text(
                           tanggal != null
                               ? 'Tanggal: ${_fmtDate(tanggal!)}'
@@ -195,7 +195,7 @@ class _AvailabilityManagementPageState
                                 setSheetState(() => startTime = picked);
                               }
                             },
-                            icon: const Icon(Icons.access_time_rounded),
+                            icon: const Icon(Icons.schedule_outlined),
                             label: Text('Mulai: ${_fmtTime(startTime)}'),
                           ),
                         ),
@@ -211,7 +211,7 @@ class _AvailabilityManagementPageState
                                 setSheetState(() => endTime = picked);
                               }
                             },
-                            icon: const Icon(Icons.access_time_filled_rounded),
+                            icon: const Icon(Icons.schedule_outlined),
                             label: Text('Selesai: ${_fmtTime(endTime)}'),
                           ),
                         ),
@@ -365,7 +365,7 @@ class _AvailabilityManagementPageState
         onPressed: _isSaving ? null : () => _openSlotSheet(),
         backgroundColor: AppTheme.primary,
         foregroundColor: Colors.white,
-        icon: const Icon(Icons.add_rounded),
+        icon: const Icon(Icons.add_outlined),
         label: const Text('Tambah Slot'),
       ),
       body: RefreshIndicator(
@@ -464,7 +464,7 @@ class _AvailabilityManagementPageState
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Icon(
-              available ? Icons.event_available_rounded : Icons.event_busy_rounded,
+              available ? Icons.event_available_outlined : Icons.event_busy_outlined,
               color: available ? AppTheme.accepted : AppTheme.declined,
             ),
           ),

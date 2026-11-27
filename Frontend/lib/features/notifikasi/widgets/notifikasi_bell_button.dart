@@ -112,7 +112,7 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
                       ),
                     ),
                     child: Icon(
-                      Icons.notifications_rounded,
+                      Icons.notifications_outlined,
                       color: widget.iconColor ?? AppTheme.primaryOf(context),
                       size: widget.size * 0.48,
                     ),

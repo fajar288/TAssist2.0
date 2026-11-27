@@ -145,30 +145,30 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
   IconData _documentIcon(String extension) {
     switch (extension.toLowerCase()) {
       case 'pdf':
-        return Icons.picture_as_pdf_rounded;
+        return Icons.picture_as_pdf_outlined;
       case 'doc':
       case 'docx':
-        return Icons.article_rounded;
+        return Icons.article_outlined;
       case 'ppt':
       case 'pptx':
-        return Icons.slideshow_rounded;
+        return Icons.slideshow_outlined;
       case 'zip':
-        return Icons.folder_zip_rounded;
+        return Icons.folder_zip_outlined;
       default:
-        return Icons.description_rounded;
+        return Icons.description_outlined;
     }
   }
 
   String _formatStatus(String? status) {
     switch (status?.toLowerCase()) {
       case 'draft':
-        return 'Draft';
+        return 'Draf';
       case 'diajukan':
-        return 'Submitted';
+        return 'Diajukan';
       case 'direvisi':
-        return 'Needs Revision';
+        return 'Perlu Revisi';
       case 'disetujui':
-        return 'Approved';
+        return 'Disetujui';
       default:
         return status ?? '-';
     }
@@ -869,8 +869,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     child: versions.isEmpty
                         ? const AppEmptyStateWidget(
                             compact: true,
-                            icon: Icons.history_rounded,
-                            title: 'No version history yet.',
+                            icon: Icons.history_outlined,
+                            title: 'Belum ada riwayat versi.',
                           )
                         : ListView.builder(
                             itemCount: versions.length,
@@ -939,7 +939,7 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Dosen Pembimbing Comments',
+                    'Komentar Dosen Pembimbing',
                     style: TextStyle(
                       color: AppTheme.textPrimaryOf(context),
                       fontSize: 20,
@@ -959,8 +959,8 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
                     child: comments.isEmpty
                         ? const AppEmptyStateWidget(
                             compact: true,
-                            icon: Icons.chat_bubble_outline_rounded,
-                            title: 'No feedback yet.',
+                            icon: Icons.chat_bubble_outline,
+                            title: 'Belum ada masukan.',
                           )
                         : ListView.builder(
                             itemCount: comments.length,
@@ -1331,66 +1331,59 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
 
     return Scaffold(
       backgroundColor: bg,
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
-        child: SafeArea(
-          bottom: false,
-          child: RefreshIndicator(
-            onRefresh: _loadDocuments,
-            child: Stack(
-              children: [
-                Column(
+      body: SafeArea(
+        bottom: false,
+        child: RefreshIndicator(
+          onRefresh: _loadDocuments,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Upload your Docs here!',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: textPrimary,
-                            ),
-                          ),
-                          Text(
-                            'Submit drafts and revisions for your advisor.',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: textSecondary,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      'Upload your Docs here!',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 24),
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 500),
-                        child: _documents.isEmpty
-                            ? _buildEmptyState()
-                            : _buildDocumentGrid(),
+                    Text(
+                      'Submit drafts and revisions for your advisor.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: textSecondary,
                       ),
                     ),
                   ],
                 ),
-
-                if (_documents.isNotEmpty)
-                  Positioned(
-                    bottom: 95,
-                    left: 24,
-                    child: _buildCommentButton(),
-                  ),
-
-                Positioned(
-                  bottom: 95,
-                  right: 24,
-                  child: _buildNewButton(),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    if (_documents.isNotEmpty) ...[
+                      Expanded(child: _buildCommentButton()),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(child: _buildNewButton()),
+                  ],
                 ),
-              ],
-            )
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  child: _documents.isEmpty
+                      ? _buildEmptyState()
+                      : _buildDocumentGrid(),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1401,12 +1394,15 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
     return ListView(
       key: const ValueKey('empty'),
       physics: const AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.paddingOf(context).bottom + 112,
+      ),
       children: const [
-        SizedBox(height: 140),
+        SizedBox(height: 100),
         AppEmptyStateWidget(
-          icon: Icons.upload_file_rounded,
+          icon: Icons.upload_file_outlined,
           title: 'no documents yet',
-          subtitle: 'Ketuk tombol New untuk mengunggah dokumen bimbingan TA.',
+          subtitle: 'Ketuk tombol Unggah Baru untuk mengunggah dokumen bimbingan TA.',
         ),
       ],
     );
@@ -1415,7 +1411,12 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
   Widget _buildDocumentGrid() {
     return GridView.builder(
       key: const ValueKey('grid'),
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 120),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        0,
+        24,
+        MediaQuery.paddingOf(context).bottom + 112,
+      ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 16,
@@ -1509,78 +1510,43 @@ class _UploadDocumentPageState extends State<UploadDocumentPage> {
 
   Widget _buildCommentButton() {
     final primary = AppTheme.primaryOf(context);
-    return Container(
-      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: _showCommentsBottomSheet,
+    return OutlinedButton.icon(
+      onPressed: _showCommentsBottomSheet,
+      icon: Icon(
+        Icons.chat_bubble_outlined,
+        color: primary,
+        size: 20,
+      ),
+      label: const Text('Komentar'),
+      style: OutlinedButton.styleFrom(
+        backgroundColor: AppTheme.surfaceOf(context),
+        foregroundColor: primary,
+        side: BorderSide(color: AppTheme.cardBorderOf(context)),
+        minimumSize: const Size(0, 48),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.chat_bubble_outline,
-                  color: primary,
-                  size: 28,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Comments',
-                  style: TextStyle(
-                    color: primary,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );
   }
 
   Widget _buildNewButton() {
-    final primary = AppTheme.primaryOf(context);
-    return Container(
-      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: _showUploadDocumentSheet,
+    return ElevatedButton.icon(
+      onPressed: _showUploadDocumentSheet,
+      icon: const Icon(
+        Icons.add_outlined,
+        color: Colors.white,
+        size: 20,
+      ),
+      label: const Text('Unggah Baru'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppTheme.primary,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(0, 48),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primary,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'New',
-                  style: TextStyle(
-                    color: primary,
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

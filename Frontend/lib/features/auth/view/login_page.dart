@@ -212,364 +212,258 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final isDark = AppTheme.isDark(context);
     final primaryNavy = AppTheme.primaryOf(context);
-    final size = MediaQuery.of(context).size;
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     final sheetTint = isDark
-        ? AppTheme.darkSurface.withValues(alpha: 0.84)
-        : AppTheme.surface.withValues(alpha: 0.86);
+        ? AppTheme.darkSurface.withValues(alpha: 0.92)
+        : AppTheme.surface.withValues(alpha: 0.92);
     final backdropColor = isDark ? AppTheme.darkBackground : AppTheme.primaryDark;
 
     return Scaffold(
       backgroundColor: backdropColor,
-      body: Stack(
-        children: [
-          // Full-height deep navy backdrop extending all the way to the bottom
-          Positioned.fill(
-            child: ColoredBox(color: backdropColor),
-          ),
-
-          // Scattered gold graduation caps across the full canvas behind the glass
-          _buildFloatingEducationIcons(size),
-
-          // Top centered frosted brand badge (KAMPUS DIGITAL / TAssist / Sistem Bimbingan Tugas Akhir)
-          Positioned(
-            top: keyboardOpen ? 12 : (size.height * 0.052).clamp(16.0, 48.0),
-            left: 24,
-            right: 24,
-            child: _buildTopBrandCard(),
-          ),
-
-          // Frosted glass login sheet floating above full-height navy + gold icons
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 240),
-              curve: Curves.easeOut,
-              width: double.infinity,
-              height: size.height * (keyboardOpen ? 0.78 : 0.70),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppTheme.radiusXl),
+      body: ColoredBox(
+        color: backdropColor,
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  24,
+                  keyboardOpen ? 10 : 20,
+                  24,
+                  keyboardOpen ? 10 : 20,
                 ),
-                boxShadow: AppTheme.floatingShadow,
+                child: _buildTopBrandCard(),
               ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(AppTheme.radiusXl),
-                ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(26, 26, 26, 24),
-                    decoration: BoxDecoration(
-                      color: sheetTint,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(AppTheme.radiusXl),
-                      ),
-                      border: Border(
-                        top: BorderSide(
-                          color: AppTheme.accentGoldOnDark.withValues(alpha: 0.38),
-                          width: 1.4,
-                        ),
-                      ),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(AppTheme.radiusXl),
                     ),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildFormHeader(),
-                            const SizedBox(height: 22),
-
-                            _buildInputField(
-                              controller: _emailController,
-                              labelText: 'Email',
-                              hintText: 'Enter your username or email',
-                              prefixIcon: Icons.alternate_email_rounded,
-                              keyboardType: TextInputType.emailAddress,
-                              textInputAction: TextInputAction.next,
-                              autofillHints: const [AutofillHints.email],
-                              validator: (value) {
-                                final text = value?.trim() ?? '';
-                                if (text.isEmpty) {
-                                  return 'Email wajib diisi';
-                                }
-
-                                final emailRegex =
-                                    RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-
-                                if (!emailRegex.hasMatch(text)) {
-                                  return 'Format email tidak valid';
-                                }
-
-                                return null;
-                              },
+                    boxShadow: AppTheme.floatingShadow,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(AppTheme.radiusXl),
+                    ),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+                        decoration: BoxDecoration(
+                          color: sheetTint,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(AppTheme.radiusXl),
+                          ),
+                          border: Border(
+                            top: BorderSide(
+                              color: AppTheme.accentGoldOnDark.withValues(alpha: 0.38),
+                              width: 1.4,
                             ),
+                          ),
+                        ),
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildFormHeader(),
+                                const SizedBox(height: 20),
 
-                            const SizedBox(height: 18),
+                                _buildInputField(
+                                  controller: _emailController,
+                                  labelText: 'Email',
+                                  hintText: 'Masukkan email Anda',
+                                  prefixIcon: Icons.alternate_email_outlined,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  autofillHints: const [AutofillHints.email],
+                                  validator: (value) {
+                                    final text = value?.trim() ?? '';
+                                    if (text.isEmpty) {
+                                      return 'Email wajib diisi';
+                                    }
 
-                            _buildInputField(
-                              controller: _passwordController,
-                              labelText: 'Password',
-                              hintText: 'Enter your password',
-                              prefixIcon: Icons.lock_outline_rounded,
-                              obscureText: _obscurePassword,
-                              textInputAction: TextInputAction.done,
-                              autofillHints: const [AutofillHints.password],
-                              onFieldSubmitted: (_) {
-                                if (!_isLoading) {
-                                  _handleLogin();
-                                }
-                              },
-                              validator: (value) {
-                                final text = value?.trim() ?? '';
-                                if (text.isEmpty) {
-                                  return 'Password wajib diisi';
-                                }
+                                    final emailRegex =
+                                        RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
-                                if (text.length < 6) {
-                                  return 'Password minimal 6 karakter';
-                                }
+                                    if (!emailRegex.hasMatch(text)) {
+                                      return 'Format email tidak valid';
+                                    }
 
-                                return null;
-                              },
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
+                                    return null;
+                                  },
                                 ),
-                              ),
-                            ),
 
-                            const SizedBox(height: 8),
+                                const SizedBox(height: 16),
 
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: _showForgotPasswordInfo,
-                                style: TextButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 8,
-                                  ),
-                                  minimumSize: const Size(44, 44),
-                                  foregroundColor: primaryNavy,
-                                ),
-                                child: const Text(
-                                  'Forgot password?',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
+                                _buildInputField(
+                                  controller: _passwordController,
+                                  labelText: 'Kata Sandi',
+                                  hintText: 'Masukkan kata sandi Anda',
+                                  prefixIcon: Icons.lock_outlined,
+                                  obscureText: _obscurePassword,
+                                  textInputAction: TextInputAction.done,
+                                  autofillHints: const [AutofillHints.password],
+                                  onFieldSubmitted: (_) {
+                                    if (!_isLoading) {
+                                      _handleLogin();
+                                    }
+                                  },
+                                  validator: (value) {
+                                    final text = value?.trim() ?? '';
+                                    if (text.isEmpty) {
+                                      return 'Password wajib diisi';
+                                    }
 
-                            const SizedBox(height: 12),
+                                    if (text.length < 6) {
+                                      return 'Password minimal 6 karakter';
+                                    }
 
-                            SizedBox(
-                              width: double.infinity,
-                              height: 52,
-                              child: ElevatedButton(
-                                onPressed: _isLoading ? null : _handleLogin,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.primary,
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  disabledBackgroundColor:
-                                      primaryNavy.withValues(alpha: 0.6),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(AppTheme.radiusMd),
+                                    return null;
+                                  },
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                    ),
                                   ),
                                 ),
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        width: 22,
-                                        height: 22,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.4,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : const Text(
-                                        'Continue',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15.5,
-                                        ),
+
+                                const SizedBox(height: 8),
+
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: _showForgotPasswordInfo,
+                                    style: TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 8,
                                       ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 22),
-
-                            _buildDividerWithText('or'),
-
-                            const SizedBox(height: 22),
-
-                            if (kIsWeb)
-                              LayoutBuilder(
-                                builder: (context, constraints) {
-                                  return Container(
-                                    width: double.infinity,
-                                    height: 52,
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.surfaceOf(context),
-                                      borderRadius: BorderRadius.circular(
-                                          AppTheme.radiusMd),
-                                      border: Border.all(
-                                        color: AppTheme.inputBorderOf(context),
+                                      minimumSize: const Size(44, 44),
+                                      foregroundColor: primaryNavy,
+                                    ),
+                                    child: const Text(
+                                      'Lupa kata sandi?',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    child: Center(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                            AppTheme.radiusMd),
-                                        child: Transform.scale(
-                                          scaleX: 1.0,
-                                          scaleY: 1.16,
-                                          child: google_web_button
-                                              .buildGoogleWebButton(
-                                            width: constraints.maxWidth,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 52,
+                                  child: ElevatedButton(
+                                    onPressed: _isLoading ? null : _handleLogin,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppTheme.primary,
+                                      foregroundColor: Colors.white,
+                                      elevation: 0,
+                                      disabledBackgroundColor:
+                                          primaryNavy.withValues(alpha: 0.6),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(AppTheme.radiusMd),
+                                      ),
+                                    ),
+                                    child: _isLoading
+                                        ? const SizedBox(
+                                            width: 22,
+                                            height: 22,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.4,
+                                              color: Colors.white,
+                                            ),
+                                          )
+                                        : const Text(
+                                            'Lanjutkan',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15.5,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 20),
+
+                                _buildDividerWithText('atau'),
+
+                                const SizedBox(height: 20),
+
+                                if (kIsWeb)
+                                  LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      return Container(
+                                        width: double.infinity,
+                                        height: 52,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.surfaceOf(context),
+                                          borderRadius: BorderRadius.circular(
+                                              AppTheme.radiusMd),
+                                          border: Border.all(
+                                            color: AppTheme.inputBorderOf(context),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
-                            else
-                              _socialButton(
-                                label: 'Continue with Google',
-                                assetIconPath:
-                                    'assets/images/google_iconbgnew.png',
-                                onTap: _isLoading ? () {} : _handleGoogleLogin,
-                              ),
+                                        child: Center(
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                                AppTheme.radiusMd),
+                                            child: Transform.scale(
+                                              scaleX: 1.0,
+                                              scaleY: 1.16,
+                                              child: google_web_button
+                                                  .buildGoogleWebButton(
+                                                width: constraints.maxWidth,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                else
+                                  _socialButton(
+                                    label: 'Lanjutkan dengan Google',
+                                    assetIconPath:
+                                        'assets/images/google_iconbgnew.png',
+                                    onTap: _isLoading ? () {} : _handleGoogleLogin,
+                                  ),
 
-                            const SizedBox(height: 14),
+                                const SizedBox(height: 12),
 
-                            _socialButton(
-                              label: 'Portal Learning (Coming soon)',
-                              icon: Icons.school_outlined,
-                              onTap: _goToLearningPage,
+                                _socialButton(
+                                  label: 'Portal Learning (Segera hadir)',
+                                  icon: Icons.school_outlined,
+                                  onTap: _goToLearningPage,
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFloatingEducationIcons(Size size) {
-    final h = size.height;
-    return Positioned.fill(
-      child: IgnorePointer(
-        child: Stack(
-          children: [
-            _floatingEducationIcon(
-              top: 22,
-              left: 24,
-              size: 44,
-              opacity: 0.24,
-              rotate: -0.24,
-            ),
-            _floatingEducationIcon(
-              top: 46,
-              right: 26,
-              size: 50,
-              opacity: 0.22,
-              rotate: 0.20,
-            ),
-            _floatingEducationIcon(
-              top: 136,
-              left: 38,
-              size: 34,
-              opacity: 0.18,
-              rotate: 0.28,
-            ),
-            _floatingEducationIcon(
-              top: 148,
-              right: 42,
-              size: 38,
-              opacity: 0.18,
-              rotate: -0.20,
-            ),
-            // Lower backdrop caps peeking subtly behind the frosted glass sheet
-            _floatingEducationIcon(
-              top: h * 0.42,
-              left: 16,
-              size: 40,
-              opacity: 0.18,
-              rotate: -0.18,
-            ),
-            _floatingEducationIcon(
-              top: h * 0.50,
-              right: 18,
-              size: 46,
-              opacity: 0.20,
-              rotate: 0.24,
-            ),
-            _floatingEducationIcon(
-              top: h * 0.68,
-              left: 28,
-              size: 36,
-              opacity: 0.16,
-              rotate: 0.22,
-            ),
-            _floatingEducationIcon(
-              top: h * 0.78,
-              right: 30,
-              size: 42,
-              opacity: 0.18,
-              rotate: -0.26,
-            ),
-            _floatingEducationIcon(
-              top: h * 0.88,
-              left: 72,
-              size: 32,
-              opacity: 0.16,
-              rotate: -0.14,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _floatingEducationIcon({
-    double? top,
-    double? left,
-    double? right,
-    required double size,
-    required double opacity,
-    required double rotate,
-  }) {
-    return Positioned(
-      top: top,
-      left: left,
-      right: right,
-      child: Transform.rotate(
-        angle: rotate,
-        child: Icon(
-          Icons.school_outlined,
-          size: size,
-          color: AppTheme.accentGoldOnDark.withValues(alpha: opacity),
         ),
       ),
     );
@@ -577,14 +471,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildTopBrandCard() {
     final isDark = AppTheme.isDark(context);
-    final accentGold = AppTheme.accentGoldOf(context);
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 300),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppTheme.radiusXl),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(
@@ -593,8 +486,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               decoration: BoxDecoration(
                 color: isDark
-                    ? AppTheme.darkSurface.withValues(alpha: 0.88)
-                    : Colors.white.withValues(alpha: 0.92),
+                    ? AppTheme.darkSurface.withValues(alpha: 0.92)
+                    : AppTheme.surface.withValues(alpha: 0.92),
                 borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                 border: Border.all(
                   color: AppTheme.accentGoldOnDark.withValues(alpha: 0.45),
@@ -605,29 +498,6 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.accentGoldBgOf(context),
-                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                      border: Border.all(
-                        color: AppTheme.accentGoldBorderOf(context),
-                      ),
-                    ),
-                    child: Text(
-                      'KAMPUS DIGITAL',
-                      style: TextStyle(
-                        color: accentGold,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
                   Text(
                     'TAssist',
                     textAlign: TextAlign.center,
@@ -663,7 +533,7 @@ class _LoginPageState extends State<LoginPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Sign in',
+          'Masuk',
           style: TextStyle(
             color: AppTheme.textPrimaryOf(context),
             fontSize: 23,

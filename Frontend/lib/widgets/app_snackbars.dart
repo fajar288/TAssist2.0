@@ -140,25 +140,25 @@ class AppSnackBars {
             accent: AppTheme.accepted,
             bg: AppTheme.acceptedBgOf(context),
             border: AppTheme.acceptedBorderOf(context),
-            icon: Icons.check_circle_rounded,
+            icon: Icons.check_circle_outlined,
           ),
         _BannerTone.error => _BannerStyle(
             accent: AppTheme.declined,
             bg: AppTheme.declinedBgOf(context),
             border: AppTheme.declinedBorderOf(context),
-            icon: Icons.error_rounded,
+            icon: Icons.error_outline,
           ),
         _BannerTone.info => _BannerStyle(
             accent: AppTheme.info,
             bg: AppTheme.infoBgOf(context),
             border: AppTheme.infoBorderOf(context),
-            icon: Icons.info_rounded,
+            icon: Icons.info_outlined,
           ),
         _BannerTone.warning => _BannerStyle(
             accent: AppTheme.warning,
             bg: AppTheme.warningBgOf(context),
             border: AppTheme.warningBorderOf(context),
-            icon: Icons.warning_amber_rounded,
+            icon: Icons.warning_amber_outlined,
           ),
       };
 }
@@ -258,12 +258,15 @@ class _TopFloatingBanner extends StatelessWidget {
                     InkWell(
                       onTap: onClose,
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: Icon(
-                          Icons.close_rounded,
-                          size: 18,
-                          color: AppTheme.textSecondaryOf(context),
+                      child: SizedBox(
+                        width: 44,
+                        height: 44,
+                        child: Center(
+                          child: Icon(
+                            Icons.close_outlined,
+                            size: 18,
+                            color: AppTheme.textSecondaryOf(context),
+                          ),
                         ),
                       ),
                     ),

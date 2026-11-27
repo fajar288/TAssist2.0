@@ -47,7 +47,7 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundOf(context),
       body: AppEmptyStateWidget(
-        icon: Icons.lock_outline_rounded,
+        icon: Icons.lock_outline,
         title: 'Pilih Dosen Pembimbing Dahulu',
         subtitle:
             'Jadwal bimbingan dan unggah dokumen akan terbuka setelah permohonan pembimbing Anda disetujui.',
@@ -70,9 +70,9 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundOf(context),
       body: AppErrorWidget(
-        title: 'Failed to load student dashboard',
+        title: 'Gagal memuat beranda mahasiswa',
         message: error.toString().replaceFirst('Exception: ', ''),
-        retryLabel: 'Try Again',
+        retryLabel: 'Coba Lagi',
         onRetry: _reloadBimbinganStatus,
       ),
     );
@@ -95,7 +95,9 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
 
         final List<Widget> pages = hasActiveBimbingan
             ? [
-                const DashboardMainMahasiswaPage(),
+                DashboardMainMahasiswaPage(
+                  onOpenSchedule: () => _onTabTapped(1),
+                ),
                 const SchedulePage(),
                 const UploadDocumentPage(),
               ]

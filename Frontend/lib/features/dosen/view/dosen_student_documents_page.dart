@@ -88,30 +88,30 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
   IconData _documentIcon(String extension) {
     switch (extension.toLowerCase()) {
       case 'pdf':
-        return Icons.picture_as_pdf_rounded;
+        return Icons.picture_as_pdf_outlined;
       case 'doc':
       case 'docx':
-        return Icons.article_rounded;
+        return Icons.article_outlined;
       case 'ppt':
       case 'pptx':
-        return Icons.slideshow_rounded;
+        return Icons.slideshow_outlined;
       case 'zip':
-        return Icons.folder_zip_rounded;
+        return Icons.folder_zip_outlined;
       default:
-        return Icons.description_rounded;
+        return Icons.description_outlined;
     }
   }
 
   String _formatStatus(String? status) {
     switch (status?.toLowerCase()) {
       case 'draft':
-        return 'Draft';
+        return 'Draf';
       case 'diajukan':
-        return 'Submitted';
+        return 'Diajukan';
       case 'direvisi':
-        return 'Needs Revision';
+        return 'Perlu Revisi';
       case 'disetujui':
-        return 'Approved';
+        return 'Disetujui';
       default:
         return status ?? '-';
     }
@@ -421,7 +421,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
         children: [
           Row(
             children: [
-              Icon(Icons.history_rounded, color: AppTheme.primaryOf(context)),
+              Icon(Icons.history_outlined, color: AppTheme.primaryOf(context)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -500,7 +500,7 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.edit_note_rounded, size: 18),
+                  icon: const Icon(Icons.edit_note_outlined, size: 18),
                   label: const Text('Anotasi PDF'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primary,
@@ -515,8 +515,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _showFeedbackDialog(version),
-                  icon: const Icon(Icons.rate_review_rounded, size: 18),
-                  label: const Text('Feedback'),
+                  icon: const Icon(Icons.rate_review_outlined, size: 18),
+                  label: const Text('Masukan'),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -627,8 +627,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
                 ),
               ),
               Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 15,
+                Icons.chevron_right_outlined,
+                size: 20,
                 color: AppTheme.textMutedOf(context),
               ),
             ],
@@ -644,8 +644,8 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
       children: const [
         SizedBox(height: 80),
         AppEmptyStateWidget(
-          icon: Icons.folder_open_rounded,
-          title: 'No documents uploaded yet.',
+          icon: Icons.folder_open_outlined,
+          title: 'Belum ada dokumen yang diunggah.',
         ),
       ],
     );
@@ -653,10 +653,10 @@ class _DosenStudentDocumentsPageState extends State<DosenStudentDocumentsPage> {
 
   Widget _buildErrorState() {
     return AppErrorWidget(
-      title: 'Failed to load documents',
+      title: 'Gagal memuat dokumen',
       message: _errorMessage ?? '-',
       onRetry: _loadDocuments,
-      retryLabel: 'Try Again',
+      retryLabel: 'Coba Lagi',
     );
   }
 

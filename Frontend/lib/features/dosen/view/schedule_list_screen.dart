@@ -27,8 +27,8 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
   String? _errorMessage;
   List<MeetingRequest> _meetings = [];
 
-  String _selectedFilter = 'All';
-  final _filters = ['All', 'Pending', 'Confirmed', 'Declined'];
+  String _selectedFilter = 'Semua';
+  final _filters = ['Semua', 'Menunggu', 'Dikonfirmasi', 'Ditolak'];
 
   @override
   void initState() {
@@ -64,14 +64,27 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
 
   List<MeetingRequest> get _filteredMeetings {
     switch (_selectedFilter) {
-      case 'Pending':
+      case 'Menunggu':
         return _meetings.where((m) => m.status == RequestStatus.pending).toList();
-      case 'Confirmed':
+      case 'Dikonfirmasi':
         return _meetings.where((m) => m.status == RequestStatus.accepted).toList();
-      case 'Declined':
+      case 'Ditolak':
         return _meetings.where((m) => m.status == RequestStatus.declined).toList();
       default:
         return _meetings;
+    }
+  }
+
+  int _countByFilter(String filter) {
+    switch (filter) {
+      case 'Menunggu':
+        return _meetings.where((m) => m.status == RequestStatus.pending).length;
+      case 'Dikonfirmasi':
+        return _meetings.where((m) => m.status == RequestStatus.accepted).length;
+      case 'Ditolak':
+        return _meetings.where((m) => m.status == RequestStatus.declined).length;
+      default:
+        return _meetings.length;
     }
   }
 
@@ -113,10 +126,10 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(4, 16, 4, 0),
                   child: AppErrorWidget(
-                    title: 'Failed to load schedule',
+                    title: 'Gagal memuat jadwal',
                     message: _errorMessage ?? '-',
                     onRetry: _loadJadwal,
-                    retryLabel: 'Try Again',
+                    retryLabel: 'Coba Lagi',
                   ),
                 ),
               )
@@ -133,8 +146,8 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                 sliver: _filteredMeetings.isEmpty
                     ? const SliverToBoxAdapter(
                         child: AppEmptyStateWidget(
-                          icon: Icons.event_busy_rounded,
-                          title: 'No meeting schedule found',
+                          icon: Icons.event_busy_outlined,
+                          title: 'Belum ada jadwal bimbingan',
                         ),
                       )
                     : SliverList(
@@ -176,7 +189,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Schedule',
+                      'Jadwal Bimbingan',
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 24,
@@ -186,9 +199,9 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Manage student meeting requests',
+                      'Kelola pengajuan jadwal bimbingan mahasiswa',
                       style: GoogleFonts.poppins(
-                        color: Colors.white.withValues(alpha: 0.72),
+                        color: Colors.white.withValues(alpha: 0.78),
                         fontSize: 13,
                       ),
                     ),
@@ -219,7 +232,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                   );
                 },
                 icon: const Icon(
-                  Icons.event_available_rounded,
+                  Icons.event_available_outlined,
                   color: Colors.white,
                   size: 22,
                 ),
@@ -261,7 +274,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                     border: Border.all(color: AppTheme.glassBorderOnDark),
                   ),
                   child: const Icon(
-                    Icons.notifications_active_rounded,
+                    Icons.notifications_active_outlined,
                     color: AppTheme.accentGoldOnDark,
                     size: 22,
                   ),
@@ -273,10 +286,10 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                     children: [
                       Text(
                         next.isProposedByStudent
-                            ? 'Next Pending Student Meeting'
-                            : 'Waiting Student Confirmation',
+                            ? 'Pengajuan Jadwal Berikutnya'
+                            : 'Menunggu Konfirmasi Mahasiswa',
                         style: GoogleFonts.poppins(
-                          color: Colors.white.withValues(alpha: 0.82),
+                          color: Colors.white.withValues(alpha: 0.85),
                           fontSize: 11.5,
                           fontWeight: FontWeight.w500,
                         ),
@@ -306,7 +319,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                   ),
                 ),
                 const Icon(
-                  Icons.chevron_right_rounded,
+                  Icons.chevron_right_outlined,
                   color: Colors.white70,
                 ),
               ],
@@ -319,15 +332,16 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
 
   Widget _buildFilterRow() {
     final textPrimary = AppTheme.textPrimaryOf(context);
-    final textSecondary = AppTheme.textSecondaryOf(context);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              'All Meeting Requests',
+              'Semua Pengajuan Jadwal',
               style: GoogleFonts.poppins(
                 color: textPrimary,
                 fontSize: 17,
@@ -335,47 +349,86 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
               ),
             ),
           ),
-          PopupMenuButton<String>(
-            initialValue: _selectedFilter,
-            onSelected: (value) => setState(() => _selectedFilter = value),
-            itemBuilder: (context) => _filters
-                .map(
-                  (filter) => PopupMenuItem<String>(
-                    value: filter,
-                    child: Text(filter),
-                  ),
-                )
-                .toList(),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 44),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppTheme.surfaceOf(context),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                  border: Border.all(color: AppTheme.cardBorderOf(context)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _selectedFilter,
-                      style: GoogleFonts.poppins(
-                        color: textSecondary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 44,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              scrollDirection: Axis.horizontal,
+              itemCount: _filters.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final filter = _filters[index];
+                final selected = _selectedFilter == filter;
+                final count = _countByFilter(filter);
+
+                return Semantics(
+                  button: true,
+                  selected: selected,
+                  label: 'Filter $filter ($count)',
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => setState(() => _selectedFilter = filter),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? AppTheme.primary
+                              : AppTheme.surfaceOf(context),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                          border: Border.all(
+                            color: selected
+                                ? AppTheme.primary
+                                : AppTheme.cardBorderOf(context),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              filter,
+                              style: GoogleFonts.poppins(
+                                color: selected
+                                    ? Colors.white
+                                    : AppTheme.textSecondaryOf(context),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: selected
+                                    ? Colors.white.withValues(alpha: 0.25)
+                                    : AppTheme.surfaceVariantOf(context),
+                                borderRadius:
+                                    BorderRadius.circular(AppTheme.radiusSm),
+                              ),
+                              child: Text(
+                                '$count',
+                                style: GoogleFonts.poppins(
+                                  color: selected
+                                      ? Colors.white
+                                      : AppTheme.textSecondaryOf(context),
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 6),
-                    Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      size: 18,
-                      color: textSecondary,
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ],

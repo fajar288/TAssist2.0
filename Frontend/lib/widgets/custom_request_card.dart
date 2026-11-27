@@ -211,8 +211,8 @@ class CounselingRequestCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
                         child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
+                          Icons.chevron_right_outlined,
+                          size: 16,
                           color: AppTheme.primaryOf(context),
                         ),
                       ),

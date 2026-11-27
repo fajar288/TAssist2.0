@@ -237,7 +237,7 @@ class _CompleteStudentProfilePageState
                                   controller: _judulTaController,
                                   label: 'Judul TA',
                                   hintText:
-                                      'Contoh: Pengembangan Aplikasi TAsisst',
+                                      'Contoh: Pengembangan Aplikasi TAssist',
                                   maxLines: 2,
                                 ),
                                 const SizedBox(height: 24),

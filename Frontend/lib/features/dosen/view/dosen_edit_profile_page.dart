@@ -124,14 +124,15 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
     return Scaffold(
       backgroundColor: bg, // Warna background soft
       appBar: AppBar(
-        backgroundColor: AppTheme.primary,
+        backgroundColor: AppTheme.primaryDark,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+          tooltip: 'Kembali',
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Edit Profil',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
         ),
         centerTitle: true,
       ),
@@ -166,22 +167,32 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                               : null,
                     ),
                     child: (_selectedPhoto == null && widget.initialProfile['avatar'] == null)
-                        ? Icon(Icons.person, size: 60, color: textMuted)
+                        ? Icon(Icons.person_outlined, size: 56, color: textMuted)
                         : null,
                   ),
                   Positioned(
                     bottom: 0,
                     right: 0,
-                    child: GestureDetector(
-                      onTap: _pickPhoto,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppTheme.primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: surface, width: 3),
+                    child: Semantics(
+                      button: true,
+                      label: 'Ubah foto profil',
+                      child: Tooltip(
+                        message: 'Ubah foto profil',
+                        child: InkWell(
+                          onTap: _pickPhoto,
+                          customBorder: const CircleBorder(),
+                          child: Container(
+                            width: 44,
+                            height: 44,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AppTheme.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: surface, width: 3),
+                            ),
+                            child: const Icon(Icons.photo_camera_outlined, color: Colors.white, size: 20),
+                          ),
                         ),
-                        child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 20),
                       ),
                     ),
                   ),
@@ -195,7 +206,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
             const SizedBox(height: 16),
             
             // Email (Read Only)
-            _buildTextField('Email Address', _emailController, Icons.email_outlined, isReadOnly: true),
+            _buildTextField('Alamat Email', _emailController, Icons.email_outlined, isReadOnly: true),
             const SizedBox(height: 16),
             
             _buildTextField('Kuota Bimbingan', _kuotaController, Icons.people_outline, isNumeric: true),
@@ -205,19 +216,19 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Ubah Password (Opsional)',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textPrimary),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textPrimary),
               ),
             ),
             const SizedBox(height: 16),
             _buildTextField('Password Baru', _passwordController, Icons.lock_outline, isPassword: true),
             const SizedBox(height: 16),
             _buildTextField('Konfirmasi Password Baru', _passwordConfirmController, Icons.lock_outline, isPassword: true),
-            const SizedBox(height: 40),
+            const SizedBox(height: 32),
 
             // Button Save
             SizedBox(
               width: double.infinity,
-              height: 50,
+              height: 52,
               child: ElevatedButton(
                 onPressed: _hasChanges && !_isLoading ? _saveProfile : null,
                 style: ElevatedButton.styleFrom(
@@ -228,7 +239,7 @@ class _DosenEditProfilePageState extends State<DosenEditProfilePage> {
                 ),
                 child: _isLoading 
                   ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Text('Simpan Perubahan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : const Text('Simpan Perubahan', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
               ),
             ),
           ],

@@ -204,7 +204,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
               title: Row(
                 children: [
-                  const Icon(Icons.note_add_rounded, color: AppTheme.primary),
+                  const Icon(Icons.note_add_outlined, color: AppTheme.primary),
                   const SizedBox(width: 8),
                   Text('Anotasi Halaman $_currentPage', style: const TextStyle(fontSize: 18)),
                 ],
@@ -508,7 +508,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                         child: SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
-                            icon: const Icon(Icons.task_alt_rounded, size: 18),
+                            icon: const Icon(Icons.task_alt_outlined, size: 18),
                             label: const Text('Selesaikan Anotasi (Resolved)'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.accepted,
@@ -603,7 +603,8 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: Icon(Icons.send_rounded, color: primary),
+                            tooltip: 'Kirim balasan',
+                            icon: Icon(Icons.send_outlined, color: primary),
                             onPressed: () async {
                               final text = replyController.text.trim();
                               if (text.isEmpty) return;
@@ -683,7 +684,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.history_rounded, color: AppTheme.primaryOf(context)),
+                      Icon(Icons.history_outlined, color: AppTheme.primaryOf(context)),
                       const SizedBox(width: 8),
                       const Text(
                         'Ringkasan Anotasi Lintas Versi',
@@ -777,7 +778,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
             ),
           // Filter popup
           PopupMenuButton<String>(
-            icon: const Icon(Icons.filter_list_rounded),
+            icon: const Icon(Icons.filter_list_outlined),
             tooltip: 'Filter Anotasi',
             onSelected: (val) {
               setState(() => _statusFilter = val);
@@ -801,7 +802,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
           if (widget.isDosen)
             IconButton(
               icon: Icon(
-                _isAddingAnnotationMode ? Icons.edit_note : Icons.add_comment_outlined,
+                _isAddingAnnotationMode ? Icons.edit_note_outlined : Icons.add_comment_outlined,
                 color: _isAddingAnnotationMode ? AppTheme.warning : AppTheme.primary,
               ),
               tooltip: _isAddingAnnotationMode ? 'Mode Anotasi Aktif (Tap pada PDF)' : 'Tambah Anotasi',
@@ -886,11 +887,11 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                   ),
                   child: const Row(
                     children: [
-                      Icon(Icons.offline_pin_rounded, color: Colors.white, size: 18),
+                      Icon(Icons.offline_pin_outlined, color: Colors.white, size: 18),
                       SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Viewing cached version. Annotations will sync when online',
+                          'Menampilkan versi cache. Anotasi akan tersinkronisasi saat daring.',
                           style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -916,7 +917,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                   ),
                   child: const Row(
                     children: [
-                      Icon(Icons.touch_app_rounded, color: Colors.white, size: 18),
+                      Icon(Icons.touch_app_outlined, color: Colors.white, size: 18),
                       SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -968,7 +969,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                       ],
                     ),
                     child: const Icon(
-                      Icons.comment_rounded,
+                      Icons.chat_bubble_outline,
                       size: 16,
                       color: Colors.white,
                     ),

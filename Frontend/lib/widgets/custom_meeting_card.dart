@@ -57,7 +57,7 @@ class MeetingRequestCard extends StatelessWidget {
                       border: Border.all(color: AppTheme.cardBorderOf(context)),
                     ),
                     child: Icon(
-                      Icons.calendar_today_rounded,
+                      Icons.calendar_today_outlined,
                       size: 16,
                       color: primary,
                     ),
@@ -68,7 +68,7 @@ class MeetingRequestCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Scheduled on ${request.dayName}',
+                          'Dijadwalkan pada ${request.dayName}',
                           style: GoogleFonts.poppins(
                             color: primary,
                             fontSize: 12,
@@ -147,8 +147,8 @@ class MeetingRequestCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                     child: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 12,
+                      Icons.chevron_right_outlined,
+                      size: 16,
                       color: primary,
                     ),
                   ),

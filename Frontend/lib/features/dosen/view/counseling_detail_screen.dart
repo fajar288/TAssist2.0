@@ -54,21 +54,13 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
   }
 
   Widget _BackButton() {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.25),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Colors.white,
-            size: 18,
-          ),
-        ),
+    return IconButton(
+      tooltip: 'Kembali',
+      onPressed: () => Navigator.pop(context),
+      icon: const Icon(
+        Icons.arrow_back_ios_new_outlined,
+        color: Colors.white,
+        size: 20,
       ),
     );
   }
@@ -190,20 +182,20 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                 _sectionLabel('Student Information'),
                 const SizedBox(height: 14),
                 _InfoRow(
-                  icon: Icons.badge_rounded,
-                  label: 'Student ID (NIM)',
+                  icon: Icons.badge_outlined,
+                  label: 'NIM Mahasiswa',
                   value: widget.request.nim,
                 ),
                 const SizedBox(height: 12),
                 _InfoRow(
-                  icon: Icons.school_rounded,
-                  label: 'Department / Major',
+                  icon: Icons.school_outlined,
+                  label: 'Program Studi',
                   value: widget.request.major,
                 ),
                 const SizedBox(height: 12),
                 _InfoRow(
-                  icon: Icons.info_outline_rounded,
-                  label: 'Request Status',
+                  icon: Icons.info_outline,
+                  label: 'Status Permohonan',
                   value: '',
                   trailing: StatusBadge(status: currentStatus),
                 ),
@@ -236,7 +228,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(
-                          Icons.format_quote_rounded,
+                          Icons.format_quote_outlined,
                           color: AppTheme.primaryOf(context),
                           size: 20,
                         ),
@@ -275,7 +267,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: Icon(
-                      Icons.picture_as_pdf_rounded,
+                      Icons.picture_as_pdf_outlined,
                       color: AppTheme.primaryOf(context),
                     ),
                   ),
@@ -284,7 +276,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _sectionLabel('Proposal Attachment'),
+                        _sectionLabel('Lampiran Proposal'),
                         const SizedBox(height: 2),
                         Text(
                           widget.request.fileProposal ?? 'proposal.pdf',
@@ -305,7 +297,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                         await launchUrl(uri, mode: LaunchMode.externalApplication);
                       }
                     },
-                    icon: const Icon(Icons.download_rounded, size: 18),
+                    icon: const Icon(Icons.open_in_new_outlined, size: 18),
                     label: const Text('Buka'),
                   ),
                 ],
@@ -335,8 +327,8 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: _isProcessing ? null : () => _handleAccept(context),
-            icon: const Icon(Icons.check_circle_rounded, size: 20),
-            label: Text(_isProcessing ? 'Processing...' : 'Accept Request'),
+            icon: const Icon(Icons.check_circle_outline, size: 20),
+            label: Text(_isProcessing ? 'Memproses...' : 'Terima Permohonan'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.accepted,
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -359,8 +351,8 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: _isProcessing ? null : () => _handleDecline(context),
-            icon: const Icon(Icons.close_rounded, size: 20),
-            label: const Text('Decline Request'),
+            icon: const Icon(Icons.close_outlined, size: 20),
+            label: const Text('Tolak Permohonan'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppTheme.declined,
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -385,10 +377,10 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
       decoration: BoxDecoration(
-        color: isAccepted ? AppTheme.acceptedBg : AppTheme.declinedBg,
+        color: isAccepted ? AppTheme.acceptedBgOf(context) : AppTheme.declinedBgOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         border: Border.all(
-          color: isAccepted ? AppTheme.acceptedBorder : AppTheme.declinedBorder,
+          color: isAccepted ? AppTheme.acceptedBorderOf(context) : AppTheme.declinedBorderOf(context),
           width: 1.5,
         ),
       ),
@@ -396,15 +388,15 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            isAccepted ? Icons.check_circle_rounded : Icons.cancel_rounded,
+            isAccepted ? Icons.check_circle_outline : Icons.cancel_outlined,
             color: isAccepted ? AppTheme.accepted : AppTheme.declined,
             size: 22,
           ),
           const SizedBox(width: 10),
           Text(
             isAccepted
-                ? 'This request has been accepted.'
-                : 'This request has been declined.',
+                ? 'Permohonan ini telah diterima.'
+                : 'Permohonan ini telah ditolak.',
             style: GoogleFonts.poppins(
               color: isAccepted ? AppTheme.accepted : AppTheme.declined,
               fontWeight: FontWeight.w600,

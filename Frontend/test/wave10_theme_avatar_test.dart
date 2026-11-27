@@ -123,12 +123,12 @@ void main() {
 
       expect(controller.themeMode, ThemeMode.system);
       expect(controller.label, 'Ikuti Sistem');
-      expect(controller.icon, Icons.brightness_auto_rounded);
+      expect(controller.icon, Icons.brightness_auto_outlined);
 
       await controller.setThemeMode(ThemeMode.dark);
       expect(controller.themeMode, ThemeMode.dark);
       expect(controller.label, 'Gelap');
-      expect(controller.icon, Icons.dark_mode_rounded);
+      expect(controller.icon, Icons.dark_mode_outlined);
 
       final reloaded = ThemeController.forTest();
       await reloaded.load();
@@ -137,7 +137,7 @@ void main() {
       await reloaded.setThemeMode(ThemeMode.light);
       expect(reloaded.themeMode, ThemeMode.light);
       expect(reloaded.label, 'Terang');
-      expect(reloaded.icon, Icons.light_mode_rounded);
+      expect(reloaded.icon, Icons.light_mode_outlined);
     });
 
     test('AppTheme.darkTheme exposes dark tokens', () {
