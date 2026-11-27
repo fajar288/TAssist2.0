@@ -45,8 +45,8 @@ class _NavbarDosenState extends State<NavbarDosen>
     );
 
     _scaleAnimations = _controllers.map((ctrl) {
-      return Tween<double>(begin: 1.0, end: 1.18).animate(
-        CurvedAnimation(parent: ctrl, curve: Curves.easeOutBack),
+      return Tween<double>(begin: 1.0, end: 1.04).animate(
+        CurvedAnimation(parent: ctrl, curve: Curves.easeOutCubic),
       );
     }).toList();
 

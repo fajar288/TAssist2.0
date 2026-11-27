@@ -1,6 +1,5 @@
 // lib/features/dosen/view/counseling_detail_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tassist/features/dosen/data/dosen_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,7 +29,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -78,69 +77,26 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Gradient background
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-        ),
-
-        // Decorative circles
-        Positioned(
-          top: -60,
-          right: -60,
-          child: Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.06),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 20,
-          left: -40,
-          child: Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.04),
-            ),
-          ),
-        ),
+        // Solid navy hero background
+        const ColoredBox(color: AppTheme.primaryDark),
 
         // Network image (if it loads)
         Image.network(
           widget.request.avatarUrl,
           fit: BoxFit.cover,
-          color: Colors.indigo.withOpacity(0.6),
+          color: AppTheme.primaryDark.withValues(alpha: 0.65),
           colorBlendMode: BlendMode.multiply,
           errorBuilder: (_, __, ___) => const SizedBox.shrink(),
         ),
 
-        // Bottom gradient for readability
+        // Subtle scrim for readability
         Positioned(
           bottom: 0,
           left: 0,
           right: 0,
           child: Container(
-            height: 140,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  AppTheme.textPrimary.withValues(alpha: 0.85),
-                ],
-              ),
-            ),
+            height: 120,
+            color: AppTheme.primaryDark.withValues(alpha: 0.72),
           ),
         ),
 
@@ -156,14 +112,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
+                  border: Border.all(color: Colors.white, width: 2.5),
                 ),
                 child: Hero(
                   tag: 'counseling-avatar-${widget.request.id}',
@@ -176,21 +125,14 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                       errorBuilder: (_, __, ___) => Container(
                         width: 80,
                         height: 80,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppTheme.primaryLight,
-                              AppTheme.primaryLight.withValues(alpha: 0.65),
-                            ],
-                          ),
-                        ),
+                        color: AppTheme.primary,
                         child: Center(
                           child: Text(
                             widget.request.initials,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 28,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -210,7 +152,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 20,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         letterSpacing: -0.3,
                       ),
                     ),
@@ -240,7 +182,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
         children: [
           // Status + Info Card
           Container(
-            decoration: AppTheme.cardDecoration(),
+            decoration: AppTheme.cardDecorationOf(context),
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,17 +209,14 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                 ),
               ],
             ),
-          )
-              .animate()
-              .fadeIn(duration: 400.ms, delay: 100.ms)
-              .slideY(begin: 0.1, end: 0),
+          ),
 
           const SizedBox(height: 16),
 
           // Message Card
           if (widget.request.message.isNotEmpty)
             Container(
-              decoration: AppTheme.cardDecoration(),
+              decoration: AppTheme.cardDecorationOf(context),
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,18 +226,18 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGhost,
+                      color: AppTheme.primaryGhostOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       border: Border.all(
-                        color: AppTheme.primary.withValues(alpha: 0.15),
+                        color: AppTheme.primaryOf(context).withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.format_quote_rounded,
-                          color: AppTheme.primary,
+                          color: AppTheme.primaryOf(context),
                           size: 20,
                         ),
                         const SizedBox(width: 10),
@@ -306,7 +245,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                           child: Text(
                             widget.request.message,
                             style: GoogleFonts.poppins(
-                              color: AppTheme.textSecondary,
+                              color: AppTheme.textSecondaryOf(context),
                               fontSize: 13,
                               height: 1.7,
                             ),
@@ -317,10 +256,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                   ),
                 ],
               ),
-            )
-                .animate()
-                .fadeIn(duration: 400.ms, delay: 200.ms)
-                .slideY(begin: 0.1, end: 0),
+            ),
 
           const SizedBox(height: 16),
 
@@ -328,19 +264,19 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
           if (widget.request.proposalUrl != null &&
               widget.request.proposalUrl!.isNotEmpty) ...[
             Container(
-              decoration: AppTheme.cardDecoration(),
+              decoration: AppTheme.cardDecorationOf(context),
               padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGhost,
+                      color: AppTheme.primaryGhostOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.picture_as_pdf_rounded,
-                      color: AppTheme.primary,
+                      color: AppTheme.primaryOf(context),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -355,7 +291,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            color: AppTheme.textSecondary,
+                            color: AppTheme.textSecondaryOf(context),
                             fontSize: 12,
                           ),
                         ),
@@ -410,11 +346,11 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
               elevation: 0,
               textStyle: GoogleFonts.poppins(
                 fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-        ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1, end: 0),
+        ),
 
         const SizedBox(height: 12),
 
@@ -434,11 +370,11 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
               ),
               textStyle: GoogleFonts.poppins(
                 fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-        ).animate().fadeIn(delay: 380.ms).slideY(begin: 0.1, end: 0),
+        ),
       ],
     );
   }
@@ -484,7 +420,7 @@ class _CounselingDetailScreenState extends State<CounselingDetailScreen> {
     return Text(
       text,
       style: GoogleFonts.poppins(
-        color: AppTheme.textMuted,
+        color: AppTheme.textMutedOf(context),
         fontSize: 11.5,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.8,
@@ -692,10 +628,10 @@ class _InfoRow extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppTheme.primaryGhost,
+            color: AppTheme.primaryGhostOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           ),
-          child: Icon(icon, size: 16, color: AppTheme.primary),
+          child: Icon(icon, size: 16, color: AppTheme.primaryOf(context)),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -705,7 +641,7 @@ class _InfoRow extends StatelessWidget {
               Text(
                 label,
                 style: GoogleFonts.poppins(
-                  color: AppTheme.textMuted,
+                  color: AppTheme.textMutedOf(context),
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                 ),
@@ -714,7 +650,7 @@ class _InfoRow extends StatelessWidget {
                 Text(
                   value,
                   style: GoogleFonts.poppins(
-                    color: AppTheme.textPrimary,
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),

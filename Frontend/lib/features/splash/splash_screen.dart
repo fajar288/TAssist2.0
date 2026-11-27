@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tassist/theme/app_theme.dart';
 
-/// SplashScreen — Layar awal TAssist
+/// SplashScreen - Layar awal TAssist
 ///
 /// Urutan animasi:
 /// 1. [0ms]      Latar belakang #EEF2F6 (kosong).
@@ -13,7 +13,7 @@ import 'package:tassist/theme/app_theme.dart';
 /// 4. [2850ms]   Teks "TAssist" slide-in dari kanan + shimmer.
 /// 5. [4650ms]   Layar biru fade ke halaman login via FadeTransition.
 ///
-/// PENTING — Cara navigasi fade bekerja:
+/// PENTING - Cara navigasi fade bekerja:
 /// SplashScreen menerima [destinationBuilder] callback yang mengembalikan
 /// widget halaman tujuan. Ini jauh lebih reliable daripada mencoba me-resolve
 /// named route dari dalam PageRouteBuilder, karena MaterialApp tidak mengekspos
@@ -44,7 +44,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   // ─── Warna ──────────────────────────────────────────────────────────────────
-  static const _blue = AppTheme.primary;
+  static const _blue = AppTheme.primaryDark;
   static const _bg   = AppTheme.background;
 
   // ─── Controllers & Animations ───────────────────────────────────────────────
@@ -55,11 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
   late final Animation<double>   _iconFadeAnim;
   late final Animation<double>   _iconScaleAnim;
 
-  /// Fase 2 – Glow berdenyut di sekitar icon (loop)
-  late final AnimationController _glowPulseCtrl;
-  late final Animation<double>   _glowAnim;
-
-  /// Fase 3 – Circle reveal via ClipPath
+  /// Fase 2 – Circle reveal via ClipPath
   late final AnimationController _revealCtrl;
   late final Animation<double>   _revealAnim;
 
@@ -123,16 +119,7 @@ class _SplashScreenState extends State<SplashScreen>
       curve: const Interval(0.6, 1.0),
     ));
 
-    // ── Fase 2: Glow pulse (loop, 1400ms/siklus) ────────────────────────────
-    _glowPulseCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat(reverse: true);
-    _glowAnim = Tween<double>(begin: 0.6, end: 1.0).animate(
-      CurvedAnimation(parent: _glowPulseCtrl, curve: Curves.easeInOut),
-    );
-
-    // ── Fase 3: Circle reveal (550ms) ───────────────────────────────────────
+    // ── Fase 2: Circle reveal (550ms) ───────────────────────────────────────
     _revealCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 550),
@@ -175,11 +162,10 @@ class _SplashScreenState extends State<SplashScreen>
     _iconDropCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 900));
 
-    // Tahan icon di tengah sambil glow berdenyut (1100ms)
+    // Tahan icon sejenak sebelum reveal (1100ms)
     await Future.delayed(const Duration(milliseconds: 1100));
 
-    // Fase 3 – Circle reveal biru (550ms)
-    _glowPulseCtrl.stop();
+    // Fase 3 – Circle reveal navy (550ms)
     _revealCtrl.forward();
     await Future.delayed(const Duration(milliseconds: 550));
 
@@ -209,7 +195,7 @@ class _SplashScreenState extends State<SplashScreen>
     // atau findAncestorWidget rapuh dan bisa null.
     //
     // Solusi terbersih:
-    // SplashScreen menerima [destinationBuilder] — callback yang mengembalikan
+    // SplashScreen menerima [destinationBuilder] - callback yang mengembalikan
     // widget halaman tujuan. Ini persis seperti yang dilakukan routes map
     // (`loginRoute: (_) => const LoginPage()`), hanya diteruskan langsung.
     // Zero magic, zero lookup, 100% reliable.
@@ -242,7 +228,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     _iconDropCtrl.dispose();
-    _glowPulseCtrl.dispose();
     _revealCtrl.dispose();
     _textCtrl.dispose();
     _shimmerCtrl.dispose();
@@ -295,7 +280,7 @@ class _SplashScreenState extends State<SplashScreen>
             },
           ),
 
-          // ── Layer 3: Teks "TAssist" — Poppins w600 + shimmer ─────────────
+          // ── Layer 3: Teks "TAssist" - Poppins w600 + shimmer ─────────────
           AnimatedBuilder(
             animation: Listenable.merge(
                 [_textFadeAnim, _textSlideAnim, _shimmerAnim]),
@@ -304,35 +289,13 @@ class _SplashScreenState extends State<SplashScreen>
                 position: _textSlideAnim,
                 child: Opacity(
                   opacity: _textFadeAnim.value,
-                  child: ShaderMask(
-                    shaderCallback: (bounds) {
-                      final double pos = _shimmerAnim.value;
-                      return LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: const [
-                          Colors.white,
-                          AppTheme.primaryGhost,
-                          Colors.white,
-                          Colors.white,
-                        ],
-                        stops: [
-                          (pos - 0.3).clamp(0.0, 1.0),
-                          pos.clamp(0.0, 1.0),
-                          (pos + 0.3).clamp(0.0, 1.0),
-                          1.0,
-                        ],
-                      ).createShader(bounds);
-                    },
-                    blendMode: BlendMode.srcIn,
-                    child: Text(
-                      'TAssist',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.5,
-                      ),
+                  child: Text(
+                    'TAssist',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.5,
                     ),
                   ),
                 ),
@@ -347,7 +310,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget _buildGlowIcon() {
     return Center(
       child: AnimatedBuilder(
-        animation: Listenable.merge([_glowAnim, _iconScaleAnim]),
+        animation: _iconScaleAnim,
         builder: (_, __) => Transform.scale(
           scale: _iconScaleAnim.value,
           child: Container(
@@ -356,18 +319,11 @@ class _SplashScreenState extends State<SplashScreen>
             decoration: BoxDecoration(
               color: _blue,
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              boxShadow: [
-                BoxShadow(
-                  color: _blue.withOpacity(0.55 * _glowAnim.value),
-                  blurRadius:   40 * _glowAnim.value,
-                  spreadRadius: 10 * _glowAnim.value,
-                ),
-                BoxShadow(
-                  color: _blue.withOpacity(0.25 * _glowAnim.value),
-                  blurRadius:   80 * _glowAnim.value,
-                  spreadRadius: 20 * _glowAnim.value,
-                ),
-              ],
+              border: Border.all(
+                color: AppTheme.accentGoldOnDark.withValues(alpha: 0.75),
+                width: 1.5,
+              ),
+              boxShadow: AppTheme.floatingShadow,
             ),
             child: const Center(
               child: _GraduationCapIcon(size: 48, color: Colors.white),
@@ -382,7 +338,7 @@ class _SplashScreenState extends State<SplashScreen>
 // ─── Custom Clipper ───────────────────────────────────────────────────────────
 
 /// Memotong widget menjadi bentuk lingkaran dengan [center] dan [radius]
-/// yang bisa berubah setiap frame — digunakan untuk animasi circle reveal.
+/// yang bisa berubah setiap frame - digunakan untuk animasi circle reveal.
 class _CircleClipper extends CustomClipper<Path> {
   final Offset center;
   final double radius;

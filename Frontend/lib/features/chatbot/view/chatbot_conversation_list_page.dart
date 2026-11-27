@@ -61,18 +61,18 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-        title: const Text(
+        title: Text(
           'Hapus Percakapan',
-          style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+          style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.textPrimaryOf(ctx)),
         ),
         content: Text(
           'Apakah Anda yakin ingin menghapus "${conversation.judul}"? Tindakan ini tidak dapat dibatalkan.',
-          style: const TextStyle(color: AppTheme.textSecondary),
+          style: TextStyle(color: AppTheme.textSecondaryOf(ctx)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Batal', style: TextStyle(color: AppTheme.textSecondary)),
+            child: Text('Batal', style: TextStyle(color: AppTheme.textSecondaryOf(ctx))),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -141,26 +141,29 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
 
   @override
   Widget build(BuildContext context) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final primary = AppTheme.primaryOf(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.surfaceOf(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.textPrimary, size: 20),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Riwayat Percakapan',
           style: TextStyle(
             fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textPrimary,
+            fontWeight: FontWeight.w600,
+            color: textPrimary,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: AppTheme.primary),
+            icon: Icon(Icons.refresh_rounded, color: primary),
             tooltip: 'Segarkan',
             onPressed: _loadConversations,
           ),
@@ -210,12 +213,8 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
         itemBuilder: (context, index) {
           final conversation = _conversations[index];
           return Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              border: Border.all(color: AppTheme.cardBorder),
-              boxShadow: AppTheme.subtleShadow,
-            ),
+            decoration:
+                AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
             child: Material(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -229,10 +228,14 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryGhost,
+                          color: AppTheme.primaryGhostOf(context),
                           borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         ),
-                        child: const Icon(Icons.smart_toy_outlined, color: AppTheme.primary, size: 24),
+                        child: Icon(
+                          Icons.chat_bubble_outline,
+                          color: AppTheme.primaryOf(context),
+                          size: 24,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -243,25 +246,29 @@ class _ChatbotConversationListPageState extends State<ChatbotConversationListPag
                               conversation.judul,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.textPrimary,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.textPrimaryOf(context),
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               _formatDate(conversation.createdAt),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: AppTheme.textSecondary,
+                                color: AppTheme.textSecondaryOf(context),
                               ),
                             ),
                           ],
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete_outline_rounded, color: AppTheme.textMuted, size: 20),
+                        icon: Icon(
+                          Icons.delete_outline_rounded,
+                          color: AppTheme.textMutedOf(context),
+                          size: 20,
+                        ),
                         tooltip: 'Hapus',
                         onPressed: () => _deleteConversation(conversation),
                       ),

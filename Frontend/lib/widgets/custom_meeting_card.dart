@@ -1,6 +1,5 @@
 // lib/widgets/custom_meeting_card.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../model/models.dart';
 import '../theme/app_theme.dart';
@@ -26,26 +25,26 @@ class MeetingRequestCard extends StatelessWidget {
     final textSecondary = AppTheme.textSecondaryOf(context);
     final textMuted = AppTheme.textMutedOf(context);
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        decoration: AppTheme.cardDecorationOf(context),
-        child: Column(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          child: Ink(
+            decoration:
+                AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
+            child: Column(
           children: [
             // ── Schedule Banner ──────────────────────────────────────────────
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    primary.withOpacity(0.08),
-                    AppTheme.primaryLight.withOpacity(0.04),
-                  ],
-                ),
+                color: AppTheme.primaryGhostOf(context).withValues(alpha: 0.55),
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(AppTheme.radiusLg),
-                  topRight: Radius.circular(AppTheme.radiusLg),
+                  topLeft: Radius.circular(AppTheme.radiusMd),
+                  topRight: Radius.circular(AppTheme.radiusMd),
                 ),
               ),
               child: Row(
@@ -53,8 +52,9 @@ class MeetingRequestCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: primaryGhost,
+                      color: AppTheme.surfaceOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                      border: Border.all(color: AppTheme.cardBorderOf(context)),
                     ),
                     child: Icon(
                       Icons.calendar_today_rounded,
@@ -91,7 +91,7 @@ class MeetingRequestCard extends StatelessWidget {
             ),
 
             // Thin divider
-            Divider(height: 1, color: AppTheme.cardBorderOf(context).withOpacity(0.8)),
+            Divider(height: 1, color: AppTheme.cardBorderOf(context)),
 
             // ── Student Info ──────────────────────────────────────────────────
             Padding(
@@ -114,7 +114,7 @@ class MeetingRequestCard extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             color: textPrimary,
                             fontSize: 14.5,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -157,10 +157,9 @@ class MeetingRequestCard extends StatelessWidget {
             ),
           ],
         ),
+          ),
+        ),
       ),
-    )
-        .animate(delay: (animationIndex * 80).ms)
-        .fadeIn(duration: 400.ms)
-        .slideY(begin: 0.15, end: 0, duration: 400.ms, curve: Curves.easeOut);
+    );
   }
 }

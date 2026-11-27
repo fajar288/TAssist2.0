@@ -245,7 +245,7 @@ class _LecturerRecommendationViewState
                           color: Colors.white,
                         ),
                       )
-                    : const Icon(Icons.auto_awesome_rounded, size: 20),
+                    : const Icon(Icons.person_search_outlined, size: 20),
               ),
             ],
           ),

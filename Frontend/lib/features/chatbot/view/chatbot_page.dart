@@ -227,7 +227,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 color: AppTheme.primaryGhostOf(context),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.smart_toy_rounded, color: AppTheme.primaryOf(context), size: 22),
+              child: Icon(Icons.chat_bubble_outline, color: AppTheme.primaryOf(context), size: 20),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -300,7 +300,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      color: AppTheme.pendingBg,
+      color: AppTheme.pendingBgOf(context),
       child: Row(
         children: [
           const Icon(Icons.speed_rounded, color: AppTheme.pending, size: 20),
@@ -308,11 +308,15 @@ class _ChatbotPageState extends State<ChatbotPage> {
           Expanded(
             child: Text(
               _rateLimitError!,
-              style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 12,
+                color: AppTheme.textPrimaryOf(context),
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.textMuted),
+            icon: Icon(Icons.close_rounded, size: 18, color: AppTheme.textMutedOf(context)),
             onPressed: () => setState(() => _rateLimitError = null),
           ),
         ],
@@ -324,7 +328,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      color: AppTheme.declinedBg,
+      color: AppTheme.declinedBgOf(context),
       child: Row(
         children: [
           const Icon(Icons.cloud_off_rounded, color: AppTheme.declined, size: 20),
@@ -332,11 +336,15 @@ class _ChatbotPageState extends State<ChatbotPage> {
           Expanded(
             child: Text(
               _circuitBreakerError!,
-              style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 12,
+                color: AppTheme.textPrimaryOf(context),
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close_rounded, size: 18, color: AppTheme.textMuted),
+            icon: Icon(Icons.close_rounded, size: 18, color: AppTheme.textMutedOf(context)),
             onPressed: () => setState(() => _circuitBreakerError = null),
           ),
         ],
@@ -348,7 +356,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: AppTheme.warningBg,
+      color: AppTheme.warningBgOf(context),
       child: Row(
         children: [
           const Icon(Icons.warning_amber_rounded, color: AppTheme.warning, size: 18),
@@ -356,11 +364,11 @@ class _ChatbotPageState extends State<ChatbotPage> {
           Expanded(
             child: Text(
               _generalError!,
-              style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary),
+              style: TextStyle(fontSize: 12, color: AppTheme.textPrimaryOf(context)),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close_rounded, size: 16, color: AppTheme.textMuted),
+            icon: Icon(Icons.close_rounded, size: 16, color: AppTheme.textMutedOf(context)),
             onPressed: () => setState(() => _generalError = null),
           ),
         ],
@@ -385,7 +393,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 color: AppTheme.surfaceOf(context),
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 border: Border.all(color: AppTheme.cardBorderOf(context)),
-                boxShadow: AppTheme.subtleShadow,
+                boxShadow: AppTheme.cardShadowOf(context),
               ),
               child: Column(
                 children: [

@@ -212,10 +212,9 @@ class _StudentListPageState extends State<StudentListPage>
 
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: AppTheme.primaryDark,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppTheme.radiusXl),
         ),
       ),
       child: SafeArea(
@@ -235,16 +234,16 @@ class _StudentListPageState extends State<StudentListPage>
                           'Students Overview',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.5,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.3,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Manage your advisee students',
                           style: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.65),
+                            color: Colors.white.withValues(alpha: 0.78),
                             fontSize: 13,
                           ),
                         ),
@@ -252,13 +251,13 @@ class _StudentListPageState extends State<StudentListPage>
                     ),
                   ),
                   Container(
-                    width: 42,
-                    height: 42,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: AppTheme.glassSurfaceOnDark,
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: AppTheme.accentGoldOnDark.withValues(alpha: 0.6),
                         width: 1,
                       ),
                     ),
@@ -271,13 +270,13 @@ class _StudentListPageState extends State<StudentListPage>
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: [
-                  _headerStatChip('$active Active', AppTheme.accepted),
-                  const SizedBox(width: 10),
-                  _headerStatChip('$warning Warning', AppTheme.pending),
-                  const SizedBox(width: 10),
-                  _headerStatChip('$completed Done', AppTheme.primaryLight),
+                  _headerStatChip('$active Active', const Color(0xFF34D399)),
+                  _headerStatChip('$warning Warning', AppTheme.accentGoldOnDark),
+                  _headerStatChip('$completed Done', const Color(0xFF93C5FD)),
                 ],
               ),
             ],
@@ -289,13 +288,14 @@ class _StudentListPageState extends State<StudentListPage>
 
   Widget _headerStatChip(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
+        color: AppTheme.glassSurfaceOnDark,
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+        border: Border.all(color: AppTheme.glassBorderOnDark, width: 1),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 8,
@@ -317,41 +317,35 @@ class _StudentListPageState extends State<StudentListPage>
   }
 
   Widget _buildSearchBar(BuildContext context) {
+    final muted = AppTheme.textMutedOf(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.surfaceOf(context),
-          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          boxShadow: AppTheme.subtleShadow,
-        ),
-        child: TextField(
-          controller: _searchController,
-          style: TextStyle(fontSize: 14, color: AppTheme.textPrimaryOf(context)),
-          decoration: InputDecoration(
-            hintText: 'Search by name, NIM, or major...',
-            hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
-            prefixIcon: Icon(
-              Icons.search_rounded,
-              color: Colors.grey.shade400,
-              size: 20,
-            ),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? GestureDetector(
-                    onTap: () {
-                      _searchController.clear();
-                      _applyFilters();
-                    },
-                    child: Icon(
-                      Icons.close_rounded,
-                      color: Colors.grey.shade400,
-                      size: 18,
-                    ),
-                  )
-                : null,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+      child: TextField(
+        controller: _searchController,
+        style: TextStyle(fontSize: 14, color: AppTheme.textPrimaryOf(context)),
+        decoration: InputDecoration(
+          hintText: 'Search by name, NIM, or major...',
+          hintStyle: TextStyle(color: muted, fontSize: 13),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: muted,
+            size: 20,
           ),
+          suffixIcon: _searchController.text.isNotEmpty
+              ? IconButton(
+                  tooltip: 'Clear search',
+                  onPressed: () {
+                    _searchController.clear();
+                    _applyFilters();
+                  },
+                  icon: Icon(
+                    Icons.close_rounded,
+                    color: muted,
+                    size: 18,
+                  ),
+                )
+              : null,
+          contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
         ),
       ),
     );
@@ -359,7 +353,7 @@ class _StudentListPageState extends State<StudentListPage>
 
   Widget _buildFilterRow(BuildContext context) {
     return SizedBox(
-      height: 38,
+      height: 44,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         scrollDirection: Axis.horizontal,
@@ -370,72 +364,68 @@ class _StudentListPageState extends State<StudentListPage>
           final isSelected = _selectedFilter == filter;
           final count = _countByStatus(filter);
 
-          return GestureDetector(
-            onTap: () => _onFilterChanged(filter),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? AppTheme.primary
-                    : AppTheme.surfaceOf(context),
-                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                boxShadow: [
-                  BoxShadow(
+          return Semantics(
+            button: true,
+            selected: isSelected,
+            label: 'Filter $filter ($count)',
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => _onFilterChanged(filter),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
                     color: isSelected
-                        ? Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.3)
-                        : Colors.black.withOpacity(0.04),
-                    blurRadius: isSelected ? 8 : 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    filter,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                        ? AppTheme.primary
+                        : AppTheme.surfaceOf(context),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                    border: Border.all(
                       color: isSelected
-                          ? Colors.white
-                          : Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.6),
+                          ? AppTheme.primary
+                          : AppTheme.cardBorderOf(context),
                     ),
                   ),
-                  const SizedBox(width: 5),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 1,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? Colors.white.withValues(alpha: 0.25)
-                          : AppTheme.surfaceVariantOf(context),
-                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                    ),
-                    child: Text(
-                      '$count',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: isSelected
-                            ? Colors.white
-                            : Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withOpacity(0.5),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        filter,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected
+                              ? Colors.white
+                              : AppTheme.textSecondaryOf(context),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.white.withValues(alpha: 0.25)
+                              : AppTheme.surfaceVariantOf(context),
+                          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                        ),
+                        child: Text(
+                          '$count',
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
+                            color: isSelected
+                                ? Colors.white
+                                : AppTheme.textSecondaryOf(context),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           );

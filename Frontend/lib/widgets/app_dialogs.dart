@@ -18,10 +18,8 @@ class _GlassDialogShell extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Blurred overlay
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: Container(color: Colors.black.withOpacity(0.35)),
+          Positioned.fill(
+            child: Container(color: Colors.black.withValues(alpha: 0.35)),
           ),
           // Dialog card
           Padding(
@@ -29,22 +27,13 @@ class _GlassDialogShell extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusXl),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.surfaceOf(context).withValues(alpha: 0.94),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-                    border: Border.all(
-                      color: AppTheme.cardBorderOf(context).withValues(alpha: 0.8),
-                      width: 1.5,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 40,
-                        offset: const Offset(0, 20),
-                      ),
-                    ],
+                  decoration: AppTheme.glassDecorationOf(
+                    context,
+                    radius: AppTheme.radiusXl,
+                    borderWidth: 1.2,
+                    boxShadow: AppTheme.cardShadow,
                   ),
                   child: child,
                 ),
@@ -105,26 +94,13 @@ Future<void> showAcceptedDialog(BuildContext context) {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppTheme.accepted,
-                    AppTheme.accepted.withValues(alpha: 0.85),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppTheme.acceptedBgOf(ctx),
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.accepted.withOpacity(0.35),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                border: Border.all(color: AppTheme.acceptedBorderOf(ctx), width: 1.5),
               ),
               child: const Icon(
                 Icons.check_rounded,
-                color: Colors.white,
+                color: AppTheme.accepted,
                 size: 42,
               ),
             )
@@ -143,7 +119,7 @@ Future<void> showAcceptedDialog(BuildContext context) {
               style: GoogleFonts.poppins(
                 color: AppTheme.textPrimaryOf(ctx),
                 fontSize: 20,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 10),
@@ -222,7 +198,7 @@ Future<bool> showDeclineConfirmDialog(BuildContext context) async {
               style: GoogleFonts.poppins(
                 color: AppTheme.textPrimaryOf(ctx),
                 fontSize: 19,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 10),
@@ -329,7 +305,7 @@ Future<String?> showApologyDialog(BuildContext context) {
                       style: GoogleFonts.poppins(
                         color: AppTheme.textPrimaryOf(ctx),
                         fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(

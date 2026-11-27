@@ -1,5 +1,6 @@
 # Abaikan seluruh folder docs dan isinya
 /Docs/
+/anti-slop/
 
 # Opsional: Abaikan file sistem atau environment jika ada di root
 .DS_Store

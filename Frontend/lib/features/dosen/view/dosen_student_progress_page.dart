@@ -190,7 +190,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: RefreshIndicator(
         onRefresh: _loadProgress,
         child: CustomScrollView(
@@ -251,13 +251,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          color: AppTheme.primaryDark,
           child: SafeArea(
             child: Stack(
               children: [
@@ -271,8 +265,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
                       letterSpacing: -0.7,
                       height: 1.05,
                     ),
@@ -293,7 +287,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                           height: 1.15,
                         ),
                       ),
@@ -303,7 +297,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.76),
+                          color: Colors.white.withValues(alpha: 0.78),
                           fontSize: 11.5,
                           fontWeight: FontWeight.w500,
                           height: 1.2,
@@ -319,17 +313,17 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.13),
+                            color: AppTheme.glassSurfaceOnDark,
                             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.18),
+                              color: AppTheme.glassBorderOnDark,
                             ),
                           ),
                           child: Row(
                             children: [
                               Icon(
                                 Icons.article_rounded,
-                                color: Colors.white.withOpacity(0.85),
+                                color: Colors.white.withValues(alpha: 0.85),
                                 size: 15,
                               ),
                               const SizedBox(width: 8),
@@ -339,9 +333,9 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
+                                    color: Colors.white.withValues(alpha: 0.92),
                                     fontSize: 11.5,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w600,
                                     height: 1.2,
                                   ),
                                 ),
@@ -374,12 +368,12 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Current Progress',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: AppTheme.textPrimaryOf(context),
               fontSize: 15,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 16),
@@ -388,10 +382,10 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             children: [
               Text(
                 '${_latestPercentValue.round()}%',
-                style: const TextStyle(
-                  color: AppTheme.primary,
+                style: TextStyle(
+                  color: AppTheme.primaryOf(context),
                   fontSize: 42,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w600,
                   height: 1,
                 ),
               ),
@@ -402,8 +396,10 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                   child: LinearProgressIndicator(
                     value: _latestPercentValue / 100,
                     minHeight: 10,
-                    backgroundColor: AppTheme.cardBorder,
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primary),
+                    backgroundColor: AppTheme.cardBorderOf(context),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppTheme.primaryOf(context),
+                    ),
                     borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   ),
                 ),
@@ -487,21 +483,21 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
         children: [
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Latest Checklist',
                   style: TextStyle(
-                    color: AppTheme.textPrimary,
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 15,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
               Text(
                 '${checklist.where((item) => _isDone(item['is_selesai'] ?? item['tgl_selesai'])).length}/${checklist.length}',
-                style: const TextStyle(
-                  color: AppTheme.primary,
-                  fontWeight: FontWeight.w800,
+                style: TextStyle(
+                  color: AppTheme.primaryOf(context),
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -535,15 +531,15 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceVariant,
+        color: AppTheme.surfaceVariantOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorderOf(context)),
       ),
       child: Row(
         children: [
           Checkbox(
             value: done,
-            activeColor: AppTheme.primary,
+            activeColor: AppTheme.primaryOf(context),
             onChanged: id == null || _isSubmitting
                 ? null
                 : (value) => _toggleChecklist(item, value == true),
@@ -558,9 +554,9 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                       child: Text(
                         title,
                         style: TextStyle(
-                          color: AppTheme.textPrimary,
+                          color: AppTheme.textPrimaryOf(context),
                           fontSize: 13.5,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           decoration: done ? TextDecoration.lineThrough : null,
                         ),
                       ),
@@ -569,15 +565,15 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryGhost,
+                        color: AppTheme.primaryGhostOf(context),
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Text(
                         'Bobot ${bobot.toStringAsFixed(bobot.truncateToDouble() == bobot ? 0 : 1)}',
-                        style: const TextStyle(
-                          color: AppTheme.primary,
+                        style: TextStyle(
+                          color: AppTheme.primaryOf(context),
                           fontSize: 10.5,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -587,8 +583,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                   const SizedBox(height: 3),
                   Text(
                     note,
-                    style: const TextStyle(
-                      color: AppTheme.textSecondary,
+                    style: TextStyle(
+                      color: AppTheme.textSecondaryOf(context),
                       fontSize: 12,
                       height: 1.4,
                     ),
@@ -629,12 +625,12 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Progress History',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: AppTheme.textPrimaryOf(context),
               fontSize: 15,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 12),
@@ -660,9 +656,9 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceVariant,
+        color: AppTheme.surfaceVariantOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.cardBorder),
+        border: Border.all(color: AppTheme.cardBorderOf(context)),
       ),
       child: Row(
         children: [
@@ -670,15 +666,15 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
             width: 54,
             height: 54,
             decoration: BoxDecoration(
-              color: AppTheme.primaryGhost,
+              color: AppTheme.primaryGhostOf(context),
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Center(
               child: Text(
                 '${percent.round()}%',
-                style: const TextStyle(
-                  color: AppTheme.primary,
-                  fontWeight: FontWeight.w900,
+                style: TextStyle(
+                  color: AppTheme.primaryOf(context),
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -690,9 +686,9 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
               children: [
                 Text(
                   status,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
-                    fontWeight: FontWeight.w800,
+                  style: TextStyle(
+                    color: AppTheme.textPrimaryOf(context),
+                    fontWeight: FontWeight.w600,
                     fontSize: 13,
                   ),
                 ),
@@ -702,8 +698,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     note,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppTheme.textSecondary,
+                    style: TextStyle(
+                      color: AppTheme.textSecondaryOf(context),
                       fontSize: 12,
                     ),
                   ),
@@ -711,8 +707,8 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                 const SizedBox(height: 4),
                 Text(
                   _formatDateTime(updatedAt),
-                  style: const TextStyle(
-                    color: AppTheme.textMuted,
+                  style: TextStyle(
+                    color: AppTheme.textMutedOf(context),
                     fontSize: 11,
                   ),
                 ),
@@ -765,7 +761,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                       'Update Progress',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -959,7 +955,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
                     isEdit ? 'Edit Checklist' : 'Add Checklist',
                     style: const TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -1286,7 +1282,7 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
       width: 42,
       height: 4,
       decoration: BoxDecoration(
-        color: AppTheme.cardBorder,
+        color: AppTheme.cardBorderOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
     );
@@ -1305,10 +1301,10 @@ class _DosenStudentProgressPageState extends State<DosenStudentProgressPage> {
 
   BoxDecoration _cardDecoration() {
     return BoxDecoration(
-      color: AppTheme.surface,
+      color: AppTheme.surfaceOf(context),
       borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-      border: Border.all(color: AppTheme.cardBorder),
-      boxShadow: AppTheme.subtleShadow,
+      border: Border.all(color: AppTheme.cardBorderOf(context)),
+      boxShadow: AppTheme.cardShadowOf(context),
     );
   }
 
@@ -1337,21 +1333,21 @@ class _InfoLine extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: AppTheme.primary, size: 18),
+        Icon(icon, color: AppTheme.primaryOf(context), size: 18),
         const SizedBox(width: 8),
         Text(
           '$label: ',
-          style: const TextStyle(
-            color: AppTheme.textSecondary,
-            fontWeight: FontWeight.w700,
+          style: TextStyle(
+            color: AppTheme.textSecondaryOf(context),
+            fontWeight: FontWeight.w600,
             fontSize: 12,
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(
-              color: AppTheme.textPrimary,
+            style: TextStyle(
+              color: AppTheme.textPrimaryOf(context),
               fontWeight: FontWeight.w600,
               fontSize: 12,
               height: 1.4,

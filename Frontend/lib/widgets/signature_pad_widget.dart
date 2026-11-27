@@ -91,13 +91,13 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final border = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        boxShadow: AppTheme.cardShadow,
-      ),
+      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -105,35 +105,35 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Tanda Tangan Digital',
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary,
+                  fontWeight: FontWeight.w600,
+                  color: textPrimary,
                 ),
               ),
               IconButton(
                 onPressed: _lines.isEmpty ? null : _clear,
                 icon: const Icon(Icons.refresh, size: 20),
                 tooltip: 'Bersihkan',
-                color: AppTheme.textSecondary,
+                color: textSecondary,
               ),
             ],
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Bubuhkan tanda tangan Anda pada area di bawah ini:',
-            style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+            style: TextStyle(fontSize: 13, color: textSecondary),
           ),
           const SizedBox(height: 12),
           Container(
             height: 180,
             decoration: BoxDecoration(
-              color: AppTheme.surfaceVariant,
+              color: AppTheme.surfaceVariantOf(context),
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               border: Border.all(
-                color: _lines.isNotEmpty ? AppTheme.primary : AppTheme.cardBorder,
+                color: _lines.isNotEmpty ? AppTheme.primaryOf(context) : border,
                 width: 1.5,
               ),
             ),
@@ -153,7 +153,11 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
                   });
                 },
                 child: CustomPaint(
-                  painter: _SignaturePainter(_lines),
+                  painter: _SignaturePainter(
+                    _lines,
+                    guideColor: border,
+                    strokeColor: textPrimary,
+                  ),
                   size: Size.infinite,
                 ),
               ),
@@ -168,12 +172,12 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
                     onPressed: widget.onCancel,
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: const BorderSide(color: AppTheme.cardBorder),
+                      side: BorderSide(color: border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
-                    child: const Text('Batal', style: TextStyle(color: AppTheme.textSecondary)),
+                    child: Text('Batal', style: TextStyle(color: textSecondary)),
                   ),
                 ),
               if (widget.onCancel != null) const SizedBox(width: 12),
@@ -196,7 +200,7 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
                       : const Icon(Icons.check, size: 18),
-                  label: const Text('Gunakan Tanda Tangan', style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: const Text('Gunakan Tanda Tangan', style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
             ],
@@ -209,14 +213,20 @@ class _SignaturePadWidgetState extends State<SignaturePadWidget> {
 
 class _SignaturePainter extends CustomPainter {
   final List<List<Offset>> lines;
+  final Color guideColor;
+  final Color strokeColor;
 
-  _SignaturePainter(this.lines);
+  _SignaturePainter(
+    this.lines, {
+    required this.guideColor,
+    required this.strokeColor,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     // Draw guide line for signing
     final guidePaint = Paint()
-      ..color = AppTheme.cardBorder
+      ..color = guideColor
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
     canvas.drawLine(
@@ -226,7 +236,7 @@ class _SignaturePainter extends CustomPainter {
     );
 
     final strokePaint = Paint()
-      ..color = AppTheme.textPrimary
+      ..color = strokeColor
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round

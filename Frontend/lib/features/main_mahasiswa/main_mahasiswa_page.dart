@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../app/app.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_empty_state_widget.dart';
 import '../../widgets/app_error_widget.dart';
@@ -47,11 +46,13 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
   Widget _buildLockedFeaturePage(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundOf(context),
-      body: const AppEmptyStateWidget(
+      body: AppEmptyStateWidget(
         icon: Icons.lock_outline_rounded,
-        title: 'Fitur Belum Tersedia',
+        title: 'Pilih Dosen Pembimbing Dahulu',
         subtitle:
-            'This feature is not available until you have an academic advisor',
+            'Jadwal bimbingan dan unggah dokumen akan terbuka setelah permohonan pembimbing Anda disetujui.',
+        actionLabel: 'Cari Dosen Pembimbing',
+        onAction: () => _onTabTapped(0),
       ),
     );
   }
@@ -108,19 +109,6 @@ class _MainMahasiswaPageState extends State<MainMahasiswaPage> {
           body: IndexedStack(
             index: _currentIndex,
             children: pages,
-          ),
-          floatingActionButton: Padding(
-            padding: const EdgeInsets.only(bottom: 76.0),
-            child: FloatingActionButton(
-              backgroundColor: AppTheme.primary,
-              foregroundColor: Colors.white,
-              elevation: 4,
-              tooltip: 'Asisten TA',
-              child: const Icon(Icons.smart_toy_rounded, size: 28),
-              onPressed: () {
-                Navigator.pushNamed(context, TAssistApp.chatbotRoute);
-              },
-            ),
           ),
           bottomNavigationBar: NavbarMahasiswa(
             currentIndex: _currentIndex,

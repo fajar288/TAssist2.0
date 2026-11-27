@@ -1,6 +1,5 @@
 // lib/features/dosen/view/meeting_detail_screen.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tassist/features/dosen/data/dosen_service.dart';
 
@@ -34,7 +33,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -63,18 +62,10 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 17,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppTheme.primaryDark, AppTheme.primary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-            ),
+            flexibleSpace: const ColoredBox(color: AppTheme.primaryDark),
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -111,15 +102,14 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
 
   Widget _buildProfileCard() {
     return Container(
-      decoration: AppTheme.cardDecoration(),
+      decoration: AppTheme.cardDecorationOf(context),
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              boxShadow: AppTheme.avatarGlow,
-              border: Border.all(color: Colors.white, width: 3),
+              border: Border.all(color: Colors.white, width: 2.5),
             ),
             child: Hero(
               tag: 'meeting-avatar-${widget.request.id}',
@@ -128,11 +118,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                 height: 70,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [AppTheme.primaryDark, AppTheme.primaryLight],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: AppTheme.primary,
                 ),
                 child: Center(
                   child: Text(
@@ -140,7 +126,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 24,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -157,10 +143,10 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
-                    color: AppTheme.textPrimary,
+                    color: AppTheme.textPrimaryOf(context),
                     fontSize: 17,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.2,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -169,7 +155,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                 Text(
                   'NIM: ${widget.request.nim}',
                   style: GoogleFonts.poppins(
-                    color: AppTheme.textMuted,
+                    color: AppTheme.textMutedOf(context),
                     fontSize: 12,
                   ),
                 ),
@@ -179,25 +165,19 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           StatusBadge(status: currentStatus),
         ],
       ),
-    ).animate().fadeIn(duration: 400.ms, delay: 100.ms).slideY(begin: 0.1, end: 0);
+    );
   }
 
   Widget _buildScheduleCard() {
     return Container(
-      decoration: AppTheme.cardDecoration(),
+      decoration: AppTheme.cardDecorationOf(context),
       clipBehavior: Clip.hardEdge,
       child: Column(
         children: [
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppTheme.primaryDark, AppTheme.primary],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
+            color: AppTheme.primaryDark,
             child: Row(
               children: [
                 const Icon(
@@ -236,7 +216,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     Container(
                       width: 1,
                       height: 70,
-                      color: AppTheme.cardBorder,
+                      color: AppTheme.cardBorderOf(context),
                       margin: const EdgeInsets.symmetric(horizontal: 16),
                     ),
                     Expanded(
@@ -261,12 +241,12 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 400.ms, delay: 200.ms).slideY(begin: 0.1, end: 0);
+    );
   }
 
   Widget _buildModeSelector() {
     return Container(
-      decoration: AppTheme.cardDecoration(),
+      decoration: AppTheme.cardDecorationOf(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,9 +254,9 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           Text(
             'Meeting Mode',
             style: GoogleFonts.poppins(
-              color: AppTheme.textPrimary,
+              color: AppTheme.textPrimaryOf(context),
               fontSize: 14.5,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 12),
@@ -308,7 +288,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
 
   Widget _buildDescriptionCard() {
     return Container(
-      decoration: AppTheme.cardDecoration(),
+      decoration: AppTheme.cardDecorationOf(context),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,22 +298,22 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryGhost,
+                  color: AppTheme.primaryGhostOf(context),
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.description_rounded,
                   size: 16,
-                  color: AppTheme.primary,
+                  color: AppTheme.primaryOf(context),
                 ),
               ),
               const SizedBox(width: 10),
               Text(
                 'Note / Description',
                 style: GoogleFonts.poppins(
-                  color: AppTheme.textPrimary,
+                  color: AppTheme.textPrimaryOf(context),
                   fontSize: 14.5,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -343,13 +323,13 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppTheme.background,
+              color: AppTheme.surfaceVariantOf(context),
               borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
             child: Text(
               widget.request.description,
               style: GoogleFonts.poppins(
-                color: AppTheme.textSecondary,
+                color: AppTheme.textSecondaryOf(context),
                 fontSize: 13,
                 height: 1.75,
               ),
@@ -357,19 +337,19 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 400.ms, delay: 300.ms).slideY(begin: 0.1, end: 0);
+    );
   }
 
   Widget _buildProposerCard() {
     return Container(
-      decoration: AppTheme.cardDecoration(),
+      decoration: AppTheme.cardDecorationOf(context),
       padding: const EdgeInsets.all(18),
       child: _InfoTile(
         icon: Icons.person_pin_circle_rounded,
         label: 'Proposed By',
         value: '${widget.request.pengajuName} (${widget.request.pengajuRole})',
       ),
-    ).animate().fadeIn(duration: 400.ms, delay: 350.ms).slideY(begin: 0.1, end: 0);
+    );
   }
 
   Widget _buildActionButtons(BuildContext context) {
@@ -391,11 +371,11 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               elevation: 0,
               textStyle: GoogleFonts.poppins(
                 fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-        ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1, end: 0),
+        ),
         const SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
@@ -412,11 +392,11 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
               ),
               textStyle: GoogleFonts.poppins(
                 fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-        ).animate().fadeIn(delay: 460.ms).slideY(begin: 0.1, end: 0),
+        ),
       ],
     );
   }
@@ -492,13 +472,13 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       decoration: BoxDecoration(
-        color: AppTheme.primaryGhost,
+        color: AppTheme.primaryGhostOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
       ),
       child: Text(
         text,
         style: GoogleFonts.poppins(
-          color: AppTheme.primary,
+          color: AppTheme.primaryOf(context),
           fontSize: 11,
           fontWeight: FontWeight.w600,
         ),
@@ -719,6 +699,7 @@ class _ModeOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primary = AppTheme.primaryOf(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -726,10 +707,10 @@ class _ModeOption extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
-          color: selected ? AppTheme.primaryGhost : Colors.white,
+          color: selected ? AppTheme.primaryGhostOf(context) : AppTheme.surfaceOf(context),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           border: Border.all(
-            color: selected ? AppTheme.primary : AppTheme.cardBorder,
+            color: selected ? primary : AppTheme.cardBorderOf(context),
             width: selected ? 1.6 : 1,
           ),
         ),
@@ -737,15 +718,15 @@ class _ModeOption extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: selected ? AppTheme.primary : AppTheme.textMuted,
+              color: selected ? primary : AppTheme.textMutedOf(context),
             ),
             const SizedBox(height: 6),
             Text(
               label,
               style: GoogleFonts.poppins(
-                color: selected ? AppTheme.primary : AppTheme.textSecondary,
+                color: selected ? primary : AppTheme.textSecondaryOf(context),
                 fontSize: 12,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -772,17 +753,18 @@ class _ScheduleBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primary = AppTheme.primaryOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 14, color: AppTheme.primary),
+            Icon(icon, size: 14, color: primary),
             const SizedBox(width: 5),
             Text(
               topLabel,
               style: GoogleFonts.poppins(
-                color: AppTheme.textMuted,
+                color: AppTheme.textMutedOf(context),
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
@@ -796,9 +778,9 @@ class _ScheduleBlock extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: GoogleFonts.poppins(
-            color: AppTheme.textPrimary,
+            color: AppTheme.textPrimaryOf(context),
             fontSize: 24,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
             height: 1.15,
           ),
         ),
@@ -807,9 +789,9 @@ class _ScheduleBlock extends StatelessWidget {
           Text(
             subValue,
             style: GoogleFonts.poppins(
-              color: AppTheme.primary,
+              color: primary,
               fontSize: 13,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -817,7 +799,7 @@ class _ScheduleBlock extends StatelessWidget {
         Text(
           bottomLabel,
           style: GoogleFonts.poppins(
-            color: AppTheme.textSecondary,
+            color: AppTheme.textSecondaryOf(context),
             fontSize: 11.5,
           ),
         ),
@@ -845,10 +827,10 @@ class _InfoTile extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppTheme.primaryGhost,
+            color: AppTheme.primaryGhostOf(context),
             borderRadius: BorderRadius.circular(AppTheme.radiusSm),
           ),
-          child: Icon(icon, size: 16, color: AppTheme.primary),
+          child: Icon(icon, size: 16, color: AppTheme.primaryOf(context)),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -858,7 +840,7 @@ class _InfoTile extends StatelessWidget {
               Text(
                 label,
                 style: GoogleFonts.poppins(
-                  color: AppTheme.textMuted,
+                  color: AppTheme.textMutedOf(context),
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
                 ),
@@ -867,7 +849,7 @@ class _InfoTile extends StatelessWidget {
               Text(
                 value,
                 style: GoogleFonts.poppins(
-                  color: AppTheme.textPrimary,
+                  color: AppTheme.textPrimaryOf(context),
                   fontSize: 13.5,
                   fontWeight: FontWeight.w600,
                 ),

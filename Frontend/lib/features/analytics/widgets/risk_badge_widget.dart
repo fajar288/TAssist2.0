@@ -79,7 +79,7 @@ class RiskBadgeWidget extends StatelessWidget {
                 style: TextStyle(
                   color: color,
                   fontSize: compact ? 10 : 11,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

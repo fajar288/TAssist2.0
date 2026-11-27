@@ -51,7 +51,6 @@ class UserAvatarCircle extends StatelessWidget {
         border: borderWidth > 0
             ? Border.all(color: effectiveBorder, width: borderWidth)
             : null,
-        boxShadow: showShadow ? AppTheme.avatarGlow : null,
       ),
       child: ClipOval(
         child: hasLocal
@@ -85,7 +84,7 @@ class UserAvatarCircle extends StatelessWidget {
         style: TextStyle(
           color: Colors.white,
           fontSize: size * 0.36,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

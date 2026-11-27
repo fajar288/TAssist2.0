@@ -167,14 +167,14 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
       case 'ditolak':
         return AppTheme.declined;
       default:
-        return AppTheme.textSecondary;
+        return AppTheme.textSecondaryOf(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       extendBody: true,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -203,6 +203,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
     return SizedBox(
       height: 48,
       child: Stack(
@@ -211,20 +212,20 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
-                color: AppTheme.textPrimary,
+                color: textPrimary,
                 size: 22,
               ),
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          const Text(
+          Text(
             'Lecturer Detail',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: textPrimary,
               fontSize: 24,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -233,15 +234,14 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
   }
 
   Widget _buildDetailCard(BuildContext context) {
+    final cardBorder = AppTheme.cardBorderOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: AppTheme.cardBorder),
-        boxShadow: AppTheme.cardShadow,
-      ),
+      decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusLg),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -256,11 +256,11 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
                 return Container(
                   height: 280,
                   width: double.infinity,
-                  color: AppTheme.cardBorder,
-                  child: const Center(
+                  color: cardBorder,
+                  child: Center(
                     child: Icon(
                       Icons.person_rounded,
-                      color: AppTheme.textSecondary,
+                      color: textSecondary,
                       size: 80,
                     ),
                   ),
@@ -286,14 +286,14 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
           const SizedBox(height: 20),
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 flex: 4,
                 child: Text(
                   'Number of guidance left :',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: AppTheme.textPrimary,
+                    color: textPrimary,
                   ),
                 ),
               ),
@@ -303,14 +303,15 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppTheme.cardBorder,
-                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                  color: AppTheme.primaryGhostOf(context),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
                 child: Text(
                   '${lecturer.quotaLeft}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
                     fontSize: 14,
+                    color: AppTheme.primaryOf(context),
                   ),
                 ),
               ),
@@ -350,15 +351,15 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
             style: TextStyle(
               color: _statusColor(status),
               fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           if (topikTa != null && topikTa.isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
               topikTa,
-              style: const TextStyle(
-                color: AppTheme.textSecondary,
+              style: TextStyle(
+                color: AppTheme.textSecondaryOf(context),
                 fontSize: 13,
                 height: 1.4,
                 fontWeight: FontWeight.w500,
@@ -369,8 +370,8 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
             const SizedBox(height: 8),
             Text(
               'Note: $catatan',
-              style: const TextStyle(
-                color: AppTheme.textSecondary,
+              style: TextStyle(
+                color: AppTheme.textSecondaryOf(context),
                 fontSize: 13,
                 height: 1.4,
                 fontWeight: FontWeight.w500,
@@ -418,7 +419,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
         height: 52,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppTheme.textMuted,
+          color: AppTheme.textMutedOf(context),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
         child: const Text(
@@ -426,7 +427,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
           style: TextStyle(
             color: Colors.white,
             fontSize: 17,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       );
@@ -465,6 +466,7 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
   }
 
   Widget _buildInfoRow(String label, String value) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -472,10 +474,10 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
           flex: 2,
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: AppTheme.textPrimary,
+              color: textPrimary,
             ),
           ),
         ),
@@ -484,10 +486,10 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
           child: Text(
             value,
             textAlign: TextAlign.right,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textPrimary,
+              fontWeight: FontWeight.w600,
+              color: textPrimary,
             ),
           ),
         ),
@@ -500,25 +502,25 @@ class _LecturerDetailPageState extends State<LecturerDetailPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceVariant,
+        color: AppTheme.surfaceVariantOf(context),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Short Profile',
             style: TextStyle(
-              color: AppTheme.textPrimary,
+              color: AppTheme.textPrimaryOf(context),
               fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             profile,
-            style: const TextStyle(
-              color: AppTheme.textSecondary,
+            style: TextStyle(
+              color: AppTheme.textSecondaryOf(context),
               fontSize: 13,
               height: 1.4,
               fontWeight: FontWeight.w500,
@@ -610,26 +612,19 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+    final cardBorder = AppTheme.cardBorderOf(context);
+    final primary = AppTheme.primaryOf(context);
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 22),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
-        decoration: BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-          border: Border.all(
-            color: Colors.black.withValues(alpha: 0.06),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.18),
-              blurRadius: 28,
-              offset: const Offset(0, 12),
-            ),
-          ],
-        ),
+        decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusXl),
         child: Form(
           key: _formKey,
           child: Column(
@@ -639,31 +634,31 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                 width: 54,
                 height: 54,
                 decoration: BoxDecoration(
-                  color: AppTheme.primary.withValues(alpha: 0.10),
+                  color: AppTheme.primaryGhostOf(context),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.school_rounded,
-                  color: AppTheme.primary,
+                  color: primary,
                   size: 30,
                 ),
               ),
               const SizedBox(height: 14),
-              const Text(
+              Text(
                 'Request Counseling',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: AppTheme.textPrimary,
+                  color: textPrimary,
                   fontSize: 21,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 6),
               Text(
                 'Submit your thesis topic to request guidance from ${widget.lecturerName}.',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppTheme.textSecondary,
+                style: TextStyle(
+                  color: textSecondary,
                   fontSize: 13,
                   height: 1.35,
                   fontWeight: FontWeight.w500,
@@ -676,8 +671,8 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                 maxLines: 5,
                 maxLength: 500,
                 textInputAction: TextInputAction.newline,
-                style: const TextStyle(
-                  color: AppTheme.textPrimary,
+                style: TextStyle(
+                  color: textPrimary,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   height: 1.35,
@@ -687,28 +682,28 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                   hintText: 'Example: Sistem Informasi Monitoring TA',
                   alignLabelWithHint: true,
                   filled: true,
-                  fillColor: AppTheme.surfaceVariant,
-                  counterStyle: const TextStyle(
-                    color: AppTheme.textMuted,
+                  fillColor: AppTheme.surfaceVariantOf(context),
+                  counterStyle: TextStyle(
+                    color: textMuted,
                     fontSize: 11,
                   ),
                   contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    borderSide: const BorderSide(
-                      color: AppTheme.cardBorder,
+                    borderSide: BorderSide(
+                      color: cardBorder,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    borderSide: const BorderSide(
-                      color: AppTheme.cardBorder,
+                    borderSide: BorderSide(
+                      color: cardBorder,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                    borderSide: const BorderSide(
-                      color: AppTheme.primary,
+                    borderSide: BorderSide(
+                      color: primary,
                       width: 1.7,
                     ),
                   ),
@@ -753,8 +748,8 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                 ),
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 44),
-                  foregroundColor: AppTheme.primary,
-                  side: const BorderSide(color: AppTheme.cardBorder),
+                  foregroundColor: primary,
+                  side: BorderSide(color: cardBorder),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
@@ -771,20 +766,20 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                           Navigator.of(context).pop();
                         },
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                            color: AppTheme.cardBorder,
+                          side: BorderSide(
+                            color: cardBorder,
                             width: 1.2,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Cancel',
                           style: TextStyle(
-                            color: AppTheme.textPrimary,
+                            color: textPrimary,
                             fontSize: 15,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -808,7 +803,7 @@ class _RequestCounselingDialogState extends State<_RequestCounselingDialog> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),

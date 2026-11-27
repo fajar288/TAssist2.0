@@ -243,7 +243,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                     maxLines: 3,
                     decoration: InputDecoration(
                       hintText: 'Tuliskan catatan perbaikan untuk mahasiswa...',
-                      hintStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                      hintStyle: TextStyle(color: AppTheme.textMutedOf(context), fontSize: 13),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                     ),
                   ),
@@ -277,7 +277,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                         setState(() => _offlineDrafts = drafts);
                         AppSnackBars.info(
                           context,
-                          'Draft anotasi disimpan offline — akan disinkronkan saat online.',
+                          'Draft anotasi disimpan offline. Akan disinkronkan saat online.',
                         );
                         return;
                       }
@@ -354,21 +354,28 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
             switch (anotasi.status) {
               case AnnotationStatus.resolved:
                 statusColor = AppTheme.accepted;
-                statusBg = AppTheme.acceptedBg;
+                statusBg = AppTheme.acceptedBgOf(context);
                 statusLabel = 'Selesai (Resolved)';
                 break;
               case AnnotationStatus.revised:
                 statusColor = AppTheme.info;
-                statusBg = AppTheme.infoBg;
+                statusBg = AppTheme.infoBgOf(context);
                 statusLabel = 'Sudah Direvisi';
                 break;
               case AnnotationStatus.open:
               default:
                 statusColor = AppTheme.pending;
-                statusBg = AppTheme.pendingBg;
+                statusBg = AppTheme.pendingBgOf(context);
                 statusLabel = 'Perlu Revisi (Open)';
                 break;
             }
+
+            final surface = AppTheme.surfaceOf(context);
+            final surfaceVariant = AppTheme.surfaceVariantOf(context);
+            final cardBorder = AppTheme.cardBorderOf(context);
+            final textPrimary = AppTheme.textPrimaryOf(context);
+            final textMuted = AppTheme.textMutedOf(context);
+            final primary = AppTheme.primaryOf(context);
 
             return Padding(
               padding: EdgeInsets.only(
@@ -378,8 +385,8 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.75,
                 ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: surface,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
                 ),
                 child: Column(
@@ -391,7 +398,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: AppTheme.cardBorder,
+                        color: cardBorder,
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                     ),
@@ -408,21 +415,21 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                   children: [
                                     Text(
                                       anotasi.authorName,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                                     ),
                                     const SizedBox(width: 6),
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: AppTheme.primaryGhost,
+                                        color: AppTheme.primaryGhostOf(context),
                                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                                       ),
                                       child: Text(
                                         anotasi.tipe.name.toUpperCase(),
-                                        style: const TextStyle(
-                                          color: AppTheme.primary,
+                                        style: TextStyle(
+                                          color: primary,
                                           fontSize: 10,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ),
@@ -431,7 +438,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                 const SizedBox(height: 2),
                                 Text(
                                   'Hal ${anotasi.halaman} • $dateStr',
-                                  style: const TextStyle(color: AppTheme.textMuted, fontSize: 12),
+                                  style: TextStyle(color: textMuted, fontSize: 12),
                                 ),
                               ],
                             ),
@@ -441,13 +448,13 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                             decoration: BoxDecoration(
                               color: statusBg,
                               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                              border: Border.all(color: statusColor.withOpacity(0.4)),
+                              border: Border.all(color: statusColor.withValues(alpha: 0.4)),
                             ),
                             child: Text(
                               statusLabel,
                               style: TextStyle(
                                 color: statusColor,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 12,
                               ),
                             ),
@@ -463,7 +470,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           anotasi.konten ?? 'Tidak ada catatan teks.',
-                          style: const TextStyle(fontSize: 15, height: 1.4, color: AppTheme.textPrimary),
+                          style: TextStyle(fontSize: 15, height: 1.4, color: textPrimary),
                         ),
                       ),
                     ),
@@ -526,10 +533,10 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                     // Reply Thread
                     Expanded(
                       child: anotasi.replies.isEmpty
-                          ? const Center(
+                          ? Center(
                               child: Text(
                                 'Belum ada balasan diskusi.',
-                                style: TextStyle(color: AppTheme.textMuted, fontSize: 13),
+                                style: TextStyle(color: textMuted, fontSize: 13),
                               ),
                             )
                           : ListView.separated(
@@ -544,9 +551,9 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                 return Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: AppTheme.surfaceVariant,
+                                    color: surfaceVariant,
                                     borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                                    border: Border.all(color: AppTheme.cardBorder),
+                                    border: Border.all(color: cardBorder),
                                   ),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,10 +562,10 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                         children: [
                                           Text(
                                             r.authorName,
-                                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
                                           ),
                                           const Spacer(),
-                                          Text(rDate, style: const TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+                                          Text(rDate, style: TextStyle(color: textMuted, fontSize: 11)),
                                         ],
                                       ),
                                       const SizedBox(height: 4),
@@ -572,9 +579,9 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                     // Reply Input
                     Container(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        border: Border(top: BorderSide(color: AppTheme.cardBorder)),
+                      decoration: BoxDecoration(
+                        color: surface,
+                        border: Border(top: BorderSide(color: cardBorder)),
                       ),
                       child: Row(
                         children: [
@@ -583,10 +590,10 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                               controller: replyController,
                               decoration: InputDecoration(
                                 hintText: 'Tulis balasan...',
-                                hintStyle: const TextStyle(fontSize: 13, color: AppTheme.textMuted),
+                                hintStyle: TextStyle(fontSize: 13, color: textMuted),
                                 contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                                 filled: true,
-                                fillColor: AppTheme.surfaceVariant,
+                                fillColor: surfaceVariant,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                                   borderSide: BorderSide.none,
@@ -596,7 +603,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                           ),
                           const SizedBox(width: 8),
                           IconButton(
-                            icon: const Icon(Icons.send_rounded, color: AppTheme.primary),
+                            icon: Icon(Icons.send_rounded, color: primary),
                             onPressed: () async {
                               final text = replyController.text.trim();
                               if (text.isEmpty) return;
@@ -666,9 +673,9 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
 
             return Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: AppTheme.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+              decoration: BoxDecoration(
+                color: AppTheme.surfaceOf(context),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -676,11 +683,11 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.history_rounded, color: AppTheme.primary),
+                      Icon(Icons.history_rounded, color: AppTheme.primaryOf(context)),
                       const SizedBox(width: 8),
                       const Text(
                         'Ringkasan Anotasi Lintas Versi',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                       ),
                     ],
                   ),
@@ -696,12 +703,12 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppTheme.primaryGhost,
+                              color: AppTheme.primaryGhostOf(context),
                               borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                             ),
                             child: Text(
                               'v${v['nomor_versi']}',
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary),
+                              style: TextStyle(fontWeight: FontWeight.w600, color: AppTheme.primaryOf(context)),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -717,7 +724,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                                 const SizedBox(height: 2),
                                 Text(
                                   'Total: ${v['total']} • Terbuka: ${v['open']} • Direvisi: ${v['revised']} • Selesai: ${v['resolved']}',
-                                  style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                                  style: TextStyle(fontSize: 11, color: AppTheme.textSecondaryOf(context)),
                                 ),
                               ],
                             ),
@@ -737,25 +744,29 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final surface = AppTheme.surfaceOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               widget.documentTitle,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               overflow: TextOverflow.ellipsis,
             ),
             Text(
               'Halaman $_currentPage dari $_pageCount',
-              style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+              style: TextStyle(fontSize: 12, color: textMuted),
             ),
           ],
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: AppTheme.textPrimary,
+        backgroundColor: surface,
+        foregroundColor: textPrimary,
         elevation: 0,
         actions: [
           if (_offlineDrafts.isNotEmpty)
@@ -879,7 +890,7 @@ class _AnnotationViewerPageState extends State<AnnotationViewerPage> {
                       SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Viewing cached version — annotations will sync when online',
+                          'Viewing cached version. Annotations will sync when online',
                           style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
                         ),
                       ),

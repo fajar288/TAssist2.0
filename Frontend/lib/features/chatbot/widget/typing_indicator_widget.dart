@@ -31,30 +31,32 @@ class _TypingIndicatorWidgetState extends State<TypingIndicatorWidget>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppTheme.isDark(context);
+    final primary = AppTheme.primaryOf(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: const EdgeInsets.only(left: 16, right: 80, top: 4, bottom: 4),
       decoration: BoxDecoration(
-        color: AppTheme.chatAssistantBubble,
+        color: isDark ? AppTheme.darkSurfaceVariant : AppTheme.chatAssistantBubble,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(AppTheme.radiusMd),
           topRight: Radius.circular(AppTheme.radiusMd),
           bottomRight: Radius.circular(AppTheme.radiusMd),
           bottomLeft: Radius.zero,
         ),
-        border: Border.all(color: AppTheme.cardBorder, width: 0.8),
+        border: Border.all(color: AppTheme.cardBorderOf(context), width: 0.8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.smart_toy_rounded, size: 16, color: AppTheme.primary),
+          Icon(Icons.chat_bubble_outline, size: 16, color: primary),
           const SizedBox(width: 8),
-          const Text(
+          Text(
             'Sedang mencari jawaban',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppTheme.textSecondary,
+              color: AppTheme.textSecondaryOf(context),
             ),
           ),
           const SizedBox(width: 6),
@@ -71,7 +73,7 @@ class _TypingIndicatorWidgetState extends State<TypingIndicatorWidget>
                     width: 5,
                     height: 5,
                     decoration: BoxDecoration(
-                      color: AppTheme.primary.withValues(alpha: opacity),
+                      color: primary.withValues(alpha: opacity),
                       shape: BoxShape.circle,
                     ),
                   );

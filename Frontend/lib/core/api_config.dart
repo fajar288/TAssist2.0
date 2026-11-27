@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart'
     show kIsWeb, TargetPlatform, defaultTargetPlatform;
 
-/// Centralised API configuration — single source of truth for all URLs.
+/// Centralised API configuration - single source of truth for all URLs.
 ///
 /// ### Setting a custom server URL
 /// ```bash

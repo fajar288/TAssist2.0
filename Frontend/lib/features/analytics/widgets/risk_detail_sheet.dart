@@ -58,7 +58,7 @@ class RiskDetailSheet extends StatelessWidget {
                       studentName,
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         color: AppTheme.textPrimaryOf(context),
                       ),
                     ),
@@ -116,19 +116,19 @@ class RiskDetailSheet extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Skor Indeks Risiko',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.textPrimary,
+                        color: AppTheme.textPrimaryOf(context),
                       ),
                     ),
                     Text(
                       '${risk.skor} / 100',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         color: color,
                       ),
                     ),
@@ -140,7 +140,7 @@ class RiskDetailSheet extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: (risk.skor / 100).clamp(0.0, 1.0),
                     minHeight: 8,
-                    backgroundColor: Colors.white,
+                    backgroundColor: AppTheme.surfaceVariantOf(context),
                     valueColor: AlwaysStoppedAnimation<Color>(color),
                   ),
                 ),
@@ -151,9 +151,9 @@ class RiskDetailSheet extends StatelessWidget {
                       : (risk.isAttention
                           ? 'Perlu perhatian. Terdeteksi beberapa keterlambatan bimbingan atau dokumen.'
                           : 'Progres bimbingan berjalan lancar sesuai jadwal.'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
-                    color: AppTheme.textSecondary,
+                    color: AppTheme.textSecondaryOf(context),
                   ),
                 ),
               ],
@@ -234,7 +234,9 @@ class RiskDetailSheet extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: isHigh ? AppTheme.warningBg : AppTheme.cardBorder,
+                                color: isHigh
+                                    ? AppTheme.warningBgOf(context)
+                                    : AppTheme.cardBorderOf(context),
                                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                               ),
                               child: Text(
@@ -242,7 +244,9 @@ class RiskDetailSheet extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: isHigh ? AppTheme.warning : AppTheme.textSecondary,
+                                  color: isHigh
+                                      ? AppTheme.warning
+                                      : AppTheme.textSecondaryOf(context),
                                 ),
                               ),
                             ),

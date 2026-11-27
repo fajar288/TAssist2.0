@@ -142,7 +142,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       color: border,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                     ),
                   ),
                 ),
@@ -352,7 +352,6 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
     final surface = AppTheme.surfaceOf(context);
     final textPrimary = AppTheme.textPrimaryOf(context);
     final primary = AppTheme.primaryOf(context);
-    final border = AppTheme.cardBorderOf(context);
     final displayName = _profileData['nama']?.toString() ?? 'Mahasiswa';
     final existingAvatar = _profileData['avatar']?.toString();
 
@@ -405,7 +404,7 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                             right: 0,
                             child: InkWell(
                               onTap: _showPhotoSourceSheet,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
@@ -445,19 +444,9 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
-                  decoration: BoxDecoration(
-                    color: surface,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-                    border: Border.all(color: border),
-                    boxShadow: AppTheme.isDark(context)
-                        ? null
-                        : [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 22,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
+                  decoration: AppTheme.cardDecorationOf(
+                    context,
+                    radius: AppTheme.radiusXl,
                   ),
                   child: Form(
                     key: _formKey,
@@ -557,8 +546,8 @@ class _EditStudentProfilePageState extends State<EditStudentProfilePage>
           'Edit Profil Mahasiswa',
           style: TextStyle(
             color: AppTheme.textPrimaryOf(context),
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),

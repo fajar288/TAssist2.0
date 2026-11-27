@@ -82,52 +82,54 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
   Widget build(BuildContext context) {
     final badgeText = _unreadCount > 99 ? '99+' : _unreadCount.toString();
 
-    return GestureDetector(
-      onTap: _openNotifikasiPage,
-      child: SizedBox(
-        width: widget.size,
-        height: widget.size,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
+    return Semantics(
+      button: true,
+      label: _unreadCount > 0
+          ? 'Notifications, $_unreadCount unread'
+          : 'Notifications',
+      child: Tooltip(
+        message: 'Notifications',
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _openNotifikasiPage,
+            customBorder: const CircleBorder(),
+            child: SizedBox(
               width: widget.size,
               height: widget.size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: widget.backgroundColor ?? AppTheme.surfaceOf(context),
-                border: Border.all(
-                  color: widget.borderColor ??
-                      AppTheme.cardBorderOf(context).withOpacity(0.5),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.10),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: widget.size,
+                    height: widget.size,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: widget.backgroundColor ?? AppTheme.surfaceOf(context),
+                      border: Border.all(
+                        color: widget.borderColor ?? AppTheme.cardBorderOf(context),
+                        width: 1.0,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.notifications_rounded,
+                      color: widget.iconColor ?? AppTheme.primaryOf(context),
+                      size: widget.size * 0.48,
+                    ),
                   ),
-                ],
-              ),
-              child: Icon(
-                Icons.notifications_rounded,
-                color: widget.iconColor ?? AppTheme.primaryOf(context),
-                size: widget.size * 0.48,
-              ),
-            ),
-            if (_unreadCount > 0)
-              Positioned(
-                right: -2,
-                top: -2,
-                child: Container(
-                  constraints: const BoxConstraints(
-                    minWidth: 20,
-                    minHeight: 20,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  if (_unreadCount > 0)
+                    Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 20,
+                          minHeight: 20,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
                   decoration: BoxDecoration(
                     color: widget.badgeColor,
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusXl),
                     border: Border.all(color: Colors.white, width: 2),
                   ),
                   child: Center(
@@ -136,13 +138,16 @@ class _NotifikasiBellButtonState extends State<NotifikasiBellButton> {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ),
               ),
-          ],
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

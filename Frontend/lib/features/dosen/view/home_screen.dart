@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tassist/features/dosen/data/dosen_service.dart';
 
@@ -248,16 +247,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     return Container(
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.primary, AppTheme.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: AppTheme.primaryDark,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(AppTheme.radiusXl),
         ),
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 26),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -268,83 +266,73 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            const Text(
-                              '👋  ',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              'Hello There!,',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white.withOpacity(0.75),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        )
-                            .animate()
-                            .fadeIn(duration: 500.ms)
-                            .slideX(begin: -0.1, end: 0),
-                        const SizedBox(height: 2),
                         Text(
-                          '$nama!',
+                          'Welcome back,',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white.withValues(alpha: 0.82),
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          nama,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.5,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.3,
                           ),
-                        )
-                            .animate()
-                            .fadeIn(duration: 500.ms, delay: 100.ms)
-                            .slideX(begin: -0.1, end: 0),
+                        ),
                         const SizedBox(height: 4),
                         Text(
                           subtitle,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.6),
+                            color: AppTheme.accentGoldOnDark,
                             fontSize: 12,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         tooltip: 'Asisten TA',
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.white24,
+                          backgroundColor: AppTheme.glassSurfaceOnDark,
                           foregroundColor: Colors.white,
-                          shape: const CircleBorder(
-                            side: BorderSide(color: Colors.white38),
+                          shape: CircleBorder(
+                            side: BorderSide(color: AppTheme.glassBorderOnDark),
                           ),
-                          minimumSize: const Size(38, 38),
-                          fixedSize: const Size(38, 38),
+                          minimumSize: const Size(44, 44),
+                          fixedSize: const Size(44, 44),
                           padding: EdgeInsets.zero,
                         ),
-                        icon: const Icon(Icons.smart_toy_rounded, size: 20),
+                        icon: const Icon(Icons.chat_bubble_outline, size: 20),
                         onPressed: () {
                           Navigator.pushNamed(context, TAssistApp.chatbotRoute);
                         },
                       ),
                       const SizedBox(width: 8),
-                      const NotifikasiBellButton(
-                        size: 38,
+                      NotifikasiBellButton(
+                        size: 44,
                         iconColor: Colors.white,
-                        backgroundColor: Colors.white24,
-                        borderColor: Colors.white38,
+                        backgroundColor: AppTheme.glassSurfaceOnDark,
+                        borderColor: AppTheme.glassBorderOnDark,
                         pageTitle: 'Notifications',
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 8),
                       PopupMenuButton<String>(
-                        offset: const Offset(0, 60), // Menurunkan dropdown agar pas
+                        tooltip: 'Account menu',
+                        offset: const Offset(0, 60),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                         ),
@@ -413,69 +401,54 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ];
                         },
-                        // UI Container asli
                         child: Container(
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
+                            color: AppTheme.glassSurfaceOnDark,
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.4),
-                              width: 2.5,
+                              color: AppTheme.accentGoldOnDark.withValues(alpha: 0.75),
+                              width: 1.5,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 20,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
                           ),
-                          child: ClipOval(
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              color: Colors.white24,
-                              child: Center(
-                                child: Text(
-                                  avatarText,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          child: Center(
+                            child: Text(
+                              avatarText,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
-                      )
-                          .animate()
-                          .fadeIn(duration: 500.ms, delay: 200.ms)
-                          .scale(begin: const Offset(0.8, 0.8)),
+                      ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 22),
-              Row(
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: [
                   _StatChip(
                     label: 'Pending',
                     count: _countByStatus(RequestStatus.pending),
-                    color: AppTheme.pending,
+                    color: AppTheme.accentGoldOnDark,
                   ),
-                  const SizedBox(width: 10),
                   _StatChip(
                     label: 'Accepted',
                     count: _countByStatus(RequestStatus.accepted),
-                    color: AppTheme.accepted,
+                    color: const Color(0xFF34D399),
                   ),
-                  const SizedBox(width: 10),
                   _StatChip(
                     label: 'Declined',
                     count: _countByStatus(RequestStatus.declined),
-                    color: AppTheme.declined,
+                    color: const Color(0xFFF87171),
                   ),
                 ],
-              ).animate().fadeIn(duration: 500.ms, delay: 300.ms),
+              ),
             ],
           ),
         ),
@@ -485,28 +458,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildFilterRow() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              'Counseling Requests',
-              style: GoogleFonts.poppins(
-                color: AppTheme.textPrimaryOf(context),
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-              ),
+          Text(
+            'Counseling Requests',
+            style: GoogleFonts.poppins(
+              color: AppTheme.textPrimaryOf(context),
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          ..._filters.skip(1).map(
-                (f) => _FilterChip(
-                  label: f,
-                  selected: _selectedFilter == f,
-                  onTap: () => setState(() {
-                    _selectedFilter = _selectedFilter == f ? 'All' : f;
-                  }),
-                ),
-              ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: _filters
+                .map(
+                  (f) => _FilterChip(
+                    label: f,
+                    selected: _selectedFilter == f,
+                    onTap: () => setState(() {
+                      _selectedFilter = _selectedFilter == f ? 'All' : f;
+                    }),
+                  ),
+                )
+                .toList(),
+          ),
         ],
       ),
     );
@@ -556,18 +535,19 @@ class _StatChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 8,
+        horizontal: 11,
+        vertical: 7,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+        color: AppTheme.glassSurfaceOnDark,
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
+          color: AppTheme.glassBorderOnDark,
           width: 1,
         ),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 8,
@@ -605,29 +585,43 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.only(left: 6),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 5,
-        ),
-        decoration: BoxDecoration(
-          color: selected ? AppTheme.primary : Colors.transparent,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(
-            color: selected ? AppTheme.primary : AppTheme.cardBorderOf(context),
-            width: 1.5,
-          ),
-        ),
-        child: Text(
-          label,
-          style: GoogleFonts.poppins(
-            color: selected ? Colors.white : AppTheme.textSecondaryOf(context),
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: 'Filter $label',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 44),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 10,
+              ),
+              decoration: BoxDecoration(
+                color: selected ? AppTheme.primary : AppTheme.surfaceOf(context),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                border: Border.all(
+                  color: selected
+                      ? AppTheme.primary
+                      : AppTheme.cardBorderOf(context),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                label,
+                style: GoogleFonts.poppins(
+                  color:
+                      selected ? Colors.white : AppTheme.textSecondaryOf(context),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
           ),
         ),
       ),

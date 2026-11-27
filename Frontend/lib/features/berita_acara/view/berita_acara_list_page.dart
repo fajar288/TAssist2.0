@@ -84,9 +84,9 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: AppTheme.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceOf(ctx),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusLg)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -98,7 +98,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: AppTheme.cardBorder,
+                  color: AppTheme.cardBorderOf(ctx),
                   borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 ),
               ),
@@ -108,10 +108,10 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                 Expanded(
                   child: Text(
                     ba.nomor,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimary,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textPrimaryOf(ctx),
                     ),
                   ),
                 ),
@@ -133,21 +133,29 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
             if (ba.metodePersetujuan != null)
               _buildDetailRow('Metode Verifikasi', ba.metodePersetujuan!.toUpperCase()),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'KODE HASH SHA-256:',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textSecondaryOf(ctx),
+              ),
             ),
             const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceVariant,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppTheme.cardBorder),
+                color: AppTheme.surfaceVariantOf(ctx),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                border: Border.all(color: AppTheme.cardBorderOf(ctx)),
               ),
               child: SelectableText(
                 ba.activeHash,
-                style: const TextStyle(fontSize: 10, fontFamily: 'monospace', color: AppTheme.textPrimary),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontFamily: 'monospace',
+                  color: AppTheme.textPrimaryOf(ctx),
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -180,14 +188,21 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
         children: [
           Expanded(
             flex: 2,
-            child: Text(label, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 13, color: AppTheme.textSecondaryOf(context)),
+            ),
           ),
           Expanded(
             flex: 3,
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimaryOf(context),
+              ),
             ),
           ),
         ],
@@ -200,26 +215,26 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: AppTheme.acceptedBg,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppTheme.acceptedBorder),
+          color: AppTheme.acceptedBgOf(context),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+          border: Border.all(color: AppTheme.acceptedBorderOf(context)),
         ),
         child: const Text(
           'DISETUJUI',
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.accepted),
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.accepted),
         ),
       );
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppTheme.pendingBg,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.pendingBorder),
+        color: AppTheme.pendingBgOf(context),
+        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+        border: Border.all(color: AppTheme.pendingBorderOf(context)),
       ),
       child: const Text(
         'DRAFT',
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.pending),
+        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.pending),
       ),
     );
   }
@@ -315,7 +330,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Periode: ${_formatDate(ba.periodeMulai)} — ${_formatDate(ba.periodeSelesai)}',
+                    'Periode: ${_formatDate(ba.periodeMulai)} - ${_formatDate(ba.periodeSelesai)}',
                     style: TextStyle(fontSize: 12, color: AppTheme.textSecondaryOf(context)),
                   ),
                   const SizedBox(height: 4),
@@ -331,7 +346,7 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                         onPressed: () => _showDetailSheet(ba),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: AppTheme.cardBorderOf(context)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
                         icon: Icon(Icons.info_outline, size: 16, color: AppTheme.textPrimaryOf(context)),
@@ -343,11 +358,11 @@ class _BeritaAcaraListPageState extends State<BeritaAcaraListPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primary,
                           foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusSm)),
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         ),
                         icon: const Icon(Icons.download, size: 16),
-                        label: const Text('Unduh PDF', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        label: const Text('Unduh PDF', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                       ),
                     ],
                   ),

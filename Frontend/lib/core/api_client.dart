@@ -164,14 +164,14 @@ class ApiClient {
 
   String get baseUrl => baseUrlOverride ?? ApiConfig.baseUrl;
 
-  /// Global navigator key — must be assigned to `MaterialApp.navigatorKey`.
+  /// Global navigator key - must be assigned to `MaterialApp.navigatorKey`.
   final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
   /// Bearer token storage (shared with `AuthService`).
   final AuthTokenStore tokenStore = AuthTokenStore();
 
-  /// Optional hook run right before the local session is cleared — e.g. to
+  /// Optional hook run right before the local session is cleared - e.g. to
   /// sign out of Google. Must not perform HTTP calls.
   Future<void> Function()? onSessionExpired;
 

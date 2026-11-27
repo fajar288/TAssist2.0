@@ -74,21 +74,28 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
 
   @override
   Widget build(BuildContext context) {
+    final surface = AppTheme.surfaceOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+    final surfaceVariant = AppTheme.surfaceVariantOf(context);
+    final cardBorder = AppTheme.cardBorderOf(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         title: const Text(
           'Informasi & Pengumuman TA',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: AppTheme.textPrimary,
+        backgroundColor: surface,
+        foregroundColor: textPrimary,
         elevation: 0,
       ),
       body: Column(
         children: [
           Container(
-            color: Colors.white,
+            color: surface,
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: Column(
               children: [
@@ -96,8 +103,8 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Cari informasi TA...',
-                    hintStyle: const TextStyle(color: AppTheme.textMuted, fontSize: 14),
-                    prefixIcon: const Icon(Icons.search, color: AppTheme.textMuted),
+                    hintStyle: TextStyle(color: textMuted, fontSize: 14),
+                    prefixIcon: Icon(Icons.search, color: textMuted),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear, size: 18),
@@ -108,15 +115,15 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                           )
                         : null,
                     filled: true,
-                    fillColor: AppTheme.surfaceVariant,
+                    fillColor: surfaceVariant,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      borderSide: const BorderSide(color: AppTheme.cardBorder),
+                      borderSide: BorderSide(color: cardBorder),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                      borderSide: const BorderSide(color: AppTheme.cardBorder),
+                      borderSide: BorderSide(color: cardBorder),
                     ),
                   ),
                   onSubmitted: (_) => _loadData(),
@@ -136,13 +143,13 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                           cat,
                           style: TextStyle(
                             fontSize: 12,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: isSelected ? Colors.white : AppTheme.textSecondary,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                            color: isSelected ? Colors.white : textSecondary,
                           ),
                         ),
                         selected: isSelected,
                         selectedColor: AppTheme.primary,
-                        backgroundColor: AppTheme.surfaceVariant,
+                        backgroundColor: surfaceVariant,
                         onSelected: (selected) {
                           if (selected) {
                             setState(() => _selectedCategory = cat);
@@ -206,14 +213,10 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
             );
           },
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-          child: Container(
+          child: Ink(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              border: Border.all(color: AppTheme.cardBorder),
-              boxShadow: AppTheme.subtleShadow,
-            ),
+            decoration:
+                AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -222,13 +225,13 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryGhost,
+                        color: AppTheme.primaryGhostOf(context),
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                       ),
                       child: Text(
                         item.kategori,
-                        style: const TextStyle(
-                          color: AppTheme.primary,
+                        style: TextStyle(
+                          color: AppTheme.primaryOf(context),
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
@@ -237,8 +240,8 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                     const Spacer(),
                     Text(
                       dateStr,
-                      style: const TextStyle(
-                        color: AppTheme.textMuted,
+                      style: TextStyle(
+                        color: AppTheme.textMutedOf(context),
                         fontSize: 12,
                       ),
                     ),
@@ -247,10 +250,10 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                 const SizedBox(height: 10),
                 Text(
                   item.judul,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimaryOf(context),
                   ),
                 ),
                 if (item.kontenOrFile != null && item.kontenOrFile!.isNotEmpty) ...[
@@ -259,9 +262,9 @@ class _InformasiTAPageState extends State<InformasiTAPage> {
                     item.kontenOrFile!,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: AppTheme.textSecondary,
+                      color: AppTheme.textSecondaryOf(context),
                     ),
                   ),
                 ],

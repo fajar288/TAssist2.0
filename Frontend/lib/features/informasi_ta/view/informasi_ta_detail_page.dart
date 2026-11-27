@@ -18,15 +18,21 @@ class InformasiTADetailPage extends StatelessWidget {
         ? '${informasi.publishedAt!.day.toString().padLeft(2, '0')}/${informasi.publishedAt!.month.toString().padLeft(2, '0')}/${informasi.publishedAt!.year}'
         : '-';
 
+    final surface = AppTheme.surfaceOf(context);
+    final textPrimary = AppTheme.textPrimaryOf(context);
+    final textSecondary = AppTheme.textSecondaryOf(context);
+    final textMuted = AppTheme.textMutedOf(context);
+    final cardBorder = AppTheme.cardBorderOf(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: AppTheme.backgroundOf(context),
       appBar: AppBar(
         title: Text(
           informasi.kategori,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: AppTheme.textPrimary,
+        backgroundColor: surface,
+        foregroundColor: textPrimary,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -34,12 +40,8 @@ class InformasiTADetailPage extends StatelessWidget {
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-            border: Border.all(color: AppTheme.cardBorder),
-            boxShadow: AppTheme.subtleShadow,
-          ),
+          decoration:
+              AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -48,26 +50,28 @@ class InformasiTADetailPage extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGhost,
+                      color: AppTheme.primaryGhostOf(context),
                       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                      border: Border.all(color: AppTheme.primaryLight.withValues(alpha: 0.3)),
+                      border: Border.all(
+                        color: AppTheme.primaryOf(context).withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Text(
                       informasi.kategori,
-                      style: const TextStyle(
-                        color: AppTheme.primary,
+                      style: TextStyle(
+                        color: AppTheme.primaryOf(context),
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                   const Spacer(),
-                  Icon(Icons.calendar_today_outlined, size: 14, color: AppTheme.textMuted),
+                  Icon(Icons.calendar_today_outlined, size: 14, color: textMuted),
                   const SizedBox(width: 4),
                   Text(
                     publishedStr,
-                    style: const TextStyle(
-                      color: AppTheme.textMuted,
+                    style: TextStyle(
+                      color: textMuted,
                       fontSize: 12,
                     ),
                   ),
@@ -76,34 +80,34 @@ class InformasiTADetailPage extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 informasi.judul,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary,
+                  fontWeight: FontWeight.w600,
+                  color: textPrimary,
                   height: 1.3,
                 ),
               ),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Icon(Icons.person_outline, size: 16, color: AppTheme.textSecondary),
+                  Icon(Icons.person_outline, size: 16, color: textSecondary),
                   const SizedBox(width: 4),
                   Text(
                     'Diterbitkan oleh: ${informasi.penulis}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: AppTheme.textSecondary,
+                      color: textSecondary,
                     ),
                   ),
                 ],
               ),
-              const Divider(height: 32, thickness: 1, color: AppTheme.cardBorder),
+              Divider(height: 32, thickness: 1, color: cardBorder),
               Text(
                 informasi.kontenOrFile ?? 'Tidak ada konten tambahan.',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   height: 1.6,
-                  color: AppTheme.textPrimary,
+                  color: textPrimary,
                 ),
               ),
             ],

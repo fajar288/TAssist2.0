@@ -25,9 +25,9 @@ class StudentCard extends StatelessWidget {
       case 'warning':
         return AppTheme.pending;
       case 'completed':
-        return AppTheme.primaryLight;
+        return AppTheme.primaryOf(context);
       default:
-        return AppTheme.textMuted;
+        return AppTheme.textMutedOf(context);
     }
   }
 
@@ -57,16 +57,16 @@ class StudentCard extends StatelessWidget {
     }
   }
 
-  Color _avatarColor() {
+  Color _avatarColor(BuildContext context) {
     switch (student.status) {
       case 'active':
-        return AppTheme.primaryLight;
+        return AppTheme.primaryOf(context);
       case 'warning':
         return AppTheme.pending;
       case 'completed':
         return AppTheme.accepted;
       default:
-        return AppTheme.textSecondary;
+        return AppTheme.textSecondaryOf(context);
     }
   }
 
@@ -82,17 +82,7 @@ class StudentCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           child: Ink(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
+            decoration: AppTheme.cardDecorationOf(context, radius: AppTheme.radiusMd),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
@@ -138,10 +128,7 @@ class StudentCard extends StatelessWidget {
                           '${student.nim} · ${student.major}',
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withOpacity(0.55),
+                                    color: AppTheme.textSecondaryOf(context),
                                     fontSize: 12,
                                   ),
                         ),
@@ -159,10 +146,7 @@ class StudentCard extends StatelessWidget {
                                   .bodySmall
                                   ?.copyWith(
                                     fontSize: 11,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withOpacity(0.5),
+                                    color: AppTheme.textSecondaryOf(context),
                                   ),
                             ),
                             Text(
@@ -185,10 +169,7 @@ class StudentCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Icon(
                     Icons.chevron_right_rounded,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.3),
+                    color: AppTheme.textMutedOf(context),
                     size: 20,
                   ),
                 ],
@@ -207,15 +188,15 @@ class StudentCard extends StatelessWidget {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: _avatarColor().withValues(alpha: 0.15),
+            color: _avatarColor(context).withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
           child: Center(
             child: Text(
               student.imageInitials,
               style: TextStyle(
-                color: _avatarColor(),
-                fontWeight: FontWeight.w700,
+                color: _avatarColor(context),
+                fontWeight: FontWeight.w600,
                 fontSize: 16,
                 letterSpacing: 0.5,
               ),
@@ -273,7 +254,7 @@ class StudentCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       child: LinearProgressIndicator(
         value: student.progress,
-        backgroundColor: color.withOpacity(0.12),
+        backgroundColor: color.withValues(alpha: 0.12),
         valueColor: AlwaysStoppedAnimation<Color>(color),
         minHeight: 6,
       ),

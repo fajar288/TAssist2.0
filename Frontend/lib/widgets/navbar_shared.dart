@@ -1,4 +1,5 @@
-import 'dart:ui'; // Diperlukan untuk ImageFilter
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:tassist/theme/app_theme.dart';
 
@@ -11,66 +12,65 @@ class NavItem {
 class NavbarShell extends StatelessWidget {
   final List<NavItem> items;
   final int currentIndex;
-  final Function(int) onTap;
-  final List<Animation<double>> scaleAnimations;
-  final List<Animation<double>> labelAnimations;
+  final ValueChanged<int> onTap;
+  final List<Animation<double>>? scaleAnimations;
+  final List<Animation<double>>? labelAnimations;
+
+  static const double outerRadius = 32.0;
+  static const double innerRadius = 27.0;
+  static const double barHeight = 68.0;
 
   const NavbarShell({
     super.key,
     required this.items,
     required this.currentIndex,
     required this.onTap,
-    required this.scaleAnimations,
-    required this.labelAnimations,
+    this.scaleAnimations,
+    this.labelAnimations,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 95, 
+    return SafeArea(
+      top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16), 
-        child: ClipRRect( // ClipRRect dipindah ke luar agar efek blur tidak melebar
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          child: BackdropFilter( // Widget kunci untuk efek blur di belakang
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: Container(
-              decoration: BoxDecoration(
-                // Warna dibuat lebih transparan agar konten di belakang terlihat samar
-                color: AppTheme.isDark(context)
-                    ? AppTheme.darkSurface.withValues(alpha: 0.72)
-                    : Colors.white.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                border: Border.all(
-                  color: AppTheme.isDark(context)
-                      ? AppTheme.darkCardBorder.withValues(alpha: 0.8)
-                      : Colors.white.withOpacity(0.2), // Border putih tipis memperkuat kesan kaca
-                  width: 1.5,
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Container(
+          height: barHeight,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(outerRadius),
+            boxShadow: AppTheme.floatingShadow,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(outerRadius),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: AppTheme.glassDecorationOf(
+                  context,
+                  radius: outerRadius,
+                  borderWidth: 1.4,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(items.length, (i) {
-                  return Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => onTap(i),
+                child: Row(
+                  children: List.generate(items.length, (i) {
+                    return Expanded(
                       child: _NavbarItemWidget(
                         item: items[i],
                         isActive: currentIndex == i,
-                        scaleAnimation: scaleAnimations[i],
-                        labelAnimation: labelAnimations[i],
+                        onTap: () => onTap(i),
+                        scaleAnimation:
+                            scaleAnimations != null && i < scaleAnimations!.length
+                                ? scaleAnimations![i]
+                                : null,
+                        labelAnimation:
+                            labelAnimations != null && i < labelAnimations!.length
+                                ? labelAnimations![i]
+                                : null,
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
             ),
           ),
@@ -83,76 +83,95 @@ class NavbarShell extends StatelessWidget {
 class _NavbarItemWidget extends StatelessWidget {
   final NavItem item;
   final bool isActive;
-  final Animation<double> scaleAnimation;
-  final Animation<double> labelAnimation;
+  final VoidCallback onTap;
+  final Animation<double>? scaleAnimation;
+  final Animation<double>? labelAnimation;
 
   const _NavbarItemWidget({
     required this.item,
     required this.isActive,
-    required this.scaleAnimation,
-    required this.labelAnimation,
+    required this.onTap,
+    this.scaleAnimation,
+    this.labelAnimation,
   });
-
-  static const Color _activeColor = AppTheme.primary;
 
   @override
   Widget build(BuildContext context) {
-    final inactiveColor = AppTheme.textPrimaryOf(context);
-    return AnimatedBuilder(
-      animation: Listenable.merge([scaleAnimation, labelAnimation]),
-      builder: (context, _) {
-        return Transform.scale(
-          scale: scaleAnimation.value,
-          child: Center(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-              width: isActive ? 110 : 60,
-              height: isActive ? 60 : 50,
-              decoration: BoxDecoration(
-                // Tambahkan sedikit shadow pada pill aktif agar lebih pop-out
-                color: isActive ? _activeColor : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                boxShadow: isActive ? [
-                  BoxShadow(
-                    color: _activeColor.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  )
-                ] : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    item.icon,
-                    size: 24,
-                    color: isActive ? Colors.white : inactiveColor,
-                  ),
-                  if (isActive) 
-                    Flexible(
-                      child: FadeTransition(
-                        opacity: labelAnimation,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Text(
-                            item.label,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+    final activeColor = AppTheme.primary;
+    final inactiveIconColor = AppTheme.textPrimaryOf(context);
+
+    Widget content = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          item.icon,
+          size: isActive ? 22 : 24,
+          color: isActive ? Colors.white : inactiveIconColor,
+        ),
+        if (isActive) ...[
+          const SizedBox(height: 2),
+          Text(
+            item.label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              height: 1.1,
             ),
           ),
-        );
-      },
+        ],
+      ],
+    );
+
+    if (isActive && labelAnimation != null) {
+      content = FadeTransition(
+        opacity: labelAnimation!,
+        child: content,
+      );
+    }
+
+    if (scaleAnimation != null) {
+      content = AnimatedBuilder(
+        animation: scaleAnimation!,
+        builder: (context, child) => Transform.scale(
+          scale: scaleAnimation!.value,
+          child: child,
+        ),
+        child: content,
+      );
+    }
+
+    return Semantics(
+      button: true,
+      selected: isActive,
+      label: item.label,
+      child: Tooltip(
+        message: item.label,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(NavbarShell.innerRadius),
+            focusColor: AppTheme.primary.withValues(alpha: 0.16),
+            hoverColor: AppTheme.primary.withValues(alpha: 0.08),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              height: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              decoration: BoxDecoration(
+                color: isActive ? activeColor : Colors.transparent,
+                borderRadius: BorderRadius.circular(NavbarShell.innerRadius),
+              ),
+              child: Center(child: content),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
